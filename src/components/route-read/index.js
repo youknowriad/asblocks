@@ -10,5 +10,6 @@ export function RouteRead() {
   const stringKey = window.location.hash.slice("#key=".length);
   const encryptionKey = usePromise(stringToKey, [stringKey]);
   const post = useSuspendedApi(fetchPost, [id, encryptionKey]);
-  return <PostRender post={post} />;
+
+  return <PostRender post={post} encryptionKey={encryptionKey} />;
 }

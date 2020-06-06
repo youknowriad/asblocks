@@ -1,7 +1,7 @@
 import usePromise from "react-promise-suspense";
 import { external } from "@wordpress/icons";
-import { ButtonLink } from "../../button-link";
-import { keyToString } from "../../../lib/crypto";
+import { ButtonLink } from "../button-link";
+import { keyToString } from "../../lib/crypto";
 
 export function ViewButton({ post, encryptionKey }) {
   const isSaved = !!post._id;

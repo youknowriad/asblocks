@@ -27,8 +27,6 @@
   left: 0;
   right: 0;
   padding: var(--grid-unit);
-  display: flex;
-  justify-content: flex-end;
 }
 
 .editor__canvas {

@@ -14,7 +14,7 @@ import { useState } from "@wordpress/element";
 import { EditorHeader } from "./header";
 import { PostTitleEditor } from "./post-title-editor";
 import { Inspector } from "./inspector";
-import { ViewButton } from "./view-button";
+import { Footer } from "../footer";
 import "./style.css";
 
 export function Editor({ post, encryptionKey }) {
@@ -63,7 +63,7 @@ export function Editor({ post, encryptionKey }) {
               </div>
 
               <div className="editor__footer">
-                <ViewButton post={editedPost} encryptionKey={encryptionKey} />
+                <Footer post={editedPost} encryptionKey={encryptionKey} />
               </div>
             </div>
             {isInspectorOpened && (
