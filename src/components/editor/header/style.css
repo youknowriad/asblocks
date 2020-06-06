@@ -1,0 +1,22 @@
+.editor__header-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.editor__header-left {
+  display: flex;
+  align-items: center;
+}
+
+.editor__header-left > * {
+  margin-right: var(--grid-unit);
+}
+
+.editor__header-right {
+  display: flex;
+  align-items: center;
+}
+
+.editor__header-right > * {
+  padding-left: calc(var(--grid-unit) / 2);
+}

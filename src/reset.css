@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
+
+:root {
+  --default-font: "Open Sans", sans-serif;
+  --editor-font: "Libre Baskerville", serif;
+  --default-font-size: 13px;
+  --editor-font-size: 20px;
+  --inspector-width: 300px;
+  --grid-unit: 16px;
+  --border-radius: 2px;
+  --button-height: 36px;
+  --logo-width: 100px;
+  --theme-color: #fb0101;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--default-font);
+  font-size: var(--default-font-size);
+  box-sizing: border-box;
+  height: 100%;
+  font-weight: 400;
+}
+
+#root {
+  height: 100%;
+}
+
+a,
+div {
+  outline: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+}
+
+h1 {
+  font-size: 2em;
+  font-weight: 300;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: 300;
+  margin-top: 0;
+}
+
+h3 {
+  font-size: 1.17em;
+  font-weight: 300;
+  margin-top: 0;
+}
+
+h4 {
+  font-size: 1em;
+  font-weight: 300;
+  margin-top: 0;
+}
+
+h5 {
+  font-size: 0.83em;
+  font-weight: 300;
+  margin-top: 0;
+}
+
+h6 {
+  font-size: 0.67em;
+  font-weight: 300;
+  margin-top: 0;
+}

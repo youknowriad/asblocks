@@ -1,0 +1,5 @@
+node_modules
+.cache
+.firebase
+dist
+src/config/index.js

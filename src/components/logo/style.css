@@ -1,0 +1,21 @@
+.logo {
+  background: var(--theme-color);
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.95);
+  font-family: var(--default-font);
+  border-radius: var(--border-radius);
+  height: var(--button-height);
+  width: var(--button-height);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--button-height) * 1.3);
+  letter-spacing: -0.3em;
+  padding-top: 2px;
+  box-sizing: border-box;
+}
+
+.logo span {
+  margin-left: -65%;
+  opacity: 0.7;
+}

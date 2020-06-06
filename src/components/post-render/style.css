@@ -1,0 +1,13 @@
+.post-render__header {
+  position: sticky;
+  padding: var(--grid-unit);
+}
+
+.post-render__main {
+  margin: auto;
+  max-width: 700px;
+  padding-left: var(--grid-unit);
+  padding-right: var(--grid-unit);
+  font-family: var(--editor-font);
+  font-size: var(--editor-font-size);
+}

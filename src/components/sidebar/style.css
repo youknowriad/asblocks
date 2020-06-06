@@ -1,0 +1,7 @@
+.sidebar {
+  margin-top: calc(var(--grid-unit) * 4);
+  display: grid;
+  grid-gap: calc(var(--grid-unit) * 2);
+  grid-template-columns: 1fr;
+  padding: var(--grid-unit);
+}

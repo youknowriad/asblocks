@@ -1,0 +1,6 @@
+.editor__inspector-header {
+  padding: var(--grid-unit);
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid #eee;
+}
