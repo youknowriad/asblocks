@@ -10,4 +10,5 @@
   padding-right: var(--grid-unit);
   font-family: var(--editor-font);
   font-size: var(--editor-font-size);
+  margin-bottom: var(--grid-unit);
 }

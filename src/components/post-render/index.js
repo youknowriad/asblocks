@@ -9,7 +9,7 @@ export function PostRender({ post }) {
       <div className="post-render__header">
         <Logo />
       </div>
-      <div className="post-render__main">
+      <div className="post-render__main editor-styles-wrapper">
         <h1>{post.title}</h1>
         <div>
           <RawHTML>{serialize(post.blocks)}</RawHTML>

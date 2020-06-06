@@ -15,7 +15,6 @@ import { EditorHeader } from "./header";
 import { PostTitleEditor } from "./post-title-editor";
 import { Inspector } from "./inspector";
 import { ViewButton } from "./view-button";
-import "./editor-styles.css";
 import "./style.css";
 
 export function Editor({ post, encryptionKey }) {
