@@ -6,25 +6,27 @@ import { Logo } from "../../logo";
 import { useMutation } from "../../../lib/data";
 import { savePost } from "../../../api/posts";
 import "./style.css";
+import { keyToString } from "../../../lib/crypto";
 
 export function EditorHeader({
   post,
   editedPost,
   isInspectorOpened,
   onOpenInspector,
+  encryptionKey,
 }) {
   const { mutate, loading: isSaving } = useMutation(savePost);
   const [persistedPost, setPersistedPost] = useState(post);
   const isDirty = editedPost !== persistedPost;
 
   const triggerSave = async () => {
-    await mutate(editedPost);
+    await mutate(editedPost, encryptionKey);
+    const stringKey = await keyToString(encryptionKey);
     setPersistedPost(editedPost);
-
     window.history.replaceState(
       { id: post._id },
       "Post " + post._id,
-      "/write/" + post._id
+      "/write/" + post._id + "#key=" + stringKey
     );
   };
 

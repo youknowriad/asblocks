@@ -11,6 +11,8 @@ module.exports = {
   },
   devServer: {
     contentBase: "./dist",
+    index: "index.html",
+    historyApiFallback: true,
   },
   plugins: [
     new CleanWebpackPlugin(),

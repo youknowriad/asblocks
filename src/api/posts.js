@@ -1,15 +1,9 @@
 import { api } from "./index";
+import { encrypt, decrypt } from "../lib/crypto";
 
 function wrapFetch(fetch) {
   return {
     fetch,
-  };
-}
-
-function normalizeDoc(doc) {
-  return {
-    _id: doc.id,
-    ...doc.data(),
   };
 }
 
@@ -21,7 +15,9 @@ export const newPost = wrapFetch(async () => {
     .get();
 
   if (!!snapshot.docs?.length) {
-    return normalizeDoc(snapshot.docs[0]);
+    return {
+      _id: snapshot.docs[0].id,
+    };
   }
 
   const newPost = {
@@ -30,30 +26,25 @@ export const newPost = wrapFetch(async () => {
   const doc = await db.collection("posts").add(newPost);
   return {
     _id: doc.id,
-    ...newPost,
   };
 });
 
-export const savePost = wrapFetch(async (post) => {
+export const savePost = wrapFetch(async (post, encryptionKey) => {
   const db = api.firestore();
   const { _id, ...data } = post;
-  await db
-    .collection("posts")
-    .doc(_id)
-    .set({
-      ...data,
-      status: data.status !== "auto-draft" ? data.status : "draft",
-    });
+  const encrypted = await encrypt(data, encryptionKey);
+  await db.collection("posts").doc(_id).set({
+    encrypted,
+    status: "publish",
+  });
 });
 
-export const deletePost = wrapFetch(async (post) => {
-  const db = api.firestore();
-  const { _id } = post;
-  await db.collection("posts").doc(_id).delete();
-});
-
-export const fetchPost = wrapFetch(async (id) => {
+export const fetchPost = wrapFetch(async (id, encryptionKey) => {
   const db = api.firestore();
   const snapshot = await db.collection("posts").doc(id).get();
-  return normalizeDoc(snapshot);
+  const { encrypted } = snapshot.data();
+  return {
+    _id: snapshot.id,
+    ...(await decrypt(encrypted, encryptionKey)),
+  };
 });

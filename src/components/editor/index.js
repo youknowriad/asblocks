@@ -18,7 +18,7 @@ import { ViewButton } from "./view-button";
 import "./editor-styles.css";
 import "./style.css";
 
-export function Editor({ post }) {
+export function Editor({ post, encryptionKey }) {
   const [editedPost, setEditedPost] = useState(post);
   const [isInspectorOpened, setIsInspectorOpened] = useState(false);
 
@@ -41,6 +41,7 @@ export function Editor({ post }) {
             <div className="editor__main">
               <div className="editor__header">
                 <EditorHeader
+                  encryptionKey={encryptionKey}
                   post={post}
                   editedPost={editedPost}
                   isInspectorOpened={isInspectorOpened}
@@ -63,7 +64,7 @@ export function Editor({ post }) {
               </div>
 
               <div className="editor__footer">
-                <ViewButton post={editedPost} />
+                <ViewButton post={editedPost} encryptionKey={encryptionKey} />
               </div>
             </div>
             {isInspectorOpened && (

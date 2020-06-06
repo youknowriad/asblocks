@@ -20,16 +20,16 @@ export function App() {
       <ClearCacheOnNavigate />
 
       <Suspense fallback="loading...">
-        <Route exact path="/">
-          <RouteNew />
-        </Route>
-
-        <Route exact path="/write/:id">
+        <Route path="/write/:id">
           <RouteWrite />
         </Route>
 
-        <Route exact path="/read/:id">
+        <Route path="/read/:id">
           <RouteRead />
+        </Route>
+
+        <Route exact path="/">
+          <RouteNew />
         </Route>
       </Suspense>
     </Router>
