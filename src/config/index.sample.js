@@ -7,4 +7,5 @@ export const config = {
     appId: "${{ secrets.FIREBASE_APP_ID }}",
     measurementId: "${{ secrets.FIREBASE_MEASUREMENT_ID }}",
   },
+  collabServer: "${{ secrets.COLLAB_SERVER }}",
 };

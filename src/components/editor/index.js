@@ -11,15 +11,17 @@ import {
   DropZoneProvider,
 } from "@wordpress/components";
 import { useState } from "@wordpress/element";
+import { Footer } from "../footer";
 import { EditorHeader } from "./header";
 import { PostTitleEditor } from "./post-title-editor";
 import { Inspector } from "./inspector";
-import { Footer } from "../footer";
+import { useSyncEdits } from "./sync";
 import "./style.css";
 
 export function Editor({ post, encryptionKey }) {
   const [editedPost, setEditedPost] = useState(post);
   const [isInspectorOpened, setIsInspectorOpened] = useState(false);
+  useSyncEdits(editedPost, setEditedPost, encryptionKey);
 
   const getPropertyChangeHandler = (property) => (value) => {
     setEditedPost({
