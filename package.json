@@ -1,8 +1,9 @@
 {
   "main": "src/index.js",
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "NODE_ENV=development webpack-dev-server --open",
     "build": "webpack",
+    "test": "jest",
     "format": "prettier --write 'src/**/*.{js,jsx}'",
     "lint": "prettier --check 'src/**/*.{js,jsx}'"
   },
@@ -26,10 +27,12 @@
     "@babel/core": "^7.9.6",
     "@babel/plugin-transform-runtime": "^7.9.6",
     "@wordpress/babel-preset-default": "^4.14.0",
+    "babel-jest": "^26.0.1",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.5.3",
     "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.0.1",
     "prettier": "^2.0.0",
     "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
