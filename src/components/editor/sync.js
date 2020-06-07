@@ -1,4 +1,7 @@
-import { isShallowEqualArrays } from "@wordpress/is-shallow-equal";
+import {
+  isShallowEqualArrays,
+  isShallowEqualObjects,
+} from "@wordpress/is-shallow-equal";
 import { useEffect, useRef } from "@wordpress/element";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
@@ -23,9 +26,9 @@ export function getBlockVersions(currentVersions, oldBlocks, newBlocks) {
   const oldBlocksMap = getBlocksMap(oldBlocks);
   const newVersions = { ...currentVersions };
 
-  const fillVersions = (blocks) => {
+  const fillVersions = (blocks = []) => {
     blocks.forEach((block) => {
-      if (!oldBlocksMap[block.clientId]) {
+      if (!currentVersions[block.clientId]) {
         newVersions[block.clientId] = { version: 1, nonce: uuidv4() };
       } else if (
         block.attributes !== oldBlocksMap[block.clientId].block.attributes
@@ -36,7 +39,7 @@ export function getBlockVersions(currentVersions, oldBlocks, newBlocks) {
         };
       }
       if (
-        !oldBlocksMap[block.clientId] ||
+        !currentVersions[block.clientId] ||
         block.innerBlocks !== oldBlocksMap[block.clientId].block.innerBlocks
       ) {
         fillVersions(block.innerBlocks);
@@ -51,8 +54,8 @@ export function getBlockVersions(currentVersions, oldBlocks, newBlocks) {
 
 export function getPositionVersions(
   currentVersions,
-  oldBlocks,
-  newBlocks,
+  oldBlocks = [],
+  newBlocks = [],
   parent = ""
 ) {
   if (oldBlocks === newBlocks) {
@@ -302,9 +305,8 @@ export function mergeBlocks(
 export function useSyncEdits(post, onChange, encryptionKey) {
   const socket = io(config.collabServer);
   const identity = useRef(uuidv4());
-  const lastPersisted = useRef();
-
-  const blocks = useRef([]);
+  const lastPersisted = useRef(post);
+  const blocks = useRef(post.blocks);
   const deletedBlocks = useRef({});
   const blockVersions = useRef({});
   const positionVersions = useRef({});
@@ -315,17 +317,33 @@ export function useSyncEdits(post, onChange, encryptionKey) {
     }
     async function emitUpdate() {
       deletedBlocks.current = getDeletedBlocks(blocks.current, post.blocks);
-      blockVersions.current = getBlockVersions(
+      const newBlockVersions = getBlockVersions(
         blockVersions.current,
         blocks.current,
         post.blocks
       );
-      positionVersions.current = getPositionVersions(
+      const newPositionVersions = getPositionVersions(
         positionVersions.current,
         blocks.current,
         post.blocks
       );
+      // This check shouldn't be necessary but it seems a new post instance
+      // is  generated too often.
+      if (
+        isShallowEqualObjects(newBlockVersions, blockVersions.current) &&
+        isShallowEqualObjects(newPositionVersions, positionVersions.current) &&
+        post.title === lastPersisted.current.title
+      ) {
+        blockVersions.current = newBlockVersions;
+        positionVersions.current = newPositionVersions;
+        blocks.current = post.blocks;
+        lastPersisted.current = post;
+        return;
+      }
+      blockVersions.current = newBlockVersions;
+      positionVersions.current = newPositionVersions;
       blocks.current = post.blocks;
+      lastPersisted.current = post;
 
       socket.emit(
         "server-broadcast",
