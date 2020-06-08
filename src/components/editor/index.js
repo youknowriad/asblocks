@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import {
   BlockEditorKeyboardShortcuts,
   BlockEditorProvider,
@@ -40,7 +41,11 @@ export function Editor({ post, encryptionKey }) {
         >
           <div className="editor">
             <div className="editor__main">
-              <div className="editor__header">
+              <div
+                className={classnames("editor__header", {
+                  "is-inspector-opened": isInspectorOpened,
+                })}
+              >
                 <EditorHeader
                   encryptionKey={encryptionKey}
                   post={post}
@@ -64,7 +69,11 @@ export function Editor({ post, encryptionKey }) {
                 <Popover.Slot />
               </div>
 
-              <div className="editor__footer">
+              <div
+                className={classnames("editor__footer", {
+                  "is-inspector-opened": isInspectorOpened,
+                })}
+              >
                 <Footer post={editedPost} encryptionKey={encryptionKey} />
               </div>
             </div>

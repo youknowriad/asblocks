@@ -12,27 +12,32 @@
 }
 
 .editor__header {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   padding: var(--grid-unit);
-  background-color: rgba(255, 255, 255, 0.8);
   z-index: 1;
 }
 
+.editor__header.is-inspector-opened {
+  right: var(--inspector-width);
+}
+
 .editor__footer {
-  position: sticky;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   padding: var(--grid-unit);
 }
 
+.editor__footer.is-inspector-opened {
+  right: var(--inspector-width);
+}
+
 .editor__canvas {
-  /* Remove header and footer from the height */
-  min-height: calc(100% - var(--grid-unit) * 4 - var(--button-height) * 2);
-  box-sizing: border-box;
+  padding-top: var(--grid-unit);
 }
 
 .editor__canvas img {

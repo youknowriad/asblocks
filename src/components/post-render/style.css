@@ -2,7 +2,7 @@
   height: 100%;
 }
 .post-render__header {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -19,13 +19,11 @@
   padding-bottom: var(--grid-unit);
 
   /* Remove header and footer from the height */
-  min-height: calc(100% - var(--grid-unit) * 4 - var(--button-height) * 2);
-  box-sizing: border-box;
-  overflow-y: auto;
+  padding-top: calc(var(--grid-unit) * 3 + var(--button-height));
 }
 
 .post-render__footer {
-  position: sticky;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
