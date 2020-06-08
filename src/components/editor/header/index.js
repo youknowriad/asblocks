@@ -33,13 +33,17 @@ export function EditorHeader({
   return (
     <div className="editor__header-content">
       <div className="editor__header-left">
-        <Logo />
+        <div>
+          <Logo />
+        </div>
 
-        <Inserter
-          position="bottom right"
-          showInserterHelpPanel
-          toggleProps={{ isPrimary: true }}
-        />
+        <div>
+          <Inserter
+            position="bottom right"
+            showInserterHelpPanel
+            toggleProps={{ isPrimary: true }}
+          />
+        </div>
       </div>
       <div className="editor__header-right">
         <div>

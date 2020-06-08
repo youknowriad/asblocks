@@ -4,6 +4,7 @@ import { RouteNew } from "../route-new";
 import { RouteWrite } from "../route-write";
 import { RouteRead } from "../route-read";
 import { clearCache } from "../../lib/data";
+import { LoadingPage } from "../loading-page";
 
 function ClearCacheOnNavigate() {
   const location = useLocation();
@@ -19,7 +20,7 @@ export function App() {
     <Router>
       <ClearCacheOnNavigate />
 
-      <Suspense fallback="loading...">
+      <Suspense fallback={<LoadingPage />}>
         <Route path="/write/:id">
           <RouteWrite />
         </Route>

@@ -32,16 +32,29 @@ export function Footer({ post, encryptionKey, isFront }) {
             }
           />
         </div>
+
+        <div>
+          <Button
+            href="https://github.com/WordPress/gutenberg"
+            label="Powered by Gutenberg"
+            style={{ fontSize: "1.3em" }}
+            showTooltip
+          >
+            G
+          </Button>
+        </div>
       </div>
 
-      <div className="footer__right">
-        {!isFront && post.status !== "auto-draft" && (
-          <ViewButton post={post} encryptionKey={encryptionKey} />
-        )}
-        {isFront && post.status !== "auto-draft" && (
-          <EditButton post={post} encryptionKey={encryptionKey} />
-        )}
-      </div>
+      {post && (
+        <div className="footer__right">
+          {!isFront && post.status !== "auto-draft" && (
+            <ViewButton post={post} encryptionKey={encryptionKey} />
+          )}
+          {isFront && post.status !== "auto-draft" && (
+            <EditButton post={post} encryptionKey={encryptionKey} />
+          )}
+        </div>
+      )}
     </div>
   );
 }

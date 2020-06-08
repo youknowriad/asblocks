@@ -17,8 +17,6 @@
   font-family: var(--editor-font);
   font-size: var(--editor-font-size);
   padding-bottom: var(--grid-unit);
-
-  /* Remove header and footer from the height */
   padding-top: calc(var(--grid-unit) * 3 + var(--button-height));
 }
 

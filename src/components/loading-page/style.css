@@ -1,0 +1,26 @@
+.loading-page {
+  height: 100%;
+}
+
+.loading-page__header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--grid-unit);
+}
+
+.loading-page__footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--grid-unit);
+}
+
+.loading-page__indicator {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

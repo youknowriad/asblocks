@@ -37,7 +37,7 @@
 }
 
 .editor__canvas {
-  padding-top: var(--grid-unit);
+  padding-top: calc(var(--grid-unit) * 3 + var(--button-height));
 }
 
 .editor__canvas img {
