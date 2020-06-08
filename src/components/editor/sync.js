@@ -310,10 +310,11 @@ export function useSyncEdits(post, onChange, encryptionKey) {
   const deletedBlocks = useRef({});
   const blockVersions = useRef({});
   const positionVersions = useRef({});
+  const isInitialized = useRef(false);
   const [peers, setPeers] = useState([]);
 
   useEffect(() => {
-    if (post === lastPersisted.current) {
+    if (post === lastPersisted.current || !isInitialized.current) {
       return;
     }
     async function emitUpdate() {
@@ -370,16 +371,49 @@ export function useSyncEdits(post, onChange, encryptionKey) {
     if (!post._id) {
       return;
     }
-    socket.emit("join-room", post._id);
 
+    // Join the room on init
+    socket.on("init-room", () => {
+      socket.emit("join-room", post._id);
+    });
+
+    // Mark the scene as ready
+    socket.on("first-in-room", () => {
+      isInitialized.current = true;
+      socket.off("first-in-room");
+    });
+
+    // When a new user connects to the room, send the current post.
+    socket.on("new-user", async () => {
+      socket.emit(
+        "server-broadcast",
+        post._id,
+        await encrypt(
+          {
+            type: "init",
+            post: lastPersisted.current,
+            positionVersions: positionVersions.current,
+            blockVersions: blockVersions.current,
+            deletedBlocks: deletedBlocks.current,
+            identity: identity.current,
+          },
+          encryptionKey
+        )
+      );
+    });
+
+    // A message has been received
     socket.on("client-broadcast", async (msg) => {
       const action = await decrypt(msg, encryptionKey);
+
+      // Ignore self messages
       if (action.identity === identity.current) {
         return;
       }
 
       switch (action.type) {
-        case "update":
+        // Update content
+        case "update": {
           const mergedDeletedBlocks = {
             ...deletedBlocks.current,
             ...action.deletedBlocks,
@@ -410,6 +444,20 @@ export function useSyncEdits(post, onChange, encryptionKey) {
 
           onChange(lastPersisted.current);
           break;
+        }
+
+        case "init": {
+          if (isInitialized.current) {
+            return;
+          }
+          isInitialized.current = true;
+          deletedBlocks.current = action.deletedBlocks;
+          blockVersions.current = action.blockVersions;
+          positionVersions.current = action.positionVersions;
+          blocks.current = action.post.blocks;
+          lastPersisted.current = action.post;
+          onChange(lastPersisted.current);
+        }
       }
     });
 
