@@ -17,6 +17,7 @@ export const newPost = wrapFetch(async () => {
   if (!!snapshot.docs?.length) {
     return {
       _id: snapshot.docs[0].id,
+      status: "auto-draft",
     };
   }
 
@@ -26,6 +27,7 @@ export const newPost = wrapFetch(async () => {
   const doc = await db.collection("posts").add(newPost);
   return {
     _id: doc.id,
+    status: "auto-draft",
   };
 });
 
@@ -45,6 +47,7 @@ export const fetchPost = wrapFetch(async (id, encryptionKey) => {
   const { encrypted } = snapshot.data();
   return {
     _id: snapshot.id,
+    status: "publish",
     ...(await decrypt(encrypted, encryptionKey)),
   };
 });
