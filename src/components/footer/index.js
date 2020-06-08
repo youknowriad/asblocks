@@ -13,7 +13,7 @@ export function Footer({ post, encryptionKey, isFront }) {
             className="footer__e2e"
             href="https://en.wikipedia.org/wiki/End-to-end_encryption"
             icon={check}
-            label="Your posts are end 2 end encrypted. AsBlocks server can't access them."
+            label="Your posts are end-to-end encrypted. AsBlocks server can't access them."
           />
         </div>
 

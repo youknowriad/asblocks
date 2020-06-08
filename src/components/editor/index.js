@@ -20,6 +20,7 @@ import { useSyncEdits } from "./sync";
 import "./style.css";
 
 export function Editor({ post, encryptionKey }) {
+  const [persistedPost, setPersistedPost] = useState(post);
   const [editedPost, setEditedPost] = useState(post);
   const [isInspectorOpened, setIsInspectorOpened] = useState(false);
   const peers = useSyncEdits(editedPost, setEditedPost, encryptionKey);
@@ -48,11 +49,19 @@ export function Editor({ post, encryptionKey }) {
               >
                 <EditorHeader
                   encryptionKey={encryptionKey}
-                  post={post}
+                  persistedPost={persistedPost}
                   editedPost={editedPost}
                   peers={peers}
                   isInspectorOpened={isInspectorOpened}
                   onOpenInspector={() => setIsInspectorOpened(true)}
+                  onPersist={(newPersistedPost) => {
+                    setPersistedPost(newPersistedPost);
+                    setEditedPost({
+                      ...editedPost,
+                      _id: newPersistedPost._id,
+                      status: newPersistedPost.status,
+                    });
+                  }}
                 />
               </div>
               <Popover.Slot name="block-toolbar" />
@@ -75,7 +84,7 @@ export function Editor({ post, encryptionKey }) {
                   "is-inspector-opened": isInspectorOpened,
                 })}
               >
-                <Footer post={editedPost} encryptionKey={encryptionKey} />
+                <Footer post={persistedPost} encryptionKey={encryptionKey} />
               </div>
             </div>
             {isInspectorOpened && (

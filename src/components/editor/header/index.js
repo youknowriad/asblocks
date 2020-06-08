@@ -2,33 +2,44 @@ import { Inserter } from "@wordpress/block-editor";
 import { Button } from "@wordpress/components";
 import { useState } from "@wordpress/element";
 import { cog } from "@wordpress/icons";
+import { ShareModal } from "../share-modal";
 import { Logo } from "../../logo";
 import { useMutation } from "../../../lib/data";
-import { savePost } from "../../../api/posts";
+import { savePost, sharePost } from "../../../api/posts";
 import "./style.css";
 import { keyToString } from "../../../lib/crypto";
 
 export function EditorHeader({
-  post,
+  persistedPost,
   editedPost,
   peers,
   isInspectorOpened,
   onOpenInspector,
   encryptionKey,
+  onPersist,
 }) {
-  const { mutate, loading: isSaving } = useMutation(savePost);
-  const [persistedPost, setPersistedPost] = useState(post);
+  const [isShareModalOpened, setIsShareModalOpened] = useState(false);
+  const { mutate: mutateShare, loading: isSharing } = useMutation(sharePost);
+  const { mutate: mutateSave, loading: isSaving } = useMutation(savePost);
+
+  const isShared = persistedPost.status === "publish";
   const isDirty = editedPost !== persistedPost;
 
   const triggerSave = async () => {
-    await mutate(editedPost, encryptionKey);
+    const { data: persisted } = await mutateSave(editedPost, encryptionKey);
+    onPersist(persisted);
+  };
+
+  const triggerShare = async () => {
+    const { data: persisted } = await mutateShare();
     const stringKey = await keyToString(encryptionKey);
-    setPersistedPost(editedPost);
+    onPersist(persisted);
     window.history.replaceState(
-      { id: post._id },
-      "Post " + post._id,
-      "/write/" + post._id + "#key=" + stringKey
+      { id: persisted._id },
+      "Post " + persisted._id,
+      "/write/" + persisted._id + "#key=" + stringKey
     );
+    setIsShareModalOpened(true);
   };
 
   return (
@@ -54,12 +65,12 @@ export function EditorHeader({
         )}
         <div>
           <Button
-            onClick={triggerSave}
-            disabled={!isDirty || isSaving}
-            isBusy={isSaving}
+            onClick={isShared ? triggerSave : triggerShare}
+            disabled={!isDirty || isSaving || isSharing}
+            isBusy={isSaving || isSharing}
             isPrimary
           >
-            Save
+            {isShared ? "Save" : "Share"}
           </Button>
         </div>
 
@@ -73,6 +84,10 @@ export function EditorHeader({
           </div>
         )}
       </div>
+
+      {isShareModalOpened && (
+        <ShareModal onClose={() => setIsShareModalOpened(false)} />
+      )}
     </div>
   );
 }

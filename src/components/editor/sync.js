@@ -367,6 +367,9 @@ export function useSyncEdits(post, onChange, encryptionKey) {
   }, [post]);
 
   useEffect(() => {
+    if (!post._id) {
+      return;
+    }
     socket.emit("join-room", post._id);
 
     socket.on("client-broadcast", async (msg) => {
@@ -413,7 +416,7 @@ export function useSyncEdits(post, onChange, encryptionKey) {
     socket.on("room-user-change", (newPeers) => {
       setPeers(newPeers);
     });
-  }, []);
+  }, [post._id]);
 
   return peers;
 }
