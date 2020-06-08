@@ -303,7 +303,6 @@ export function mergeBlocks(
 }
 
 export function useSyncEdits(post, onChange, encryptionKey) {
-  const socket = io(config.collabServer);
   const identity = useRef(uuidv4());
   const lastPersisted = useRef(post);
   const blocks = useRef(post.blocks);
@@ -311,10 +310,15 @@ export function useSyncEdits(post, onChange, encryptionKey) {
   const blockVersions = useRef({});
   const positionVersions = useRef({});
   const isInitialized = useRef(false);
+  const socket = useRef();
   const [peers, setPeers] = useState([]);
 
   useEffect(() => {
-    if (post === lastPersisted.current || !isInitialized.current) {
+    if (
+      post === lastPersisted.current ||
+      !isInitialized.current ||
+      !socket.current
+    ) {
       return;
     }
     async function emitUpdate() {
@@ -347,7 +351,7 @@ export function useSyncEdits(post, onChange, encryptionKey) {
       blocks.current = post.blocks;
       lastPersisted.current = post;
 
-      socket.emit(
+      socket.current.emit(
         "server-volatile-broadcast",
         post._id,
         await encrypt(
@@ -372,20 +376,22 @@ export function useSyncEdits(post, onChange, encryptionKey) {
       return;
     }
 
+    socket.current = io(config.collabServer);
+
     // Join the room on init
-    socket.on("init-room", () => {
-      socket.emit("join-room", post._id);
+    socket.current.on("init-room", () => {
+      socket.current.emit("join-room", post._id);
     });
 
     // Mark the scene as ready
-    socket.on("first-in-room", () => {
+    socket.current.on("first-in-room", () => {
       isInitialized.current = true;
-      socket.off("first-in-room");
+      socket.current.off("first-in-room");
     });
 
     // When a new user connects to the room, send the current post.
-    socket.on("new-user", async () => {
-      socket.emit(
+    socket.current.on("new-user", async () => {
+      socket.current.emit(
         "server-broadcast",
         post._id,
         await encrypt(
@@ -403,7 +409,7 @@ export function useSyncEdits(post, onChange, encryptionKey) {
     });
 
     // A message has been received
-    socket.on("client-broadcast", async (msg) => {
+    socket.current.on("client-broadcast", async (msg) => {
       const action = await decrypt(msg, encryptionKey);
 
       // Ignore self messages
@@ -461,9 +467,14 @@ export function useSyncEdits(post, onChange, encryptionKey) {
       }
     });
 
-    socket.on("room-user-change", (newPeers) => {
+    socket.current.on("room-user-change", (newPeers) => {
       setPeers(newPeers);
     });
+
+    return () => {
+      socket.current.close();
+      socket.current = null;
+    };
   }, [post._id]);
 
   return peers;

@@ -13,7 +13,7 @@ export function PostRender({ post, encryptionKey }) {
       <div className="post-render__main editor-styles-wrapper">
         <h1>{post.title}</h1>
         <div>
-          <RawHTML>{serialize(post.blocks)}</RawHTML>
+          <RawHTML>{post.blocks ? serialize(post.blocks) : ""}</RawHTML>
         </div>
       </div>
       <div className="post-render__footer">
