@@ -2,7 +2,7 @@ import {
   isShallowEqualArrays,
   isShallowEqualObjects,
 } from "@wordpress/is-shallow-equal";
-import { useEffect, useRef } from "@wordpress/element";
+import { useEffect, useRef, useState } from "@wordpress/element";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { encrypt, decrypt } from "../../lib/crypto";
@@ -310,6 +310,7 @@ export function useSyncEdits(post, onChange, encryptionKey) {
   const deletedBlocks = useRef({});
   const blockVersions = useRef({});
   const positionVersions = useRef({});
+  const [peers, setPeers] = useState([]);
 
   useEffect(() => {
     if (post === lastPersisted.current) {
@@ -346,7 +347,7 @@ export function useSyncEdits(post, onChange, encryptionKey) {
       lastPersisted.current = post;
 
       socket.emit(
-        "server-broadcast",
+        "server-volatile-broadcast",
         post._id,
         await encrypt(
           {
@@ -367,6 +368,7 @@ export function useSyncEdits(post, onChange, encryptionKey) {
 
   useEffect(() => {
     socket.emit("join-room", post._id);
+
     socket.on("client-broadcast", async (msg) => {
       const action = await decrypt(msg, encryptionKey);
       if (action.identity === identity.current) {
@@ -407,5 +409,11 @@ export function useSyncEdits(post, onChange, encryptionKey) {
           break;
       }
     });
+
+    socket.on("room-user-change", (newPeers) => {
+      setPeers(newPeers);
+    });
   }, []);
+
+  return peers;
 }

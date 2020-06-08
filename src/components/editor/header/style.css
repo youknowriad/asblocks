@@ -20,3 +20,8 @@
 .editor__header-right > * {
   padding-left: calc(var(--grid-unit) / 2);
 }
+
+.editor__header-peers {
+  padding: calc(var(--grid-unit) / 2);
+  font-size: 0.9em;
+}

@@ -11,6 +11,7 @@ import { keyToString } from "../../../lib/crypto";
 export function EditorHeader({
   post,
   editedPost,
+  peers,
   isInspectorOpened,
   onOpenInspector,
   encryptionKey,
@@ -46,6 +47,11 @@ export function EditorHeader({
         </div>
       </div>
       <div className="editor__header-right">
+        {peers.length > 1 && (
+          <div className="editor__header-peers">
+            <strong>{peers.length}</strong> connected peers
+          </div>
+        )}
         <div>
           <Button
             onClick={triggerSave}

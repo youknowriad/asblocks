@@ -22,7 +22,7 @@ import "./style.css";
 export function Editor({ post, encryptionKey }) {
   const [editedPost, setEditedPost] = useState(post);
   const [isInspectorOpened, setIsInspectorOpened] = useState(false);
-  useSyncEdits(editedPost, setEditedPost, encryptionKey);
+  const peers = useSyncEdits(editedPost, setEditedPost, encryptionKey);
 
   const getPropertyChangeHandler = (property) => (value) => {
     setEditedPost({
@@ -50,6 +50,7 @@ export function Editor({ post, encryptionKey }) {
                   encryptionKey={encryptionKey}
                   post={post}
                   editedPost={editedPost}
+                  peers={peers}
                   isInspectorOpened={isInspectorOpened}
                   onOpenInspector={() => setIsInspectorOpened(true)}
                 />
