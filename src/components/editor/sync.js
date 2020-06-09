@@ -313,15 +313,15 @@ export function useSyncEdits(post, onChange, encryptionKey) {
   const socket = useRef();
   const [peers, setPeers] = useState([]);
 
+  // Update data
+  useEffect(() => {}, [post]);
+
   useEffect(() => {
-    if (
-      post === lastPersisted.current ||
-      !isInitialized.current ||
-      !socket.current
-    ) {
-      return;
-    }
-    async function emitUpdate() {
+    const updateBlockData = () => {
+      if (post === lastPersisted.current) {
+        return false;
+      }
+
       deletedBlocks.current = getDeletedBlocks(blocks.current, post.blocks);
       const newBlockVersions = getBlockVersions(
         blockVersions.current,
@@ -344,13 +344,17 @@ export function useSyncEdits(post, onChange, encryptionKey) {
         positionVersions.current = newPositionVersions;
         blocks.current = post.blocks;
         lastPersisted.current = post;
-        return;
+        return false;
       }
       blockVersions.current = newBlockVersions;
       positionVersions.current = newPositionVersions;
       blocks.current = post.blocks;
       lastPersisted.current = post;
 
+      return true;
+    };
+
+    async function emitUpdate() {
       socket.current.emit(
         "server-volatile-broadcast",
         post._id,
@@ -366,6 +370,12 @@ export function useSyncEdits(post, onChange, encryptionKey) {
           encryptionKey
         )
       );
+    }
+
+    const hasChanges = updateBlockData();
+
+    if (!isInitialized.current || !socket.current || !hasChanges) {
+      return;
     }
 
     emitUpdate();
@@ -462,6 +472,7 @@ export function useSyncEdits(post, onChange, encryptionKey) {
           positionVersions.current = action.positionVersions;
           blocks.current = action.post.blocks;
           lastPersisted.current = action.post;
+
           onChange(lastPersisted.current);
         }
       }
