@@ -21,8 +21,12 @@ export function App() {
       <ClearCacheOnNavigate />
 
       <Suspense fallback={<LoadingPage />}>
-        <Route path="/write/:id">
+        <Route path="/write/:id/:ownerKey">
           <RouteWrite />
+        </Route>
+
+        <Route path="/write/:id">
+          <RouteRead />
         </Route>
 
         <Route path="/read/:id">

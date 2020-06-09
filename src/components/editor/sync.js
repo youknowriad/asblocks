@@ -302,7 +302,7 @@ export function mergeBlocks(
   }
 }
 
-export function useSyncEdits(post, onChange, encryptionKey) {
+export function useSyncEdits(post, onChange, encryptionKey, ownerKey) {
   const identity = useRef(uuidv4());
   const lastPersisted = useRef(post);
   const blocks = useRef(post.blocks);
@@ -355,10 +355,8 @@ export function useSyncEdits(post, onChange, encryptionKey) {
     };
 
     async function emitUpdate() {
-      socket.current.emit(
-        "server-volatile-broadcast",
-        post._id,
-        await encrypt(
+      socket.current.emit("server-volatile-broadcast", post._id, {
+        action: await encrypt(
           {
             type: "update",
             post,
@@ -368,8 +366,9 @@ export function useSyncEdits(post, onChange, encryptionKey) {
             identity: identity.current,
           },
           encryptionKey
-        )
-      );
+        ),
+        ownerKey,
+      });
     }
 
     const hasChanges = updateBlockData();
@@ -401,10 +400,8 @@ export function useSyncEdits(post, onChange, encryptionKey) {
 
     // When a new user connects to the room, send the current post.
     socket.current.on("new-user", async () => {
-      socket.current.emit(
-        "server-broadcast",
-        post._id,
-        await encrypt(
+      socket.current.emit("server-broadcast", post._id, {
+        action: await encrypt(
           {
             type: "init",
             post: lastPersisted.current,
@@ -414,8 +411,9 @@ export function useSyncEdits(post, onChange, encryptionKey) {
             identity: identity.current,
           },
           encryptionKey
-        )
-      );
+        ),
+        ownerKey,
+      });
     });
 
     // A message has been received

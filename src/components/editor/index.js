@@ -19,11 +19,16 @@ import { Inspector } from "./inspector";
 import { useSyncEdits } from "./sync";
 import "./style.css";
 
-export function Editor({ post, encryptionKey }) {
+export function Editor({ post, encryptionKey, ownerKey }) {
   const [persistedPost, setPersistedPost] = useState(post);
   const [editedPost, setEditedPost] = useState(post);
   const [isInspectorOpened, setIsInspectorOpened] = useState(false);
-  const peers = useSyncEdits(editedPost, setEditedPost, encryptionKey);
+  const peers = useSyncEdits(
+    editedPost,
+    setEditedPost,
+    encryptionKey,
+    ownerKey
+  );
 
   const getPropertyChangeHandler = (property) => (value) => {
     setEditedPost({
@@ -49,6 +54,7 @@ export function Editor({ post, encryptionKey }) {
               >
                 <EditorHeader
                   encryptionKey={encryptionKey}
+                  ownerKey={ownerKey}
                   persistedPost={persistedPost}
                   editedPost={editedPost}
                   peers={peers}

@@ -3,8 +3,13 @@ import { Icon, check, info } from "@wordpress/icons";
 import { useState } from "@wordpress/element";
 import "./style.css";
 
-export function ShareModal({ onClose }) {
-  const [isCopied, setIsCopied] = useState(false);
+export function ShareModal({ onClose, post, ownerKey, stringKey }) {
+  const [isCopiedEdit, setIsCopiedEdit] = useState(false);
+  const [isCopiedRead, setIsCopiedRead] = useState(false);
+
+  const editURL = `${location.origin}/write/${post._id}/${ownerKey}#${stringKey}`;
+  const readURL = `${location.origin}/read/${post._id}#${stringKey}`;
+
   return (
     <Modal title="Post Shared Successfully!" onRequestClose={onClose}>
       <p>
@@ -12,14 +17,30 @@ export function ShareModal({ onClose }) {
         page with your collaborators.
       </p>
       <div className="editor-share-modal__copy">
-        <input type="text" readOnly value={location.href} />
+        <input type="text" readOnly value={editURL} />
         <ClipboardButton
           isPrimary
-          text={location.href}
-          onCopy={() => setIsCopied(true)}
-          onFinishCopy={() => setIsCopied(false)}
+          text={editURL}
+          onCopy={() => setIsCopiedEdit(true)}
+          onFinishCopy={() => setIsCopiedEdit(false)}
         >
-          {isCopied ? "Copied!" : "Copy"}
+          {isCopiedEdit ? "Copied!" : "Copy"}
+        </ClipboardButton>
+      </div>
+
+      <p>
+        The following link is a read-only link where people will be able to read
+        the persisted document without edit capabilities.
+      </p>
+      <div className="editor-share-modal__copy">
+        <input type="text" readOnly value={readURL} />
+        <ClipboardButton
+          isPrimary
+          text={readURL}
+          onCopy={() => setIsCopiedRead(true)}
+          onFinishCopy={() => setIsCopiedRead(false)}
+        >
+          {isCopiedRead ? "Copied!" : "Copy"}
         </ClipboardButton>
       </div>
 

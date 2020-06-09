@@ -7,11 +7,11 @@ function wrapFetch(fetch) {
   };
 }
 
-export const savePost = wrapFetch(async (post, encryptionKey) => {
+export const savePost = wrapFetch(async (post, encryptionKey, ownerKey) => {
   const { _id, status, ...data } = post;
   const encrypted = await encrypt(data, encryptionKey);
   await window
-    .fetch(config.collabServer + "/api/save/" + _id + "/random", {
+    .fetch(config.collabServer + "/api/save/" + _id + "/" + ownerKey, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -23,9 +23,9 @@ export const savePost = wrapFetch(async (post, encryptionKey) => {
   return { ...post, status: "publish" };
 });
 
-export const sharePost = wrapFetch(async () => {
+export const sharePost = wrapFetch(async (ownerKey) => {
   const persisted = await window
-    .fetch(config.collabServer + "/api/share", {
+    .fetch(config.collabServer + "/api/share/" + ownerKey, {
       method: "POST",
     })
     .then((response) => response.json());
@@ -37,6 +37,7 @@ export const fetchPost = wrapFetch(async (id, encryptionKey) => {
   const { encrypted, status } = await window
     .fetch(config.collabServer + "/api/read/" + id)
     .then((response) => response.json());
+
   return {
     _id: id,
     status,

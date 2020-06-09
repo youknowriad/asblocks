@@ -1,7 +1,5 @@
 import { Button } from "@wordpress/components";
 import { check } from "@wordpress/icons";
-import { ViewButton } from "../view-button";
-import { EditButton } from "../edit-button";
 import "./style.css";
 
 export function Footer({ post, encryptionKey, isFront }) {
@@ -44,17 +42,6 @@ export function Footer({ post, encryptionKey, isFront }) {
           </Button>
         </div>
       </div>
-
-      {post && (
-        <div className="footer__right">
-          {!isFront && post.status !== "auto-draft" && (
-            <ViewButton post={post} encryptionKey={encryptionKey} />
-          )}
-          {isFront && post.status !== "auto-draft" && (
-            <EditButton post={post} encryptionKey={encryptionKey} />
-          )}
-        </div>
-      )}
     </div>
   );
 }
