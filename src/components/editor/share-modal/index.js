@@ -7,8 +7,8 @@ export function ShareModal({ onClose, post, ownerKey, stringKey }) {
   const [isCopiedEdit, setIsCopiedEdit] = useState(false);
   const [isCopiedRead, setIsCopiedRead] = useState(false);
 
-  const editURL = `${location.origin}/write/${post._id}/${ownerKey}#${stringKey}`;
-  const readURL = `${location.origin}/read/${post._id}#${stringKey}`;
+  const editURL = `${location.origin}/write/${post._id}/${ownerKey}#key=${stringKey}`;
+  const readURL = `${location.origin}/read/${post._id}#key=${stringKey}`;
 
   return (
     <Modal title="Post Shared Successfully!" onRequestClose={onClose}>
