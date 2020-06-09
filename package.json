@@ -17,7 +17,6 @@
     "@wordpress/format-library": "^1.19.0",
     "@wordpress/notices": "^2.5.0",
     "easy-web-crypto": "^1.1.1",
-    "firebase": "^7.14.5",
     "react-promise-suspense": "^0.3.3",
     "react-router-dom": "^5.2.0",
     "socket.io-client": "^2.3.0",

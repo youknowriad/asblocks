@@ -16,43 +16,8 @@ jobs:
 
       - name: Copy sample config
         run: cp src/config/index.sample.js src/config/index.js
-      - name: Replace secrets 1
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: FIREBASE_API_KEY
-          secret-value: ${{ secrets.FIREBASE_API_KEY }}
-      - name: Replace secrets 2
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: FIREBASE_DATABASE_URL
-          secret-value: ${{ secrets.FIREBASE_DATABASE_URL }}
-      - name: Replace secrets 3
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: FIREBASE_PROJECT_ID
-          secret-value: ${{ secrets.FIREBASE_PROJECT_ID }}
-      - name: Replace secrets 4
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: FIREBASE_MESSAGING_SENDER_ID
-          secret-value: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-      - name: Replace secrets 5
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: FIREBASE_APP_ID
-          secret-value: ${{ secrets.FIREBASE_APP_ID }}
-      - name: Replace secrets 6
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: FIREBASE_MEASUREMENT_ID
-          secret-value: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-      - name: Replace secrets 7
+
+      - name: Replace secrets
         uses: jwsi/secret-parser@v1
         with:
           filename: src/config/index.js

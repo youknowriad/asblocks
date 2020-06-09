@@ -1,5 +1,5 @@
-import { api } from "./index";
 import { encrypt, decrypt } from "../lib/crypto";
+import { config } from "../config/index";
 
 function wrapFetch(fetch) {
   return {
@@ -8,34 +8,37 @@ function wrapFetch(fetch) {
 }
 
 export const savePost = wrapFetch(async (post, encryptionKey) => {
-  const db = api.firestore();
   const { _id, status, ...data } = post;
   const encrypted = await encrypt(data, encryptionKey);
-  await db.collection("posts").doc(_id).set({
-    encrypted,
-    status: "publish",
-  });
+  await window
+    .fetch(config.collabServer + "/api/save/" + _id + "/random", {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ encrypted }),
+    })
+    .then((response) => response.json());
   return { ...post, status: "publish" };
 });
 
 export const sharePost = wrapFetch(async () => {
-  const db = api.firestore();
-  const doc = await db.collection("posts").add({
-    status: "publish",
-  });
+  const persisted = await window
+    .fetch(config.collabServer + "/api/share", {
+      method: "POST",
+    })
+    .then((response) => response.json());
 
-  return {
-    _id: doc.id,
-    status: "publish",
-  };
+  return persisted;
 });
 
 export const fetchPost = wrapFetch(async (id, encryptionKey) => {
-  const db = api.firestore();
-  const snapshot = await db.collection("posts").doc(id).get();
-  const { encrypted, status } = snapshot.data();
+  const { encrypted, status } = await window
+    .fetch(config.collabServer + "/api/read/" + id)
+    .then((response) => response.json());
   return {
-    _id: snapshot.id,
+    _id: id,
     status,
     ...(encrypted ? await decrypt(encrypted, encryptionKey) : {}),
   };
