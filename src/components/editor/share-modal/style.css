@@ -1,3 +1,10 @@
+.editor-share-modal__links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: calc(var(--grid-unit) * 2);
+  align-items: top;
+}
+
 .editor-share-modal__copy {
   display: flex;
   align-items: stretch;
@@ -13,9 +20,15 @@
   box-shadow: none;
 }
 
+.editor-share-modal__footer {
+  margin-top: calc(var(--grid-unit) * 2);
+  border-top: 1px solid #e4e4e4;
+  padding: var(--grid-unit) 0;
+}
+
 .editor-share-modal__info {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-top: var(--grid-unit);
 }
 

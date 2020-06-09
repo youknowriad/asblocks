@@ -18,6 +18,12 @@
   right: 0;
   padding: var(--grid-unit);
   z-index: 1;
+  pointer-events: none;
+}
+
+.editor__header button,
+.editor__header a {
+  pointer-events: all;
 }
 
 .editor__header.is-inspector-opened {
@@ -30,6 +36,13 @@
   left: 0;
   right: 0;
   padding: var(--grid-unit);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.editor__footer button,
+.editor__footer a {
+  pointer-events: all;
 }
 
 .editor__footer.is-inspector-opened {
@@ -56,4 +69,5 @@
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   overflow: auto;
+  z-index: 1;
 }

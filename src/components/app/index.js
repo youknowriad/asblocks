@@ -25,10 +25,6 @@ export function App() {
           <RouteWrite />
         </Route>
 
-        <Route path="/write/:id">
-          <RouteRead />
-        </Route>
-
         <Route path="/read/:id">
           <RouteRead />
         </Route>

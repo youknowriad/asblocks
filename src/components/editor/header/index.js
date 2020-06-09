@@ -1,7 +1,7 @@
 import { Inserter } from "@wordpress/block-editor";
 import { Button } from "@wordpress/components";
 import { useState } from "@wordpress/element";
-import { cog } from "@wordpress/icons";
+import { cog, share } from "@wordpress/icons";
 import usePromise from "react-promise-suspense";
 import { ShareModal } from "../share-modal";
 import { Logo } from "../../logo";
@@ -80,6 +80,16 @@ export function EditorHeader({
             {isShared ? "Save" : "Share"}
           </Button>
         </div>
+
+        {isShared && (
+          <div>
+            <Button
+              icon={share}
+              label="Show sharing information"
+              onClick={() => setIsShareModalOpened(true)}
+            />
+          </div>
+        )}
 
         {!isInspectorOpened && (
           <div>
