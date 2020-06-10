@@ -1,7 +1,11 @@
 import WebCrypto from 'easy-web-crypto';
 
 export async function generateKey() {
-	return await WebCrypto.genAESKey();
+	const encryptionKey = await WebCrypto.genAESKey();
+	return {
+		encryptionKey,
+		encryptionKeyString: await keyToString( encryptionKey ),
+	};
 }
 
 export async function keyToString( key ) {

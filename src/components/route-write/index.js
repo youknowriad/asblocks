@@ -14,6 +14,7 @@ export function RouteWrite() {
 		<Editor
 			post={ post }
 			encryptionKey={ encryptionKey }
+			encryptionKeyString={ stringKey }
 			ownerKey={ ownerKey }
 		/>
 	);

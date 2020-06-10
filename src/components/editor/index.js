@@ -15,21 +15,25 @@ import { useState } from '@wordpress/element';
 import { EditorHeader } from './header';
 import { PostTitleEditor } from './post-title-editor';
 import { Inspector } from './inspector';
-import { useSyncEdits } from './sync';
+import { useSyncEdits } from './sync/index';
 import './style.css';
 
-export function Editor( { post, encryptionKey, ownerKey } ) {
+export function Editor( {
+	post,
+	encryptionKey,
+	encryptionKeyString,
+	ownerKey,
+} ) {
 	const [ persistedPost, setPersistedPost ] = useState( post );
 	const [ editedPost, setEditedPost ] = useState( post );
 	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
-	const peers = useSyncEdits(
-		editedPost,
-		setEditedPost,
-		encryptionKey,
-		ownerKey
+	const { blocks, setBlocks, peers } = useSyncEdits(
+		ownerKey,
+		encryptionKeyString
 	);
 
 	const getPropertyChangeHandler = ( property ) => ( value ) => {
+		if ( property === 'blocks' ) setBlocks( value );
 		setEditedPost( {
 			...editedPost,
 			[ property ]: value,
@@ -40,7 +44,7 @@ export function Editor( { post, encryptionKey, ownerKey } ) {
 		<SlotFillProvider>
 			<DropZoneProvider>
 				<BlockEditorProvider
-					value={ editedPost.blocks || [] }
+					value={ blocks }
 					onInput={ getPropertyChangeHandler( 'blocks' ) }
 					onChange={ getPropertyChangeHandler( 'blocks' ) }
 				>

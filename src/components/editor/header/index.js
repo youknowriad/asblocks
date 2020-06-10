@@ -67,7 +67,7 @@ export function EditorHeader( {
 				</div>
 			</div>
 			<div className="editor__header-right">
-				{ peers.length > 1 && (
+				{ peers.length > 0 && (
 					<div className="editor__header-peers">
 						<strong>{ peers.length }</strong> connected peers
 					</div>
