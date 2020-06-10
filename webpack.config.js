@@ -18,7 +18,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title: "AsBlocks",
+      title: "AsBlocks, encrypted collaborative writing environment",
     }),
   ],
   module: {

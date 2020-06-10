@@ -52,3 +52,7 @@
   overflow: auto;
   z-index: 1;
 }
+
+.components-base-control.components-base-control {
+  font-family: var(--default-font-family);
+}

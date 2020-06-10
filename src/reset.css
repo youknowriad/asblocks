@@ -1,12 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,600;0,700;1,400&display=swap");
 
 :root {
-  --default-font: "Open Sans", sans-serif;
-  --editor-font: "Libre Baskerville", serif;
-  --default-font-size: 13px;
+  --default-font: "Cabin", sans-serif;
+  --editor-font: "Cabin", sans-serif;
+  --default-font-size: 14px;
   --default-line-height: 1.9em;
-  --editor-font-size: 20px;
+  --editor-font-size: 18px;
   --inspector-width: 300px;
   --grid-unit: 16px;
   --border-radius: 2px;
@@ -25,10 +24,15 @@ body {
   height: 100%;
   font-weight: 400;
   line-height: var(--default-line-height);
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
   height: 100%;
+}
+
+a {
+  color: rgb(0, 124, 186);
 }
 
 a,
@@ -49,42 +53,35 @@ fieldset {
 
 h1 {
   font-size: 2em;
-  font-weight: 300;
   margin-top: 0;
 }
 
 h2 {
   font-size: 1.5em;
-  font-weight: 300;
   margin-top: 0;
 }
 
 h3 {
   font-size: 1.17em;
-  font-weight: 300;
   margin-top: 0;
 }
 
 h4 {
   font-size: 1em;
-  font-weight: 300;
   margin-top: 0;
 }
 
 h5 {
   font-size: 0.83em;
-  font-weight: 300;
   margin-top: 0;
 }
 
 h6 {
   font-size: 0.67em;
-  font-weight: 300;
   margin-top: 0;
 }
 
 .components-modal__header .components-modal__header-heading {
   font-size: 1.5em;
-  font-weight: 300;
   margin-top: 0;
 }
