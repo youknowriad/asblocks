@@ -43,8 +43,12 @@
 }
 
 .editor__sidebar {
-  width: var(--inspector-width);
-  border-left: 1px solid #eee;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
   height: auto;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -54,6 +58,15 @@
   /* Prevent dark mode because Gutenberg UI doesn't support it well */
   background: white;
   color: black;
+}
+
+@media (min-width: 800px) {
+  .editor__sidebar {
+    position: unset;
+    width: var(--inspector-width);
+    border-left: 1px solid #eee;
+    flex-shrink: 0;
+  }
 }
 
 .editor__post-title-wrapper {
