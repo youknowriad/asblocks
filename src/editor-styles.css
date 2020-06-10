@@ -15,6 +15,13 @@
   padding: 0;
 }
 
+.editor-styles-wrapper ul ul,
+.editor-styles-wrapper ol ol,
+.editor-styles-wrapper ul ol,
+.editor-styles-wrapper ol ul {
+  padding-left: 2em;
+}
+
 .editor-styles-wrapper ul li,
 .editor-styles-wrapper ol li {
   margin-bottom: initial;
