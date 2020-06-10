@@ -6,7 +6,6 @@
 .editor__main {
   position: relative;
   flex-grow: 1;
-  flex-shrink: 0;
   height: 100%;
   overflow: auto;
 }
@@ -55,6 +54,20 @@
   /* Prevent dark mode because Gutenberg UI doesn't support it well */
   background: white;
   color: black;
+}
+
+.editor__post-title-wrapper {
+  /* Match the block editor wrapper */
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+@media (min-width: 600px) {
+  .editor__post-title-wrapper {
+    /* Match the block editor wrapper */
+    padding-left: 36px;
+    padding-right: 36px;
+  }
 }
 
 .components-base-control.components-base-control {

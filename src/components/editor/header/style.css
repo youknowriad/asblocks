@@ -24,9 +24,15 @@
 }
 
 .editor__header-peers {
-  display: inline-block;
+  display: none;
   padding: 0 calc(var(--grid-unit) / 2);
   font-size: 0.9em;
+}
+
+@media (min-width: 600px) {
+  .editor__header-peers {
+    display: inline-block;
+  }
 }
 
 .app.is-dark-theme .editor__header-content .components-button {
