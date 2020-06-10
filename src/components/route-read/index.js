@@ -11,5 +11,5 @@ export function RouteRead() {
   const encryptionKey = usePromise(stringToKey, [stringKey]);
   const post = useSuspendedApi(fetchPost, [id, encryptionKey]);
 
-  return <PostRender post={post} encryptionKey={encryptionKey} />;
+  return <PostRender post={post} />;
 }

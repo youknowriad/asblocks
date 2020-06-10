@@ -1,7 +1,7 @@
 .logo.components-button {
   background: var(--theme-color);
   display: inline-block;
-  color: white;
+  color: white !important;
   font-family: var(--editor-font);
   border-radius: var(--border-radius);
   height: var(--button-height);
@@ -18,9 +18,20 @@
 
 .logo.components-button:hover {
   background: black;
-  color: white;
 }
 
 .logo span {
   opacity: 0.7;
+}
+
+.logo-dropdown {
+  margin: -12px;
+}
+
+.logo-dropdown-menu {
+  padding: calc(var(--grid-unit) * 1.5);
+}
+
+.logo-dropdown-menu + .logo-dropdown-menu {
+  border-top: 1px solid black;
 }

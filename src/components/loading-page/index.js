@@ -1,5 +1,4 @@
 import { Logo } from "../logo";
-import { Footer } from "../footer";
 import { Spinner } from "../spinner";
 import "./style.css";
 
@@ -12,10 +11,6 @@ export function LoadingPage() {
 
       <div className="loading-page__indicator">
         <Spinner />
-      </div>
-
-      <div className="loading-page__footer">
-        <Footer />
       </div>
     </div>
   );

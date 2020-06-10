@@ -4,7 +4,8 @@
 :root {
   --default-font: "Open Sans", sans-serif;
   --editor-font: "Libre Baskerville", serif;
-  --default-font-size: 14px;
+  --default-font-size: 13px;
+  --default-line-height: 1.9em;
   --editor-font-size: 20px;
   --inspector-width: 300px;
   --grid-unit: 16px;
@@ -23,6 +24,7 @@ body {
   box-sizing: border-box;
   height: 100%;
   font-weight: 400;
+  line-height: var(--default-line-height);
 }
 
 #root {

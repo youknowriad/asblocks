@@ -12,7 +12,6 @@ import {
   DropZoneProvider,
 } from "@wordpress/components";
 import { useState } from "@wordpress/element";
-import { Footer } from "../footer";
 import { EditorHeader } from "./header";
 import { PostTitleEditor } from "./post-title-editor";
 import { Inspector } from "./inspector";
@@ -83,14 +82,6 @@ export function Editor({ post, encryptionKey, ownerKey }) {
                   </ObserveTyping>
                 </WritingFlow>
                 <Popover.Slot />
-              </div>
-
-              <div
-                className={classnames("editor__footer", {
-                  "is-inspector-opened": isInspectorOpened,
-                })}
-              >
-                <Footer post={persistedPost} encryptionKey={encryptionKey} />
               </div>
             </div>
             {isInspectorOpened && (

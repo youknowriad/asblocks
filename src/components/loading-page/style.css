@@ -10,14 +10,6 @@
   padding: var(--grid-unit);
 }
 
-.loading-page__footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: var(--grid-unit);
-}
-
 .loading-page__indicator {
   height: 100%;
   display: flex;

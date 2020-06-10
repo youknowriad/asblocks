@@ -30,25 +30,6 @@
   right: var(--inspector-width);
 }
 
-.editor__footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: var(--grid-unit);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.editor__footer button,
-.editor__footer a {
-  pointer-events: all;
-}
-
-.editor__footer.is-inspector-opened {
-  right: var(--inspector-width);
-}
-
 .editor__canvas {
   padding-top: calc(var(--grid-unit) * 3 + var(--button-height));
 }

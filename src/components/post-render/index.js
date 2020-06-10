@@ -4,7 +4,7 @@ import { Logo } from "../logo";
 import { Footer } from "../footer";
 import "./style.css";
 
-export function PostRender({ post, encryptionKey }) {
+export function PostRender({ post }) {
   return (
     <div className="post-render">
       <div className="post-render__header">
@@ -15,9 +15,6 @@ export function PostRender({ post, encryptionKey }) {
         <div>
           <RawHTML>{post.blocks ? serialize(post.blocks) : ""}</RawHTML>
         </div>
-      </div>
-      <div className="post-render__footer">
-        <Footer post={post} encryptionKey={encryptionKey} isFront />
       </div>
     </div>
   );

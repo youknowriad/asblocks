@@ -19,11 +19,3 @@
   padding-bottom: var(--grid-unit);
   padding-top: calc(var(--grid-unit) * 3 + var(--button-height));
 }
-
-.post-render__footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: var(--grid-unit);
-}

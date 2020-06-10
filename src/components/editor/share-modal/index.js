@@ -32,8 +32,8 @@ export function ShareModal({ onClose, post, ownerKey, stringKey }) {
         <div>
           <h3>Read</h3>
           <p>
-            The following link is a read-only link where people will be able to
-            read the persisted document without edit capabilities.
+            This is a read-only link where people are able to read the persisted
+            document without edit rights.
           </p>
           <div className="editor-share-modal__copy">
             <input type="text" readOnly value={readURL} />
