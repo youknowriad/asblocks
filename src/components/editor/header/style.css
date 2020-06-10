@@ -9,6 +9,7 @@
 }
 
 .editor__header-left > * {
+  display: inline-flex;
   margin-right: var(--grid-unit);
 }
 
@@ -18,11 +19,13 @@
 }
 
 .editor__header-right > * {
+  display: inline-flex;
   padding-left: calc(var(--grid-unit) / 2);
 }
 
 .editor__header-peers {
-  padding: calc(var(--grid-unit) / 2);
+  display: inline-block;
+  padding: 0 calc(var(--grid-unit) / 2);
   font-size: 0.9em;
 }
 
