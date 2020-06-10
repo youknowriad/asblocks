@@ -25,3 +25,7 @@
   padding: calc(var(--grid-unit) / 2);
   font-size: 0.9em;
 }
+
+.app.is-dark-theme .editor__header-content .components-button {
+  color: white;
+}

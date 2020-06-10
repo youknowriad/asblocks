@@ -1,4 +1,5 @@
 import { Button, Dropdown } from "@wordpress/components";
+import { DarkModeToggle } from "../dark-mode-toggle";
 import "./style.css";
 
 export function Logo() {
@@ -42,6 +43,11 @@ export function Logo() {
             <Button isPrimary href="/">
               New Document
             </Button>
+          </div>
+
+          <div className="logo-dropdown-menu">
+            <h3>Options</h3>
+            <DarkModeToggle />
           </div>
         </div>
       )}

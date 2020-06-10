@@ -2,6 +2,10 @@
   fill: var(--theme-color);
 }
 
+.app.is-dark-theme .logo.components-button svg {
+  fill: white;
+}
+
 .logo-dropdown {
   margin: -12px;
 }

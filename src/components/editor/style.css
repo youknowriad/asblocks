@@ -51,6 +51,10 @@
   -webkit-overflow-scrolling: touch;
   overflow: auto;
   z-index: 1;
+
+  /* Prevent dark mode because Gutenberg UI doesn't support it well */
+  background: white;
+  color: black;
 }
 
 .components-base-control.components-base-control {

@@ -1,0 +1,15 @@
+.app {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.app.is-dark-theme {
+  background: black;
+  color: white;
+}
+
+/* Prevent dark mode issues */
+.components-popover__content.components-popover__content {
+  background: white;
+  color: black;
+}
