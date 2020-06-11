@@ -1,6 +1,7 @@
 .editor-share-modal__links {
   display: grid;
   grid-template-rows: 1fr;
+  grid-gap: calc(var(--grid-unit) * 2);
 }
 
 @media screen and (min-width: 600px) {
