@@ -16,18 +16,15 @@ import { EditorHeader } from './header';
 import { PostTitleEditor } from './post-title-editor';
 import { Inspector } from './inspector';
 import { useSyncEdits } from './sync';
+import './block-selections';
 import './style.css';
 
 export function Editor( { post, encryptionKey, ownerKey } ) {
 	const [ persistedPost, setPersistedPost ] = useState( post );
 	const [ editedPost, setEditedPost ] = useState( post );
 	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
-	const peers = useSyncEdits(
-		editedPost,
-		setEditedPost,
-		encryptionKey,
-		ownerKey
-	);
+
+	useSyncEdits( editedPost, setEditedPost, encryptionKey, ownerKey );
 
 	const getPropertyChangeHandler = ( property ) => ( value ) => {
 		setEditedPost( {
@@ -40,6 +37,7 @@ export function Editor( { post, encryptionKey, ownerKey } ) {
 		<SlotFillProvider>
 			<DropZoneProvider>
 				<BlockEditorProvider
+					useSubRegistry={ false }
 					value={ editedPost.blocks || [] }
 					onInput={ getPropertyChangeHandler( 'blocks' ) }
 					onChange={ getPropertyChangeHandler( 'blocks' ) }
@@ -56,7 +54,6 @@ export function Editor( { post, encryptionKey, ownerKey } ) {
 									ownerKey={ ownerKey }
 									persistedPost={ persistedPost }
 									editedPost={ editedPost }
-									peers={ peers }
 									isInspectorOpened={ isInspectorOpened }
 									onOpenInspector={ () =>
 										setIsInspectorOpened( true )

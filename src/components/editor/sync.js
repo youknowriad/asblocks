@@ -2,7 +2,8 @@ import {
 	isShallowEqualArrays,
 	isShallowEqualObjects,
 } from '@wordpress/is-shallow-equal';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useRef } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
 import io from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 import { encrypt, decrypt } from '../../lib/crypto';
@@ -318,7 +319,16 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 	const positionVersions = useRef( {} );
 	const isInitialized = useRef( false );
 	const socket = useRef();
-	const [ peers, setPeers ] = useState( [] );
+	const { peers, ...selection } = useSelect( ( select ) => {
+		return {
+			peers: select( 'asblocks' ).getPeers(),
+			start: select( 'core/block-editor' ).getSelectionStart(),
+			end: select( 'core/block-editor' ).getSelectionEnd(),
+		};
+	}, [] );
+	const { setPeers, setPeerSelection, setAvailablePeers } = useDispatch(
+		'asblocks'
+	);
 
 	// Update data
 	useEffect( () => {}, [ post ] );
@@ -386,6 +396,7 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 						blockVersions: blockVersions.current,
 						deletedBlocks: deletedBlocks.current,
 						identity: identity.current,
+						selection,
 					},
 					encryptionKey
 				),
@@ -431,6 +442,10 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 						blockVersions: blockVersions.current,
 						deletedBlocks: deletedBlocks.current,
 						identity: identity.current,
+						peers: {
+							...peers,
+							[ socket.current.id ]: selection,
+						},
 					},
 					encryptionKey
 				),
@@ -439,9 +454,8 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 		} );
 
 		// A message has been received
-		socket.current.on( 'client-broadcast', async ( msg ) => {
+		socket.current.on( 'client-broadcast', async ( msg, socketId ) => {
 			const action = await decrypt( msg, encryptionKey );
-
 			// Ignore self messages
 			if ( action.identity === identity.current ) {
 				return;
@@ -477,7 +491,7 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 						...action.post,
 						blocks: merged.blocks,
 					};
-
+					setPeerSelection( socketId, action.selection );
 					onChange( lastPersisted.current );
 					break;
 				}
@@ -492,21 +506,20 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 					positionVersions.current = action.positionVersions;
 					blocks.current = action.post.blocks;
 					lastPersisted.current = action.post;
-
+					setPeers( action.peers );
 					onChange( lastPersisted.current );
 				}
 			}
 		} );
 
 		socket.current.on( 'room-user-change', ( newPeers ) => {
-			setPeers( newPeers );
+			setAvailablePeers( newPeers );
 		} );
 
 		return () => {
 			socket.current.close();
 			socket.current = null;
+			setAvailablePeers( [] );
 		};
 	}, [ post._id ] );
-
-	return peers;
 }
