@@ -1,33 +1,33 @@
 .logo.components-button {
-  position: relative;
-  overflow: visible;
-  justify-content: center !important;
+	position: relative;
+	overflow: visible;
+	justify-content: center !important;
 }
 
 .logo.components-button svg {
-  fill: var(--theme-color);
-  margin-right: 0 !important;
+	fill: var(--theme-color);
+	margin-right: 0 !important;
 }
 
 .app.is-dark-theme .logo.components-button svg {
-  fill: white;
+	fill: #fff;
 }
 
 .logo-beta {
-  position: absolute;
-  right: 6px;
-  bottom: -10px;
-  font-size: 0.8em;
+	position: absolute;
+	right: 6px;
+	bottom: -10px;
+	font-size: 0.8em;
 }
 
 .logo-dropdown {
-  margin: -12px;
+	margin: -12px;
 }
 
 .logo-dropdown-menu {
-  padding: calc(var(--grid-unit) * 1.5);
+	padding: calc(var(--grid-unit) * 1.5);
 }
 
 .logo-dropdown-menu + .logo-dropdown-menu {
-  border-top: 1px solid black;
+	border-top: 1px solid #000;
 }
