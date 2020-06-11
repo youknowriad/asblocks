@@ -1,15 +1,17 @@
 .editor-share-modal__links {
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-gap: calc(var(--grid-unit) * 2);
+	display: grid;
+	grid-template-rows: 1fr;
+	grid-gap: calc(var(--grid-unit) * 2);
 }
 
-@media screen and (min-width: 600px) {
-  .editor-share-modal__links {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: calc(var(--grid-unit) * 2);
-  }
+@media (min-width: 600px) {
+
+	.editor-share-modal__links {
+
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-gap: calc(var(--grid-unit) * 2);
+	}
 }
 
 .editor-share-modal__copy {
