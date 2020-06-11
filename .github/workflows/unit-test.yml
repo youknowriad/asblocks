@@ -1,0 +1,21 @@
+name: Unit Test
+on: push
+jobs:
+    run-unit-tests:
+        name: Run Unit Tests
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check out Git repository.
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js.
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 12
+
+            - name: Install Node.js dependencies.
+              run: npm install
+
+            - name: Run unit tests.
+              run: npm run test

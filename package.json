@@ -19,8 +19,9 @@
 		"start": "NODE_ENV=development webpack-dev-server --open",
 		"build": "webpack",
 		"test": "wp-scripts test-unit-js",
-		"lint:css": "wp-scripts lint-style",
-		"lint:js": "wp-scripts lint-js"
+		"lint:style": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"lint": "run-p lint:*"
 	},
 	"dependencies": {
 		"@wordpress/block-editor": "^4.0.0",
@@ -44,12 +45,11 @@
 		"@pmmmwh/react-refresh-webpack-plugin": "^0.3.3",
 		"@wordpress/babel-preset-default": "^4.14.0",
 		"@wordpress/scripts": "^10.0.0",
-		"babel-jest": "^26.0.1",
 		"babel-loader": "^8.1.0",
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^3.5.3",
 		"html-webpack-plugin": "^4.3.0",
-		"jest": "^26.0.1",
+		"npm-run-all": "^4.1.5",
 		"prettier": "npm:wp-prettier@2.0.5",
 		"react-refresh": "^0.8.3",
 		"style-loader": "^1.2.1",
