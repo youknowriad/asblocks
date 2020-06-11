@@ -1,54 +1,65 @@
-import * as Y from "yjs";
-import { useEffect, useRef, useState } from "@wordpress/element";
+import * as yjs from "yjs";
+import { useEffect, useState } from "@wordpress/element";
 import { WebrtcProvider } from "y-webrtc";
-import simpleDiff from "./simple-diff";
+import setYDocBlocks from "./set-y-doc-blocks";
+import yDocBlocksToArray from "./y-doc-blocks-to-array";
 
 const instances = {};
 export function useSyncEdits(ownerKey, encriptionKeyString) {
+  const [peers, setPeers] = useState([]);
   const [blocks, _setBlocks] = useState([]);
   const [setBlocks, setSetBlocks] = useState(() => (newBlocks) =>
     _setBlocks(newBlocks)
   );
-  const [peers, setPeers] = useState([]);
 
-  const [, forceRender] = useState();
-  const forceRenderRef = useRef(() => forceRender({}));
   useEffect(() => {
+    // We share instances between hook instances for the same document,
+    // because we need to reuse the same `yDoc` and provider.
+    // Note that the `localYjsChangeSymbol` does differ per hook instance,
+    // so that edits made through one sync to the others.
     const instanceKey = `${ownerKey}|${encriptionKeyString}`;
     if (!instances[instanceKey]) {
-      const yDoc = new Y.Doc();
-      const blocks = yDoc.getArray("blocks");
+      const yDoc = new yjs.Doc();
+      const blocks = yDoc.getMap("blocks");
+      blocks.set("order", new yjs.Map());
+      blocks.set("byClientId", new yjs.Map());
 
       instances[instanceKey] = {
         yDoc,
         blocks,
-        setBlocks(newBlocks) {
-          const blocksDiff = simpleDiff(blocks.toArray(), newBlocks);
-          yDoc.transact(() => {
-            blocks.delete(blocksDiff.index, blocksDiff.remove);
-            blocks.insert(blocksDiff.index, blocksDiff.insert);
-          });
-        },
         provider: new WebrtcProvider(ownerKey, yDoc, {
           password: encriptionKeyString,
         }),
       };
     }
 
-    _setBlocks(instances[instanceKey].blocks);
-    setSetBlocks(() => instances[instanceKey].setBlocks);
+    // Keep peer list in sync.
     instances[instanceKey].provider.on("peers", ({ webrtcPeers }) =>
       setPeers(webrtcPeers)
     );
 
-    const maybeForceRender = forceRenderRef.current;
-    instances[instanceKey].blocks.observeDeep(maybeForceRender);
-    return () => instances[instanceKey].blocks.unobserveDeep(maybeForceRender);
+    // Create setter that broadcasts changes to peers.
+    const localYjsChangeSymbol = Symbol("localYjsChangeSymbol");
+    setSetBlocks(() => (newBlocks) => {
+      _setBlocks(newBlocks);
+
+      instances[instanceKey].yDoc.transact(() => {
+        setYDocBlocks(instances[instanceKey].blocks, newBlocks);
+      }, localYjsChangeSymbol);
+    });
+
+    // Set changes from peers.
+    const maybeSetBlocks = (event, transaction) => {
+      if (transaction.origin !== localYjsChangeSymbol)
+        _setBlocks(yDocBlocksToArray(instances[instanceKey].blocks));
+    };
+    instances[instanceKey].blocks.observeDeep(maybeSetBlocks);
+    return () => instances[instanceKey].blocks.unobserveDeep(maybeSetBlocks);
   }, [ownerKey, encriptionKeyString]);
 
   return {
-    blocks: blocks.toArray?.() || blocks,
-    setBlocks,
     peers,
+    blocks,
+    setBlocks,
   };
 }

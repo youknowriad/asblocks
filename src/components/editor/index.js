@@ -27,7 +27,7 @@ export function Editor( {
 	const [ persistedPost, setPersistedPost ] = useState( post );
 	const [ editedPost, setEditedPost ] = useState( post );
 	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
-	const { blocks, setBlocks, peers } = useSyncEdits(
+	const { peers, blocks, setBlocks } = useSyncEdits(
 		ownerKey,
 		encryptionKeyString
 	);
