@@ -17,7 +17,7 @@
 	"main": "src/index.js",
 	"scripts": {
 		"start": "NODE_ENV=development webpack-dev-server --open",
-		"build": "webpack",
+		"build": "NODE_ENV=production webpack",
 		"test": "wp-scripts test-unit-js",
 		"lint:style": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
