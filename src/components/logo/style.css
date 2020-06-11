@@ -1,9 +1,23 @@
+.logo.components-button {
+  position: relative;
+  overflow: visible;
+  justify-content: center !important;
+}
+
 .logo.components-button svg {
   fill: var(--theme-color);
+  margin-right: 0 !important;
 }
 
 .app.is-dark-theme .logo.components-button svg {
   fill: white;
+}
+
+.logo-beta {
+  position: absolute;
+  right: 6px;
+  bottom: -10px;
+  font-size: 0.8em;
 }
 
 .logo-dropdown {
