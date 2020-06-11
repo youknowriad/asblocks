@@ -1,7 +1,6 @@
 .editor-share-modal__links {
   display: grid;
   grid-template-rows: 1fr;
-  align-items: top;
 }
 
 @media screen and (min-width: 600px) {
@@ -9,7 +8,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: calc(var(--grid-unit) * 2);
-    align-items: top;
   }
 }
 
