@@ -57,7 +57,7 @@ export function ShareModal( { onClose, post, ownerKey, stringKey } ) {
 						</a>
 						. This means that only the users accessing the post
 						using the link above are able to access its content.
-						AsBlocks&apos;s server can not decrypt the content of
+						AsBlocks&apos; server can not decrypt the content of
 						your post either.
 					</p>
 				</div>
