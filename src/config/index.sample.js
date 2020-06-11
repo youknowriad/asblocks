@@ -1,3 +1,3 @@
 export const config = {
-  collabServer: "${{ secrets.COLLAB_SERVER }}",
+	collabServer: '${{ secrets.COLLAB_SERVER }}',
 };

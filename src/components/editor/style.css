@@ -1,88 +1,91 @@
 .editor {
-  height: 100%;
-  display: flex;
+	height: 100%;
+	display: flex;
 }
 
 .editor__main {
-  position: relative;
-  flex-grow: 1;
-  height: 100%;
-  overflow: auto;
+	position: relative;
+	flex-grow: 1;
+	height: 100%;
+	overflow: auto;
 }
 
 .editor__header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: var(--grid-unit);
-  z-index: 1;
-  pointer-events: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: var(--grid-unit);
+	z-index: 1;
+	pointer-events: none;
 }
 
 .editor__header button,
 .editor__header a {
-  pointer-events: all;
+	pointer-events: all;
 }
 
 .editor__header.is-inspector-opened {
-  right: var(--inspector-width);
+	right: var(--inspector-width);
 }
 
 .editor__canvas {
-  padding-top: calc(var(--grid-unit) * 3 + var(--button-height));
+	padding-top: calc(var(--grid-unit) * 3 + var(--button-height));
 }
 
 .editor__canvas img {
-  max-width: 100%;
-  height: auto;
+	max-width: 100%;
+	height: auto;
 }
 
 .editor__canvas iframe {
-  width: 100%;
+	width: 100%;
 }
 
 .editor__sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 
-  height: auto;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  overflow: auto;
-  z-index: 1;
+	height: auto;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+	z-index: 1;
 
-  /* Prevent dark mode because Gutenberg UI doesn't support it well */
-  background: white;
-  color: black;
+	/* Prevent dark mode because Gutenberg UI doesn't support it well */
+	background: #fff;
+	color: #000;
 }
 
 @media (min-width: 800px) {
-  .editor__sidebar {
-    position: unset;
-    width: var(--inspector-width);
-    border-left: 1px solid #eee;
-    flex-shrink: 0;
-  }
+
+	.editor__sidebar {
+		position: unset;
+		width: var(--inspector-width);
+		border-left: 1px solid #eee;
+		flex-shrink: 0;
+	}
 }
 
 .editor__post-title-wrapper {
-  /* Match the block editor wrapper */
-  padding-left: 14px;
-  padding-right: 14px;
+
+	/* Match the block editor wrapper */
+	padding-left: 14px;
+	padding-right: 14px;
 }
 
 @media (min-width: 600px) {
-  .editor__post-title-wrapper {
-    /* Match the block editor wrapper */
-    padding-left: 36px;
-    padding-right: 36px;
-  }
+
+	.editor__post-title-wrapper {
+
+		/* Match the block editor wrapper */
+		padding-left: 36px;
+		padding-right: 36px;
+	}
 }
 
 .components-base-control.components-base-control {
-  font-family: var(--default-font-family);
+	font-family: var(--default-font-family);
 }

@@ -1,15 +1,15 @@
 .app {
-  height: 100%;
-  overflow-y: auto;
+	height: 100%;
+	overflow-y: auto;
 }
 
 .app.is-dark-theme {
-  background: black;
-  color: white;
+	background: #000;
+	color: #fff;
 }
 
 /* Prevent dark mode issues */
 .components-popover__content.components-popover__content {
-  background: white;
-  color: black;
+	background: #fff;
+	color: #000;
 }

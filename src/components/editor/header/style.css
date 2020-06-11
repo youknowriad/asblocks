@@ -1,40 +1,41 @@
 .editor__header-content {
-  display: flex;
-  justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 .editor__header-left {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .editor__header-left > * {
-  display: inline-flex;
-  margin-right: var(--grid-unit);
+	display: inline-flex;
+	margin-right: var(--grid-unit);
 }
 
 .editor__header-right {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .editor__header-right > * {
-  display: inline-flex;
-  padding-left: calc(var(--grid-unit) / 2);
+	display: inline-flex;
+	padding-left: calc(var(--grid-unit) / 2);
 }
 
 .editor__header-peers {
-  display: none;
-  padding: 0 calc(var(--grid-unit) / 2);
-  font-size: 0.9em;
+	display: none;
+	padding: 0 calc(var(--grid-unit) / 2);
+	font-size: 0.9em;
 }
 
 @media (min-width: 600px) {
-  .editor__header-peers {
-    display: inline-block;
-  }
+
+	.editor__header-peers {
+		display: inline-block;
+	}
 }
 
 .app.is-dark-theme .editor__header-content .components-button {
-  color: white;
+	color: #fff;
 }
