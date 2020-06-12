@@ -40,7 +40,11 @@ export default function setYDocBlocks( yDocBlocks, blocks, clientId = '' ) {
 	);
 	currentOrder
 		.slice( orderDiff.index, orderDiff.remove )
-		.forEach( ( _clientId ) => byClientId.delete( _clientId ) );
+		.forEach(
+			( _clientId ) =>
+				! orderDiff.insert.includes( _clientId ) &&
+				byClientId.delete( _clientId )
+		);
 	order.delete( orderDiff.index, orderDiff.remove );
 	order.insert( orderDiff.index, orderDiff.insert );
 

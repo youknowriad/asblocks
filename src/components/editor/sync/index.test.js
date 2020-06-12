@@ -112,14 +112,6 @@ async function getUpdatedBlocksUsingYjsAlgo(
 	// Remote doc.
 	const remoteYDoc = new yjs.Doc();
 	const remoteYBlocks = remoteYDoc.getMap( 'blocks' );
-	await applyYjsTransaction(
-		localYDoc,
-		() => {
-			localYBlocks.set( 'order', new yjs.Map() );
-			localYBlocks.set( 'byClientId', new yjs.Map() );
-		},
-		1
-	);
 
 	// Initialize both docs to the original blocks.
 	await applyYjsTransaction(
