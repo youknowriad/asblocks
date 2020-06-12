@@ -14,11 +14,11 @@ jest.mock( 'uuid', () => {
 	return { v4: () => i-- };
 } );
 
-const getUpdatedBlocksUsingDeprecatedAlgo = (
+async function getUpdatedBlocksUsingDeprecatedAlgo(
 	originalBlocks,
 	updatedLocalBlocks,
 	updatedRemoteBlocks
-) => {
+) {
 	// Original Data
 	const originalBlockVersions = getBlockVersions( {}, [], originalBlocks );
 	const originalPositionVersions = getPositionVersions(
@@ -73,7 +73,7 @@ const getUpdatedBlocksUsingDeprecatedAlgo = (
 	);
 
 	return mergedBlocks.blocks;
-};
+}
 
 function applyYjsTransaction( yDoc, callback, origin ) {
 	return new Promise( ( resolve ) => {
@@ -112,6 +112,14 @@ async function getUpdatedBlocksUsingYjsAlgo(
 	// Remote doc.
 	const remoteYDoc = new yjs.Doc();
 	const remoteYBlocks = remoteYDoc.getMap( 'blocks' );
+	await applyYjsTransaction(
+		localYDoc,
+		() => {
+			localYBlocks.set( 'order', new yjs.Map() );
+			localYBlocks.set( 'byClientId', new yjs.Map() );
+		},
+		1
+	);
 
 	// Initialize both docs to the original blocks.
 	await applyYjsTransaction(
@@ -154,6 +162,7 @@ async function getUpdatedBlocksUsingYjsAlgo(
 	return yDocBlocksToArray( localYBlocks );
 }
 
+jest.useRealTimers();
 [
 	{ name: 'original algorithm', algo: getUpdatedBlocksUsingDeprecatedAlgo },
 	{ name: 'yjs', algo: getUpdatedBlocksUsingYjsAlgo },
@@ -296,6 +305,162 @@ async function getUpdatedBlocksUsingYjsAlgo(
 						content: 'updated',
 					},
 					innerBlocks: [],
+				},
+			];
+
+			expect(
+				await algo(
+					originalBlocks,
+					updatedLocalBlocks,
+					updateRemoteBlocks
+				)
+			).toEqual( expectedMerge );
+		} );
+
+		test( 'Moving a block locally while updating it remotely.', async () => {
+			const originalBlocks = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+				{
+					clientId: '2',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+			];
+			const updatedLocalBlocks = [
+				{
+					clientId: '2',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+			];
+
+			const updateRemoteBlocks = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+				{
+					clientId: '2',
+					attributes: {
+						content: 'updated',
+					},
+					innerBlocks: [],
+				},
+			];
+
+			const expectedMerge = [
+				{
+					clientId: '2',
+					attributes: {
+						content: 'updated',
+					},
+					innerBlocks: [],
+				},
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+			];
+
+			expect(
+				await algo(
+					originalBlocks,
+					updatedLocalBlocks,
+					updateRemoteBlocks
+				)
+			).toEqual( expectedMerge );
+		} );
+
+		test( 'Moving a block to inner blocks while updating it remotely.', async () => {
+			const originalBlocks = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+				{
+					clientId: '2',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+			];
+			const updatedLocalBlocks = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [
+						{
+							clientId: '2',
+							attributes: {
+								content: 'original',
+							},
+							innerBlocks: [],
+						},
+					],
+				},
+			];
+
+			const updateRemoteBlocks = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+				{
+					clientId: '2',
+					attributes: {
+						content: 'updated',
+					},
+					innerBlocks: [],
+				},
+			];
+
+			const expectedMerge = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [
+						{
+							clientId: '2',
+							attributes: {
+								content: 'updated',
+							},
+							innerBlocks: [],
+						},
+					],
 				},
 			];
 
