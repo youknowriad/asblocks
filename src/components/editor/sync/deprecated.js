@@ -64,6 +64,8 @@ export function getPositionVersions(
 		return currentVersions;
 	}
 
+	currentVersions = { ...currentVersions };
+
 	const oldBlocksMap = getBlocksMap( oldBlocks );
 	const getBlockIds = ( blocks ) => blocks.map( ( block ) => block.clientId );
 	if ( ! currentVersions[ parent ] ) {
@@ -327,7 +329,7 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 				return false;
 			}
 
-			deletedBlocks.current = getDeletedBlocks(
+			const newDeletedBlocks = getDeletedBlocks(
 				blocks.current,
 				post.blocks
 			);
@@ -352,16 +354,22 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 					newPositionVersions,
 					positionVersions.current
 				) &&
+				isShallowEqualObjects(
+					newDeletedBlocks,
+					deletedBlocks.current
+				) &&
 				post.title === lastPersisted.current.title
 			) {
 				blockVersions.current = newBlockVersions;
 				positionVersions.current = newPositionVersions;
+				deletedBlocks.current = newDeletedBlocks;
 				blocks.current = post.blocks;
 				lastPersisted.current = post;
 				return false;
 			}
 			blockVersions.current = newBlockVersions;
 			positionVersions.current = newPositionVersions;
+			deletedBlocks.current = newDeletedBlocks;
 			blocks.current = post.blocks;
 			lastPersisted.current = post;
 

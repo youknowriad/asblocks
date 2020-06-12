@@ -4,7 +4,7 @@
 
 ## Contribute
 
-Clone the repository and copy the `src/config/index.sample.js` into `src/config.index.js`. If you're only working on the client you can you use the production collaboration server in your config `https://asblocks-collab.herokuapp.com`.
+Clone the repository and copy the `src/config/index.sample.js` into `src/config/index.js`. If you're only working on the client you can you use the production collaboration server in your config `https://asblocks-collab.herokuapp.com`.
 
 ## Available Scripts
 
