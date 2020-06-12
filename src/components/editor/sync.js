@@ -64,6 +64,8 @@ export function getPositionVersions(
 		return currentVersions;
 	}
 
+	currentVersions = { ...currentVersions };
+
 	const oldBlocksMap = getBlocksMap( oldBlocks );
 	const getBlockIds = ( blocks ) => blocks.map( ( block ) => block.clientId );
 	if ( ! currentVersions[ parent ] ) {
