@@ -374,6 +374,10 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 		const shouldSyncData = shouldSync( syncDoc.current, newDocData );
 		syncDoc.current = newDocData;
 
+		// This needs to be called synchronously
+		// otherwise we might have selection jumps in the editor
+		setEditedPost( newDocData.post );
+
 		if ( shouldSyncData ) {
 			socket.current.emit(
 				'server-volatile-broadcast',
@@ -392,8 +396,6 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 				}
 			);
 		}
-
-		setEditedPost( newDocData.post );
 	}
 
 	useEffect( () => {
