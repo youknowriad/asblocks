@@ -100,14 +100,18 @@ async function getUpdatedBlocksUsingYjsAlgo(
 	// Local doc.
 	const localYDoc = new yjs.Doc();
 	const localYBlocks = localYDoc.getMap( 'blocks' );
-	localYBlocks.set( 'order', new yjs.Map() );
-	localYBlocks.set( 'byClientId', new yjs.Map() );
+	await applyYjsTransaction(
+		localYDoc,
+		() => {
+			localYBlocks.set( 'order', new yjs.Map() );
+			localYBlocks.set( 'byClientId', new yjs.Map() );
+		},
+		1
+	);
 
 	// Remote doc.
 	const remoteYDoc = new yjs.Doc();
 	const remoteYBlocks = remoteYDoc.getMap( 'blocks' );
-	remoteYBlocks.set( 'order', new yjs.Map() );
-	remoteYBlocks.set( 'byClientId', new yjs.Map() );
 
 	// Initialize both docs to the original blocks.
 	await applyYjsTransaction(
@@ -139,10 +143,13 @@ async function getUpdatedBlocksUsingYjsAlgo(
 			},
 			2
 		);
-	}
 
-	// Merging remote edit into local edit.
-	await applyYjsUpdate( localYDoc, yjs.encodeStateAsUpdate( remoteYDoc ) );
+		// Merging remote edit into local edit.
+		await applyYjsUpdate(
+			localYDoc,
+			yjs.encodeStateAsUpdate( remoteYDoc )
+		);
+	}
 
 	return yDocBlocksToArray( localYBlocks );
 }
@@ -151,8 +158,8 @@ async function getUpdatedBlocksUsingYjsAlgo(
 	{ name: 'original algorithm', algo: getUpdatedBlocksUsingDeprecatedAlgo },
 	{ name: 'yjs', algo: getUpdatedBlocksUsingYjsAlgo },
 ].forEach( ( { name, algo } ) => {
-	describe( name + ': Conflicts', () => {
-		test( 'should return the update block', async () => {
+	describe( name + ': Conflict Resolution', () => {
+		test( 'Remote update to single block.', async () => {
 			const originalBlocks = [
 				{
 					clientId: '1',
@@ -183,7 +190,7 @@ async function getUpdatedBlocksUsingYjsAlgo(
 			).toEqual( updateRemoteBlocks );
 		} );
 
-		test( 'should add a new block and edited an existing one', async () => {
+		test( 'New local block and remote update to single block.', async () => {
 			const originalBlocks = [
 				{
 					clientId: '1',
@@ -246,7 +253,7 @@ async function getUpdatedBlocksUsingYjsAlgo(
 			).toEqual( expectedMerge );
 		} );
 
-		test( 'should add a new block and edited an existing one', async () => {
+		test( 'Local deletion of multiple blocks and update to single block.', async () => {
 			const originalBlocks = [
 				{
 					clientId: '1',
