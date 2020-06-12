@@ -8,6 +8,12 @@ import {
 import setYDocBlocks from './set-y-doc-blocks';
 import yDocBlocksToArray from './y-doc-blocks-to-array';
 
+jest.mock( 'uuid', () => {
+	let i = 0;
+	// This ensures nonces are generated in a consistent way.
+	return { v4: () => i-- };
+} );
+
 const getUpdatedBlocksUsingDeprecatedAlgo = (
 	originalBlocks,
 	updatedLocalBlocks,
@@ -227,6 +233,61 @@ async function getUpdatedBlocksUsingYjsAlgo(
 					clientId: '2',
 					attributes: {
 						content: 'new',
+					},
+					innerBlocks: [],
+				},
+			];
+
+			expect(
+				await algo(
+					originalBlocks,
+					updatedLocalBlocks,
+					updateRemoteBlocks
+				)
+			).toEqual( expectedMerge );
+		} );
+
+		test( 'should add a new block and edited an existing one', async () => {
+			const originalBlocks = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+				{
+					clientId: '2',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+				{
+					clientId: '3',
+					attributes: {
+						content: 'original',
+					},
+					innerBlocks: [],
+				},
+			];
+			const updatedLocalBlocks = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'updated',
+					},
+					innerBlocks: [],
+				},
+			];
+
+			const updateRemoteBlocks = originalBlocks;
+
+			const expectedMerge = [
+				{
+					clientId: '1',
+					attributes: {
+						content: 'updated',
 					},
 					innerBlocks: [],
 				},
