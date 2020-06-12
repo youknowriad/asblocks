@@ -75,15 +75,21 @@ const getUpdatedBlocksUsingDeprecatedAlgo = (
 	return mergedBlocks.blocks;
 };
 
-function applyYjsChange( yDoc, callback, origin ) {
-	const promise = new Promise( ( resolve ) => {
+function applyYjsTransaction( yDoc, callback, origin ) {
+	return new Promise( ( resolve ) => {
 		yDoc.on( 'update', () => {
 			resolve();
 		} );
+		yDoc.transact( callback, origin );
 	} );
-	yDoc.transact( callback, origin );
-
-	return promise;
+}
+function applyYjsUpdate( yDoc, update ) {
+	return new Promise( ( resolve ) => {
+		yDoc.on( 'update', () => {
+			resolve();
+		} );
+		yjs.applyUpdate( yDoc, update );
+	} );
 }
 
 async function getUpdatedBlocksUsingYjsAlgo(
@@ -91,20 +97,31 @@ async function getUpdatedBlocksUsingYjsAlgo(
 	updatedLocalBlocks,
 	updatedRemoteBlocks
 ) {
-	// local doc
+	// Local doc.
 	const localYDoc = new yjs.Doc();
 	const localYBlocks = localYDoc.getMap( 'blocks' );
 	localYBlocks.set( 'order', new yjs.Map() );
 	localYBlocks.set( 'byClientId', new yjs.Map() );
-	await applyYjsChange(
+
+	// Remote doc.
+	const remoteYDoc = new yjs.Doc();
+	const remoteYBlocks = remoteYDoc.getMap( 'blocks' );
+	remoteYBlocks.set( 'order', new yjs.Map() );
+	remoteYBlocks.set( 'byClientId', new yjs.Map() );
+
+	// Initialize both docs to the original blocks.
+	await applyYjsTransaction(
 		localYDoc,
 		() => {
 			setYDocBlocks( localYBlocks, originalBlocks );
 		},
 		1
 	);
+	await applyYjsUpdate( remoteYDoc, yjs.encodeStateAsUpdate( localYDoc ) );
+
+	// Local edit.
 	if ( originalBlocks !== updatedLocalBlocks ) {
-		await applyYjsChange(
+		await applyYjsTransaction(
 			localYDoc,
 			() => {
 				setYDocBlocks( localYBlocks, updatedLocalBlocks );
@@ -113,20 +130,9 @@ async function getUpdatedBlocksUsingYjsAlgo(
 		);
 	}
 
-	// remote doc
-	const remoteYDoc = new yjs.Doc();
-	const remoteYBlocks = remoteYDoc.getMap( 'blocks' );
-	remoteYBlocks.set( 'order', new yjs.Map() );
-	remoteYBlocks.set( 'byClientId', new yjs.Map() );
-	await applyYjsChange(
-		remoteYDoc,
-		() => {
-			setYDocBlocks( remoteYBlocks, originalBlocks );
-		},
-		2
-	);
+	// Remote edit.
 	if ( originalBlocks !== updatedRemoteBlocks ) {
-		await applyYjsChange(
+		await applyYjsTransaction(
 			remoteYDoc,
 			() => {
 				setYDocBlocks( remoteYBlocks, updatedRemoteBlocks );
@@ -134,16 +140,9 @@ async function getUpdatedBlocksUsingYjsAlgo(
 			2
 		);
 	}
-	const remoteState = yjs.encodeStateAsUpdate( remoteYDoc );
 
-	// Merging docs
-	await applyYjsChange(
-		localYDoc,
-		() => {
-			yjs.applyUpdate( localYDoc, remoteState );
-		},
-		2
-	);
+	// Merging remote edit into local edit.
+	await applyYjsUpdate( localYDoc, yjs.encodeStateAsUpdate( remoteYDoc ) );
 
 	return yDocBlocksToArray( localYBlocks );
 }
