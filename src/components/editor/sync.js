@@ -2,7 +2,7 @@ import {
 	isShallowEqualArrays,
 	isShallowEqualObjects,
 } from '@wordpress/is-shallow-equal';
-import { useEffect, useRef } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import io from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,7 +19,7 @@ export const getBlocksMap = ( blocks = [] ) =>
 		};
 	}, {} );
 
-export function getBlockVersions( currentVersions, oldBlocks, newBlocks ) {
+export function getBlockVersions( currentVersions = {}, oldBlocks, newBlocks ) {
 	if ( oldBlocks === newBlocks ) {
 		return currentVersions;
 	}
@@ -56,7 +56,7 @@ export function getBlockVersions( currentVersions, oldBlocks, newBlocks ) {
 }
 
 export function getPositionVersions(
-	currentVersions,
+	currentVersions = {},
 	oldBlocks = [],
 	newBlocks = [],
 	parent = ''
@@ -310,15 +310,49 @@ export function mergeBlocks(
 	return { blocks, versions };
 }
 
-export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
+function getPostData( current, post ) {
+	return {
+		post,
+		positionVersions: getPositionVersions(
+			current.positionVersions,
+			current.post?.blocks || [],
+			post.blocks || []
+		),
+		blockVersions: getBlockVersions(
+			current.blockVersions,
+			current.post?.blocks || [],
+			post.blocks || []
+		),
+		deletedBlocks: {
+			...current.deletedBlocks,
+			...getDeletedBlocks(
+				current.post?.blocks || [],
+				post.blocks || []
+			),
+		},
+	};
+}
+
+const shouldSync = ( doc1, doc2 ) => {
+	if ( ! doc1.post._id ) {
+		return false;
+	}
+
+	return ! (
+		isShallowEqualObjects( doc1.blockVersions, doc2.blockVersions ) &&
+		isShallowEqualObjects( doc1.positionVersions, doc2.positionVersions ) &&
+		isShallowEqualObjects( doc1.deletedBlocks, doc2.deletedBlocks ) &&
+		doc1.post.title === doc2.post.title
+	);
+};
+
+export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
+	const [ editedPost, setEditedPost ] = useState( initialPost );
+	const syncDoc = useRef( getPostData( {}, initialPost ) );
 	const identity = useRef( uuidv4() );
-	const lastPersisted = useRef( post );
-	const blocks = useRef( post.blocks );
-	const deletedBlocks = useRef( {} );
-	const blockVersions = useRef( {} );
-	const positionVersions = useRef( {} );
 	const isInitialized = useRef( false );
 	const socket = useRef();
+
 	const { peers, ...selection } = useSelect( ( select ) => {
 		return {
 			peers: select( 'asblocks' ).getPeers(),
@@ -330,91 +364,40 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 		'asblocks'
 	);
 
-	// Update data
-	useEffect( () => {}, [ post ] );
-
-	useEffect( () => {
-		const updateBlockData = () => {
-			if ( post === lastPersisted.current ) {
-				return false;
-			}
-
-			const newDeletedBlocks = getDeletedBlocks(
-				blocks.current,
-				post.blocks
-			);
-			const newBlockVersions = getBlockVersions(
-				blockVersions.current,
-				blocks.current,
-				post.blocks
-			);
-			const newPositionVersions = getPositionVersions(
-				positionVersions.current,
-				blocks.current,
-				post.blocks
-			);
-			// This check shouldn't be necessary but it seems a new post instance
-			// is  generated too often.
-			if (
-				isShallowEqualObjects(
-					newBlockVersions,
-					blockVersions.current
-				) &&
-				isShallowEqualObjects(
-					newPositionVersions,
-					positionVersions.current
-				) &&
-				isShallowEqualObjects(
-					newDeletedBlocks,
-					deletedBlocks.current
-				) &&
-				post.title === lastPersisted.current.title
-			) {
-				blockVersions.current = newBlockVersions;
-				positionVersions.current = newPositionVersions;
-				deletedBlocks.current = newDeletedBlocks;
-				blocks.current = post.blocks;
-				lastPersisted.current = post;
-				return false;
-			}
-			blockVersions.current = newBlockVersions;
-			positionVersions.current = newPositionVersions;
-			deletedBlocks.current = newDeletedBlocks;
-			blocks.current = post.blocks;
-			lastPersisted.current = post;
-
-			return true;
-		};
-
-		async function emitUpdate() {
-			socket.current.emit( 'server-volatile-broadcast', post._id, {
-				action: await encrypt(
-					{
-						type: 'update',
-						post,
-						positionVersions: positionVersions.current,
-						blockVersions: blockVersions.current,
-						deletedBlocks: deletedBlocks.current,
-						identity: identity.current,
-						selection,
-					},
-					encryptionKey
-				),
-				ownerKey,
-			} );
-		}
-
-		const hasChanges = updateBlockData();
-
-		if ( ! isInitialized.current || ! socket.current || ! hasChanges ) {
+	// Local change handler
+	async function onChangePost( newPost ) {
+		if ( newPost === syncDoc.current.post ) {
 			return;
 		}
 
-		emitUpdate();
-	}, [ post ] );
+		const newDocData = getPostData( syncDoc.current, newPost );
+		const shouldSyncData = shouldSync( syncDoc.current, newDocData );
+		syncDoc.current = newDocData;
+
+		if ( shouldSyncData ) {
+			socket.current.emit(
+				'server-volatile-broadcast',
+				syncDoc.current.post._id,
+				{
+					action: await encrypt(
+						{
+							type: 'update',
+							...syncDoc.current,
+							identity: identity.current,
+							selection,
+						},
+						encryptionKey
+					),
+					ownerKey,
+				}
+			);
+		}
+
+		setEditedPost( newDocData.post );
+	}
 
 	useEffect( () => {
-		if ( ! post._id ) {
+		if ( ! editedPost._id ) {
 			return;
 		}
 
@@ -422,7 +405,7 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 
 		// Join the room on init
 		socket.current.on( 'init-room', () => {
-			socket.current.emit( 'join-room', post._id );
+			socket.current.emit( 'join-room', editedPost._id );
 		} );
 
 		// Mark the scene as ready
@@ -433,14 +416,11 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 
 		// When a new user connects to the room, send the current post.
 		socket.current.on( 'new-user', async () => {
-			socket.current.emit( 'server-broadcast', post._id, {
+			socket.current.emit( 'server-broadcast', editedPost._id, {
 				action: await encrypt(
 					{
 						type: 'init',
-						post: lastPersisted.current,
-						positionVersions: positionVersions.current,
-						blockVersions: blockVersions.current,
-						deletedBlocks: deletedBlocks.current,
+						...syncDoc.current,
 						identity: identity.current,
 						peers: {
 							...peers,
@@ -464,35 +444,47 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 			switch ( action.type ) {
 				// Update content
 				case 'update': {
+					const shouldSyncData = shouldSync(
+						syncDoc.current,
+						action
+					);
+
+					setPeerSelection( socketId, action.selection );
+
+					if ( ! shouldSyncData ) {
+						return;
+					}
+
 					const mergedDeletedBlocks = {
-						...deletedBlocks.current,
+						...syncDoc.current.deletedBlocks,
 						...action.deletedBlocks,
 					};
 
 					const merged = mergeBlocks(
-						blocks.current,
+						syncDoc.current.post.blocks,
 						action.post.blocks,
-						blockVersions.current,
+						syncDoc.current.blockVersions,
 						action.blockVersions,
-						positionVersions.current,
+						syncDoc.current.positionVersions,
 						action.positionVersions,
 						mergedDeletedBlocks
 					);
 
-					deletedBlocks.current = mergedDeletedBlocks;
-					blockVersions.current = merged.versions;
-					positionVersions.current = getPositionVersions(
-						positionVersions.current,
-						blocks.current,
-						merged.blocks
-					);
-					blocks.current = merged.blocks;
-					lastPersisted.current = {
-						...action.post,
-						blocks: merged.blocks,
+					syncDoc.current = {
+						post: {
+							...action.post,
+							blocks: merged.blocks,
+						},
+						blockVersions: merged.versions,
+						positionVersions: getPositionVersions(
+							syncDoc.current.positionVersions,
+							syncDoc.current.post.blocks,
+							merged.blocks
+						),
+						deletedBlocks: mergedDeletedBlocks,
 					};
-					setPeerSelection( socketId, action.selection );
-					onChange( lastPersisted.current );
+
+					setEditedPost( syncDoc.current.post );
 					break;
 				}
 
@@ -501,13 +493,14 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 						return;
 					}
 					isInitialized.current = true;
-					deletedBlocks.current = action.deletedBlocks;
-					blockVersions.current = action.blockVersions;
-					positionVersions.current = action.positionVersions;
-					blocks.current = action.post.blocks;
-					lastPersisted.current = action.post;
+					syncDoc.current = {
+						deletedBlocks: action.deletedBlocks,
+						blockVersions: action.blockVersions,
+						positionVersions: action.positionVersions,
+						post: action.post,
+					};
 					setPeers( action.peers );
-					onChange( lastPersisted.current );
+					setEditedPost( syncDoc.current.post );
 				}
 			}
 		} );
@@ -521,5 +514,7 @@ export function useSyncEdits( post, onChange, encryptionKey, ownerKey ) {
 			socket.current = null;
 			setAvailablePeers( [] );
 		};
-	}, [ post._id ] );
+	}, [ editedPost._id ] );
+
+	return [ editedPost, onChangePost ];
 }

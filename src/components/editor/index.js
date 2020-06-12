@@ -20,11 +20,13 @@ import './block-selections';
 import './style.css';
 
 export function Editor( { post, encryptionKey, ownerKey } ) {
+	const [ editedPost, setEditedPost ] = useSyncEdits(
+		post,
+		encryptionKey,
+		ownerKey
+	);
 	const [ persistedPost, setPersistedPost ] = useState( post );
-	const [ editedPost, setEditedPost ] = useState( post );
 	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
-
-	useSyncEdits( editedPost, setEditedPost, encryptionKey, ownerKey );
 
 	const getPropertyChangeHandler = ( property ) => ( value ) => {
 		setEditedPost( {
