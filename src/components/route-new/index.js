@@ -4,10 +4,7 @@ import { Editor } from '../editor';
 import { generateKey } from '../../lib/crypto';
 
 export function RouteNew() {
-	const { encryptionKey, encryptionKeyString } = usePromise(
-		generateKey,
-		[]
-	);
+	const encryptionKey = usePromise( generateKey, [] );
 	const ownerKey = uuidv4();
 	const post = {
 		status: 'auto-draft',
@@ -17,7 +14,6 @@ export function RouteNew() {
 		<Editor
 			post={ post }
 			encryptionKey={ encryptionKey }
-			encryptionKeyString={ encryptionKeyString }
 			ownerKey={ ownerKey }
 		/>
 	);
