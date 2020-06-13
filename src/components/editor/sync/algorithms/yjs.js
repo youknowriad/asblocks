@@ -150,7 +150,7 @@ export function getPostDoc( identity ) {
 		onLocalUpdate: ( listener ) => {
 			const docListener = ( update, origin ) => {
 				if ( origin === identity ) {
-					listener( { yjs: update } );
+					listener( { yjs: update.toString() } );
 				}
 			};
 

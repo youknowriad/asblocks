@@ -138,7 +138,7 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 
 		// When a local update is ready, send it to the world
 		const unsubscribeLocalUpdate = syncDoc.current.onLocalUpdate(
-			async () => {
+			async ( update ) => {
 				socket.current.emit( 'server-broadcast', editedPost._id, {
 					action: await encrypt(
 						{
@@ -148,7 +148,7 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 								start: getSelectionStart(),
 								end: getSelectionEnd(),
 							},
-							...syncDoc.current.getUpdate(),
+							...update,
 						},
 						encryptionKey
 					),
