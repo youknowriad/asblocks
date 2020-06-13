@@ -33,13 +33,12 @@
 		"@wordpress/format-library": "^1.19.0",
 		"@wordpress/notices": "^2.5.0",
 		"easy-web-crypto": "^1.1.1",
-		"lodash.isequal": "^4.5.0",
+		"lodash": "^4.17.15",
 		"react-promise-suspense": "^0.3.3",
 		"react-router-dom": "^5.2.0",
 		"socket.io-client": "^2.3.0",
 		"use-local-storage-state": "^3.0.1",
 		"uuid": "^8.1.0",
-		"y-webrtc": "^10.1.5",
 		"yjs": "^13.2.0"
 	},
 	"devDependencies": {

@@ -11,31 +11,33 @@ import {
 	SlotFillProvider,
 	DropZoneProvider,
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useState, useRef } from '@wordpress/element';
 import { EditorHeader } from './header';
 import { PostTitleEditor } from './post-title-editor';
 import { Inspector } from './inspector';
 import { useSyncEdits } from './sync/index';
+import './block-selections';
 import './style.css';
 
-export function Editor( {
-	post,
-	encryptionKey,
-	encryptionKeyString,
-	ownerKey,
-} ) {
-	const [ persistedPost, setPersistedPost ] = useState( post );
-	const [ editedPost, setEditedPost ] = useState( post );
-	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
-	const { peers, blocks, setBlocks } = useSyncEdits(
-		ownerKey,
-		encryptionKeyString
+export function Editor( { post, encryptionKey, ownerKey } ) {
+	const [ editedPost, setEditedPost ] = useSyncEdits(
+		post,
+		encryptionKey,
+		ownerKey
 	);
+	const [ persistedPost, setPersistedPost ] = useState( post );
+	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
 
+	// This is in theory not needed but it seems
+	// BlockEditorProvider is buggy and sometimes,
+	// it calls old onChange handlers. Using a ref
+	// ensures that we're using the most up to date
+	// editedPost value.
+	const editedPostRef = useRef( post );
+	editedPostRef.current = editedPost;
 	const getPropertyChangeHandler = ( property ) => ( value ) => {
-		if ( property === 'blocks' ) setBlocks( value );
 		setEditedPost( {
-			...editedPost,
+			...editedPostRef.current,
 			[ property ]: value,
 		} );
 	};
@@ -44,7 +46,8 @@ export function Editor( {
 		<SlotFillProvider>
 			<DropZoneProvider>
 				<BlockEditorProvider
-					value={ blocks }
+					useSubRegistry={ false }
+					value={ editedPost.blocks || [] }
 					onInput={ getPropertyChangeHandler( 'blocks' ) }
 					onChange={ getPropertyChangeHandler( 'blocks' ) }
 				>
@@ -60,7 +63,6 @@ export function Editor( {
 									ownerKey={ ownerKey }
 									persistedPost={ persistedPost }
 									editedPost={ editedPost }
-									peers={ peers }
 									isInspectorOpened={ isInspectorOpened }
 									onOpenInspector={ () =>
 										setIsInspectorOpened( true )

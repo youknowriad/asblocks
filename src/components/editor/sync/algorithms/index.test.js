@@ -1,79 +1,11 @@
 import * as yjs from 'yjs';
-import {
-	getDeletedBlocks,
-	getBlockVersions,
-	getPositionVersions,
-	mergeBlocks,
-} from './deprecated';
-import setYDocBlocks from './set-y-doc-blocks';
-import yDocBlocksToArray from './y-doc-blocks-to-array';
+import { updateBlocksDoc, blocksDocToArray } from './yjs';
 
 jest.mock( 'uuid', () => {
 	let i = 0;
 	// This ensures nonces are generated in a consistent way.
 	return { v4: () => i-- };
 } );
-
-async function getUpdatedBlocksUsingDeprecatedAlgo(
-	originalBlocks,
-	updatedLocalBlocks,
-	updatedRemoteBlocks
-) {
-	// Original Data
-	const originalBlockVersions = getBlockVersions( {}, [], originalBlocks );
-	const originalPositionVersions = getPositionVersions(
-		{},
-		[],
-		originalBlocks
-	);
-
-	// Local Data
-	const localDeletedBlocks = getDeletedBlocks(
-		originalBlocks,
-		updatedLocalBlocks
-	);
-	const localBlockVersions = getBlockVersions(
-		originalBlockVersions,
-		originalBlocks,
-		updatedLocalBlocks
-	);
-	const localPositionVersions = getPositionVersions(
-		originalPositionVersions,
-		originalBlocks,
-		updatedLocalBlocks
-	);
-
-	// Remote data
-	const remoteDeletedBlocks = getDeletedBlocks(
-		originalBlocks,
-		updatedRemoteBlocks
-	);
-	const remoteBlockVersions = getBlockVersions(
-		originalBlockVersions,
-		originalBlocks,
-		updatedRemoteBlocks
-	);
-	const remotePositionVersions = getPositionVersions(
-		originalPositionVersions,
-		originalBlocks,
-		updatedRemoteBlocks
-	);
-
-	const mergedBlocks = mergeBlocks(
-		updatedLocalBlocks,
-		updatedRemoteBlocks,
-		localBlockVersions,
-		remoteBlockVersions,
-		localPositionVersions,
-		remotePositionVersions,
-		{
-			...localDeletedBlocks,
-			...remoteDeletedBlocks,
-		}
-	);
-
-	return mergedBlocks.blocks;
-}
 
 function applyYjsTransaction( yDoc, callback, origin ) {
 	return new Promise( ( resolve ) => {
@@ -100,14 +32,6 @@ async function getUpdatedBlocksUsingYjsAlgo(
 	// Local doc.
 	const localYDoc = new yjs.Doc();
 	const localYBlocks = localYDoc.getMap( 'blocks' );
-	await applyYjsTransaction(
-		localYDoc,
-		() => {
-			localYBlocks.set( 'order', new yjs.Map() );
-			localYBlocks.set( 'byClientId', new yjs.Map() );
-		},
-		1
-	);
 
 	// Remote doc.
 	const remoteYDoc = new yjs.Doc();
@@ -117,7 +41,7 @@ async function getUpdatedBlocksUsingYjsAlgo(
 	await applyYjsTransaction(
 		localYDoc,
 		() => {
-			setYDocBlocks( localYBlocks, originalBlocks );
+			updateBlocksDoc( localYBlocks, originalBlocks );
 		},
 		1
 	);
@@ -128,7 +52,7 @@ async function getUpdatedBlocksUsingYjsAlgo(
 		await applyYjsTransaction(
 			localYDoc,
 			() => {
-				setYDocBlocks( localYBlocks, updatedLocalBlocks );
+				updateBlocksDoc( localYBlocks, updatedLocalBlocks );
 			},
 			1
 		);
@@ -139,7 +63,7 @@ async function getUpdatedBlocksUsingYjsAlgo(
 		await applyYjsTransaction(
 			remoteYDoc,
 			() => {
-				setYDocBlocks( remoteYBlocks, updatedRemoteBlocks );
+				updateBlocksDoc( remoteYBlocks, updatedRemoteBlocks );
 			},
 			2
 		);
@@ -151,14 +75,13 @@ async function getUpdatedBlocksUsingYjsAlgo(
 		);
 	}
 
-	return yDocBlocksToArray( localYBlocks );
+	return blocksDocToArray( localYBlocks );
 }
 
 jest.useRealTimers();
-[
-	{ name: 'original algorithm', algo: getUpdatedBlocksUsingDeprecatedAlgo },
-	{ name: 'yjs', algo: getUpdatedBlocksUsingYjsAlgo },
-].forEach( ( { name, algo } ) => {
+
+const syncAlgorithms = [ { name: 'yjs', algo: getUpdatedBlocksUsingYjsAlgo } ];
+syncAlgorithms.forEach( ( { name, algo } ) => {
 	describe( name + ': Conflict Resolution', () => {
 		test( 'Remote update to single block.', async () => {
 			const originalBlocks = [

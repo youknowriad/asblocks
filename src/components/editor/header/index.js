@@ -2,6 +2,7 @@ import { Inserter } from '@wordpress/block-editor';
 import { Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { cog, share } from '@wordpress/icons';
+import { useSelect } from '@wordpress/data';
 import usePromise from 'react-promise-suspense';
 import { ShareModal } from '../share-modal';
 import { Logo } from '../../logo';
@@ -13,13 +14,16 @@ import './style.css';
 export function EditorHeader( {
 	persistedPost,
 	editedPost,
-	peers,
 	isInspectorOpened,
 	onOpenInspector,
 	encryptionKey,
 	ownerKey,
 	onPersist,
 } ) {
+	const peersCount = useSelect(
+		( select ) => Object.keys( select( 'asblocks' ).getPeers() ).length,
+		[]
+	);
 	const stringKey = usePromise( keyToString, [ encryptionKey ] );
 	const [ isShareModalOpened, setIsShareModalOpened ] = useState( false );
 	const { mutate: mutateShare, loading: isSharing } = useMutation(
@@ -67,9 +71,9 @@ export function EditorHeader( {
 				</div>
 			</div>
 			<div className="editor__header-right">
-				{ peers.length > 0 && (
+				{ peersCount > 1 && (
 					<div className="editor__header-peers">
-						<strong>{ peers.length }</strong> connected peers
+						<strong>{ peersCount }</strong> connected peers
 					</div>
 				) }
 				<div>
