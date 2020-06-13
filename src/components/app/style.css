@@ -13,3 +13,14 @@
 	background: #fff;
 	color: #000;
 }
+
+
+.app__notices {
+	position: fixed;
+	left: var(--grid-unit);
+	bottom: var(--grid-unit);
+}
+
+.app__notices .components-snackbar {
+	max-width: 500px;
+}
