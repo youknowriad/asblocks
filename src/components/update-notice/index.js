@@ -15,8 +15,8 @@ export function UpdateNotice() {
 		<Snackbar>
 			A new version of the application is available. To avoid issues when
 			working live with collaborators, it is recommended to save your post
-			locally or to the cloud using the "Save" button and refresh the
-			page.
+			locally or to the cloud using the { '"Save"' } button and refresh
+			the page.
 		</Snackbar>
 	);
 }
