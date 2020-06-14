@@ -11,11 +11,11 @@ import {
 	SlotFillProvider,
 	DropZoneProvider,
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useState, useRef } from '@wordpress/element';
 import { EditorHeader } from './header';
 import { PostTitleEditor } from './post-title-editor';
 import { Inspector } from './inspector';
-import { useSyncEdits } from './sync';
+import { useSyncEdits } from './sync/index';
 import './block-selections';
 import './style.css';
 
@@ -28,9 +28,16 @@ export function Editor( { post, encryptionKey, ownerKey } ) {
 	const [ persistedPost, setPersistedPost ] = useState( post );
 	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
 
+	// This is in theory not needed but it seems
+	// BlockEditorProvider is buggy and sometimes,
+	// it calls old onChange handlers. Using a ref
+	// ensures that we're using the most up to date
+	// editedPost value.
+	const editedPostRef = useRef( post );
+	editedPostRef.current = editedPost;
 	const getPropertyChangeHandler = ( property ) => ( value ) => {
 		setEditedPost( {
-			...editedPost,
+			...editedPostRef.current,
 			[ property ]: value,
 		} );
 	};
