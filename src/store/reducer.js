@@ -1,7 +1,5 @@
 export function peers( state = {}, action ) {
 	switch ( action.type ) {
-		case 'SET_PEERS':
-			return action.peers;
 		case 'SET_PEER_SELECTION':
 			if ( ! state[ action.peer ] ) {
 				return state;

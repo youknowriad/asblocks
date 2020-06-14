@@ -1,10 +1,3 @@
-export function setPeers( peers ) {
-	return {
-		type: 'SET_PEERS',
-		peers,
-	};
-}
-
 export function setAvailablePeers( peers ) {
 	return {
 		type: 'SET_AVAILABLE_PEERS',

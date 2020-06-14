@@ -42,14 +42,13 @@ export function updateBlocksDoc( yDocBlocks, blocks, clientId = '' ) {
 	if ( ! yDocBlocks.has( 'order' ) ) {
 		yDocBlocks.set( 'order', new yjs.Map() );
 	}
-	let order = yDocBlocks.get( 'order', yjs.Map );
+	let order = yDocBlocks.get( 'order' );
 	if ( ! order.has( clientId ) ) order.set( clientId, new yjs.Array() );
 	order = order.get( clientId );
 	if ( ! yDocBlocks.has( 'byClientId' ) ) {
 		yDocBlocks.set( 'byClientId', new yjs.Map() );
 	}
-	const byClientId = yDocBlocks.get( 'byClientId', yjs.Map );
-
+	const byClientId = yDocBlocks.get( 'byClientId' );
 	const currentOrder = order.toArray();
 	const orderDiff = simpleDiff(
 		currentOrder,
@@ -81,10 +80,11 @@ export function updateBlocksDoc( yDocBlocks, blocks, clientId = '' ) {
 /**
  * Updates the post doc with the local post changes.
  *
- * @param {yjs.Map} postDoc Post doc.
+ * @param {yjs.Doc} doc     Shared doc.
  * @param {Object}  newPost Updated post.
  */
-export function updatePostDoc( postDoc, newPost ) {
+export function updatePostDoc( doc, newPost ) {
+	const postDoc = doc.get( 'post', yjs.Map );
 	if ( postDoc.get( 'id' ) !== newPost._id ) {
 		postDoc.set( 'id', newPost._id );
 	}
@@ -97,7 +97,7 @@ export function updatePostDoc( postDoc, newPost ) {
 	if ( ! postDoc.get( 'blocks', yjs.Map ) ) {
 		postDoc.set( 'blocks', new yjs.Map() );
 	}
-	updateBlocksDoc( postDoc.get( 'blocks', yjs.Map ), newPost.blocks || [] );
+	updateBlocksDoc( postDoc.get( 'blocks' ), newPost.blocks || [] );
 }
 
 /**
@@ -108,10 +108,13 @@ export function updatePostDoc( postDoc, newPost ) {
  * @return {Array} Block list.
  */
 export function blocksDocToArray( yDocBlocks, clientId = '' ) {
-	let order = yDocBlocks.get( 'order', yjs.Map );
+	if ( ! yDocBlocks ) {
+		return [];
+	}
+	let order = yDocBlocks.get( 'order' );
 	order = order.get( clientId )?.toArray();
 	if ( ! order ) return [];
-	const byClientId = yDocBlocks.get( 'byClientId', yjs.Map );
+	const byClientId = yDocBlocks.get( 'byClientId' );
 
 	return order.map( ( _clientId ) => ( {
 		...byClientId.get( _clientId ),
@@ -122,11 +125,12 @@ export function blocksDocToArray( yDocBlocks, clientId = '' ) {
 /**
  * Converts the post doc into a post object.
  *
- * @param {yjs.Map} postDoc Post doc.
+ * @param {yjs.Map} doc Shared doc.
  * @return {Object} Post object.
  */
-export function postDocToObject( postDoc ) {
-	const blocks = blocksDocToArray( postDoc.get( 'blocks', yjs.Map ) );
+export function postDocToObject( doc ) {
+	const postDoc = doc.get( 'post', yjs.Map );
+	const blocks = blocksDocToArray( postDoc.get( 'blocks' ) );
 
 	return {
 		_id: postDoc.get( 'id' ),
@@ -134,59 +138,4 @@ export function postDocToObject( postDoc ) {
 		title: postDoc.get( 'title' ) || '',
 		blocks,
 	};
-}
-
-export function getPostDoc( identity ) {
-	const doc = new yjs.Doc();
-
-	const ret = {
-		applyPostChange: ( newPost, origin ) => {
-			doc.transact( () => {
-				const postDoc = doc.get( 'post', yjs.Map );
-				updatePostDoc( postDoc, newPost );
-			}, origin );
-		},
-
-		onLocalUpdate: ( listener ) => {
-			const docListener = ( update, origin ) => {
-				if ( origin === identity ) {
-					listener( { yjs: update.toString() } );
-				}
-			};
-
-			doc.on( 'update', docListener );
-			return () => {
-				doc.off( 'update', docListener );
-			};
-		},
-
-		onRemotePostMerge: ( listener ) => {
-			const docListener = ( update, origin ) => {
-				if ( origin === identity ) {
-					return;
-				}
-				const postDoc = doc.get( 'post', yjs.Map );
-				listener( postDocToObject( postDoc ) );
-			};
-
-			doc.on( 'update', docListener );
-			return () => {
-				doc.off( 'update', docListener );
-			};
-		},
-
-		getUpdate: () => {
-			return { yjs: yjs.encodeStateAsUpdate( doc ).toString() };
-		},
-
-		applyChangeFromUpdate: ( { yjs: update }, origin ) => {
-			yjs.applyUpdate(
-				doc,
-				new Uint8Array( update.split( ',' ) ),
-				origin
-			);
-		},
-	};
-
-	return ret;
 }
