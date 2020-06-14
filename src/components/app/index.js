@@ -7,6 +7,7 @@ import { RouteRead } from '../route-read';
 import { clearCache } from '../../lib/data';
 import { LoadingPage } from '../loading-page';
 import { useDarkMode } from '../dark-mode-toggle';
+import { UpdateNotice } from '../update-notice';
 import './style.css';
 
 function ClearCacheOnNavigate() {
@@ -43,6 +44,10 @@ export function App() {
 					</Route>
 				</Suspense>
 			</Router>
+
+			<div className="app__notices">
+				<UpdateNotice />
+			</div>
 		</div>
 	);
 }
