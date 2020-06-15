@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import usePromise from 'react-promise-suspense';
 import {
 	BlockEditorKeyboardShortcuts,
 	BlockEditorProvider,
@@ -16,11 +17,16 @@ import { EditorHeader } from './header';
 import { PostTitleEditor } from './post-title-editor';
 import { Inspector } from './inspector';
 import { useSyncEdits } from './sync/index';
+import { ShareModal } from './share-modal';
+import { LoadingPage } from '../loading-page';
+import { keyToString } from '../../lib/crypto';
 import './block-selections';
 import './style.css';
 
 export function Editor( { post, encryptionKey, ownerKey } ) {
-	const [ editedPost, setEditedPost ] = useSyncEdits(
+	const stringKey = usePromise( keyToString, [ encryptionKey ] );
+	const [ isShareModalOpened, setIsShareModalOpened ] = useState( false );
+	const [ isEditable, editedPost, setEditedPost ] = useSyncEdits(
 		post,
 		encryptionKey,
 		ownerKey
@@ -51,7 +57,20 @@ export function Editor( { post, encryptionKey, ownerKey } ) {
 					onInput={ getPropertyChangeHandler( 'blocks' ) }
 					onChange={ getPropertyChangeHandler( 'blocks' ) }
 				>
-					<div className="editor">
+					{ isShareModalOpened && (
+						<ShareModal
+							onClose={ () => setIsShareModalOpened( false ) }
+							post={ persistedPost }
+							stringKey={ stringKey }
+							ownerKey={ ownerKey }
+						/>
+					) }
+					{ ! isEditable && <LoadingPage /> }
+					<div
+						className={ classnames( 'editor', {
+							'is-ready': isEditable,
+						} ) }
+					>
 						<div className="editor__main">
 							<div
 								className={ classnames( 'editor__header', {
@@ -75,6 +94,9 @@ export function Editor( { post, encryptionKey, ownerKey } ) {
 											status: newPersistedPost.status,
 										} );
 									} }
+									setIsShareModalOpened={
+										setIsShareModalOpened
+									}
 								/>
 							</div>
 							<Popover.Slot name="block-toolbar" />

@@ -12,6 +12,7 @@ export function createDocument( {
 	const doc = new yjs.Doc();
 	let state = 'off';
 	let listeners = [];
+	let stateListeners = [];
 
 	doc.on( 'update', ( update, origin ) => {
 		if ( origin === identity && state === 'on' ) {
@@ -28,6 +29,11 @@ export function createDocument( {
 		}
 	} );
 
+	const setState = ( newState ) => {
+		state = newState;
+		stateListeners.forEach( ( listener ) => listener( newState ) );
+	};
+
 	return {
 		applyDataChanges( data ) {
 			if ( state !== 'on' ) {
@@ -43,7 +49,7 @@ export function createDocument( {
 				throw 'wrong state';
 			}
 
-			state = 'connecting';
+			setState( 'connecting' );
 			const stateVector = yjs.encodeStateVector( doc );
 			sendMessage( {
 				protocol: 'yjs1',
@@ -54,7 +60,7 @@ export function createDocument( {
 		},
 
 		disconnect() {
-			state = 'off';
+			setState( 'off' );
 		},
 
 		startSharing( data ) {
@@ -62,7 +68,7 @@ export function createDocument( {
 				throw 'wrong state';
 			}
 
-			state = 'on';
+			setState( 'on' );
 			this.applyDataChanges( data );
 		},
 
@@ -94,7 +100,7 @@ export function createDocument( {
 						decodeArray( content.update ),
 						origin
 					);
-					state = 'on';
+					setState( 'on' );
 					break;
 				case 'syncUpdate':
 					yjs.applyUpdate(
@@ -111,6 +117,16 @@ export function createDocument( {
 
 			return () => {
 				listeners = listeners.filter( ( l ) => l !== listener );
+			};
+		},
+
+		onStateChange( listener ) {
+			stateListeners.push( listener );
+
+			return () => {
+				stateListeners = stateListeners.filter(
+					( l ) => l !== listener
+				);
 			};
 		},
 

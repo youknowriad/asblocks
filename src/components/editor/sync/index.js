@@ -9,6 +9,7 @@ import { createDocument } from '../../../lib/yjs-doc';
 export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 	const [ editedPost, setEditedPost ] = useState( initialPost );
 	const [ currentRoom, setCurrentRoom ] = useState( initialPost._id );
+	const [ isEditable, setIsEditable ] = useState( ! initialPost._id );
 	const doc = useRef();
 
 	// This is just a way to use the current value in hooks
@@ -68,29 +69,65 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 				sendSelection();
 			};
 
-			doc.current = createDocument( {
-				identity: socket.id,
-				applyDataChanges: updatePostDoc,
-				getData: postDocToObject,
-				sendMessage: sendDocMessage,
-			} );
+			const initDoc = () => {
+				doc.current = createDocument( {
+					identity: socket.id,
+					applyDataChanges: updatePostDoc,
+					getData: postDocToObject,
+					sendMessage: sendDocMessage,
+				} );
+
+				// Subscribe to remote data changes
+				const unsubscribeDataChange = doc.current.onRemoteDataChange(
+					( newPost ) => {
+						setEditedPost( newPost );
+					}
+				);
+
+				const unsubscribeStateChange = doc.current.onStateChange(
+					( newState ) => {
+						if ( newState === 'on' ) {
+							setIsEditable( true );
+						} else {
+							setIsEditable( false );
+						}
+					}
+				);
+
+				unsubscribe = () => {
+					unsubscribeDataChange();
+					unsubscribeStateChange();
+				};
+			};
 
 			socket.on( 'init-room', () => {
 				socket.emit( 'join-room', currentRoom );
-				doc.current.connect();
 			} );
 
 			socket.on( 'first-in-room', () => {
+				initDoc();
 				doc.current.startSharing( currentPost.current );
 				socket.off( 'first-in-room' );
 			} );
 
 			socket.on( 'room-user-change', ( newPeers ) => {
 				setAvailablePeers( newPeers );
+				// If I'm alone and not synced, I can start sharing
+				if (
+					newPeers.length === 1 &&
+					doc.current.getState() !== 'on'
+				) {
+					doc.current.startSharing();
+				}
 			} );
 
 			socket.on( 'new-user', async () => {
 				sendSelection();
+			} );
+
+			socket.on( 'welcome-in-room', async () => {
+				initDoc();
+				doc.current.connect();
 			} );
 
 			// A message has been received
@@ -125,11 +162,6 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 					doc.current.connect();
 				}
 			} );
-
-			// Subscribe to remote data changes
-			unsubscribe = doc.current.onRemoteDataChange( ( newPost ) => {
-				setEditedPost( newPost );
-			} );
 		} );
 
 		return () => {
@@ -149,6 +181,9 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 
 		if ( newPost._id !== currentRoom ) {
 			setCurrentRoom( newPost._id );
+			if ( ! newPost._id ) {
+				setIsEditable( true );
+			}
 		}
 
 		// This needs to be called synchronously
@@ -160,5 +195,5 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 		}
 	}
 
-	return [ editedPost, onChangePost ];
+	return [ isEditable, editedPost, onChangePost ];
 }
