@@ -1,10 +1,7 @@
 import { Inserter } from '@wordpress/block-editor';
 import { Button } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import { cog, share } from '@wordpress/icons';
 import { useSelect } from '@wordpress/data';
-import usePromise from 'react-promise-suspense';
-import { ShareModal } from '../share-modal';
 import { Logo } from '../../logo';
 import { useMutation } from '../../../lib/data';
 import { savePost, sharePost } from '../../../api/posts';
@@ -19,13 +16,12 @@ export function EditorHeader( {
 	encryptionKey,
 	ownerKey,
 	onPersist,
+	setIsShareModalOpened,
 } ) {
 	const peersCount = useSelect(
 		( select ) => Object.keys( select( 'asblocks' ).getPeers() ).length,
 		[]
 	);
-	const stringKey = usePromise( keyToString, [ encryptionKey ] );
-	const [ isShareModalOpened, setIsShareModalOpened ] = useState( false );
 	const { mutate: mutateShare, loading: isSharing } = useMutation(
 		sharePost
 	);
@@ -107,15 +103,6 @@ export function EditorHeader( {
 					</div>
 				) }
 			</div>
-
-			{ isShareModalOpened && (
-				<ShareModal
-					onClose={ () => setIsShareModalOpened( false ) }
-					post={ persistedPost }
-					stringKey={ stringKey }
-					ownerKey={ ownerKey }
-				/>
-			) }
 		</div>
 	);
 }

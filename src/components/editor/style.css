@@ -3,6 +3,11 @@
 	display: flex;
 }
 
+.editor:not(.is-ready) {
+	visibility: hidden;
+	height: 0;
+}
+
 .editor__main {
 	position: relative;
 	flex-grow: 1;
