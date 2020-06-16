@@ -1,0 +1,49 @@
+.editor-comments {
+    position: relative;
+    
+}
+
+.editor-comments__item {
+    position: absolute;
+    left: 0;
+    right: var(--grid-unit);
+    overflow: hidden;
+    padding: calc( var(--grid-unit) / 2 );
+    box-sizing: border-box;
+    opacity: 0.6;
+}
+
+.editor-comments__item.is-selected {
+    border: 1px solid black;
+    border-radius: 2px;
+    opacity: 1;
+}
+
+.editor-comments__item.is-selected .block-editor-rich-text__editable {
+    margin-bottom: calc( var(--grid-unit) / 2 );
+}
+
+.editor-comments__item:not(.is-selected) {
+    /* This should match the height used in the positions algo */
+    height: 45px;
+    transform: scale(0.9);
+    transform-origin: center center;
+    cursor: pointer;
+}
+
+.editor-comments__item:not(.is-selected)::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-image: linear-gradient(
+        to top, 
+        0% rgba(255,255,255,1), 
+        50% rgba(255,255,255,1), 
+        100% rgba(255,255,255,0)
+    );
+    z-index: 1;
+    pointer-events: none;
+} 

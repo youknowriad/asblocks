@@ -1,3 +1,5 @@
+import { useDispatch } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 import { v4 as uuidv4 } from 'uuid';
 import usePromise from 'react-promise-suspense';
 import { Editor } from '../editor';
@@ -9,6 +11,10 @@ export function RouteNew() {
 	const post = {
 		status: 'auto-draft',
 	};
+	const { persist } = useDispatch( 'asblocks' );
+	useEffect( () => {
+		persist( { status: 'auto-draft' } );
+	}, [] );
 
 	return (
 		<Editor

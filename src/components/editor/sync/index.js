@@ -6,27 +6,38 @@ import { config } from '../../../config/index';
 import { postDocToObject, updatePostDoc } from './algorithms/yjs';
 import { createDocument } from '../../../lib/yjs-doc';
 
-export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
-	const [ editedPost, setEditedPost ] = useState( initialPost );
-	const [ currentRoom, setCurrentRoom ] = useState( initialPost._id );
-	const [ isEditable, setIsEditable ] = useState( ! initialPost._id );
+export function useSyncEdits( encryptionKey, ownerKey ) {
+	const [ isEditable, setIsEditable ] = useState( false );
 	const doc = useRef();
+
+	const {
+		getSelectionStart,
+		getSelectionEnd,
+		editedPost,
+		currentRoom,
+	} = useSelect( ( select ) => {
+		return {
+			getSelectionStart: select( 'core/block-editor' ).getSelectionStart,
+			getSelectionEnd: select( 'core/block-editor' ).getSelectionEnd,
+			editedPost: select( 'asblocks' ).getEdited(),
+			currentRoom: select( 'asblocks' ).getPersisted()._id,
+		};
+	}, [] );
+	const {
+		setPeerSelection,
+		setAvailablePeers,
+		edit,
+		setSharedDoc,
+	} = useDispatch( 'asblocks' );
 
 	// This is just a way to use the current value in hooks
 	// that don't change when the value changes.
 	const currentPost = useRef( editedPost );
 	currentPost.current = editedPost;
 
-	const { getSelectionStart, getSelectionEnd } = useSelect( ( select ) => {
-		return {
-			getSelectionStart: select( 'core/block-editor' ).getSelectionStart,
-			getSelectionEnd: select( 'core/block-editor' ).getSelectionEnd,
-		};
-	}, [] );
-	const { setPeerSelection, setAvailablePeers } = useDispatch( 'asblocks' );
-
 	useEffect( () => {
 		if ( ! currentRoom ) {
+			setIsEditable( true );
 			return;
 		}
 
@@ -77,11 +88,11 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 					sendMessage: sendDocMessage,
 				} );
 
+				setSharedDoc( doc.current );
+
 				// Subscribe to remote data changes
 				const unsubscribeDataChange = doc.current.onRemoteDataChange(
-					( newPost ) => {
-						setEditedPost( newPost );
-					}
+					( changes ) => edit( changes, true )
 				);
 
 				const unsubscribeStateChange = doc.current.onStateChange(
@@ -168,32 +179,26 @@ export function useSyncEdits( initialPost, encryptionKey, ownerKey ) {
 			if ( unsubscribe ) {
 				unsubscribe();
 				doc.current = null;
+				setSharedDoc( null );
 			}
 			socket.close();
 		};
 	}, [ currentRoom ] );
 
 	// Local change handler
-	async function onChangePost( newPost ) {
-		if ( newPost === editedPost ) {
-			return;
-		}
+	async function editProperties( changes ) {
+		const hasChanges = Object.entries( changes ).some(
+			( [ key, value ] ) => value !== currentPost.current[ key ]
+		);
 
-		if ( newPost._id !== currentRoom ) {
-			setCurrentRoom( newPost._id );
-			if ( ! newPost._id ) {
-				setIsEditable( true );
-			}
+		if ( ! hasChanges ) {
+			return;
 		}
 
 		// This needs to be called synchronously
 		// otherwise we might have selection jumps in the editor
-		setEditedPost( newPost );
-
-		if ( doc.current && doc.current.getState() === 'on' ) {
-			doc.current.applyDataChanges( newPost );
-		}
+		edit( changes );
 	}
 
-	return [ isEditable, editedPost, onChangePost ];
+	return [ isEditable, editedPost, editProperties ];
 }

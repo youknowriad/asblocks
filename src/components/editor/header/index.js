@@ -1,7 +1,7 @@
 import { Inserter } from '@wordpress/block-editor';
 import { Button } from '@wordpress/components';
 import { cog, share } from '@wordpress/icons';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { Logo } from '../../logo';
 import { useMutation } from '../../../lib/data';
 import { savePost, sharePost } from '../../../api/posts';
@@ -9,40 +9,48 @@ import { keyToString } from '../../../lib/crypto';
 import './style.css';
 
 export function EditorHeader( {
-	persistedPost,
-	editedPost,
+	//	persistedPost,
+	//	editedPost,
 	isInspectorOpened,
 	onOpenInspector,
+	setIsShareModalOpened,
 	encryptionKey,
 	ownerKey,
-	onPersist,
-	setIsShareModalOpened,
+	//	onPersist,
 } ) {
-	const peersCount = useSelect(
-		( select ) => Object.keys( select( 'asblocks' ).getPeers() ).length,
+	const { peersCount, isShared, isDirty, getEdits, getPersisted } = useSelect(
+		( select ) => {
+			return {
+				peersCount: Object.keys( select( 'asblocks' ).getPeers() )
+					.length,
+				isShared: select( 'asblocks' ).isShared(),
+				isDirty: select( 'asblocks' ).isDirty(),
+				getEdits: select( 'asblocks' ).getEdits,
+				getPersisted: select( 'asblocks' ).getPersisted,
+			};
+		},
 		[]
 	);
+	const { persist } = useDispatch( 'asblocks' );
 	const { mutate: mutateShare, loading: isSharing } = useMutation(
 		sharePost
 	);
 	const { mutate: mutateSave, loading: isSaving } = useMutation( savePost );
 
-	const isShared = persistedPost.status === 'publish';
-	const isDirty = editedPost !== persistedPost;
-
 	const triggerSave = async () => {
+		const edits = getEdits();
 		const { data: persisted } = await mutateSave(
-			editedPost,
+			{ ...getPersisted(), ...edits },
 			encryptionKey,
 			ownerKey
 		);
-		onPersist( persisted );
+		persist( persisted, edits );
 	};
 
 	const triggerShare = async () => {
 		const { data: persisted } = await mutateShare( ownerKey );
 		const newStringKey = await keyToString( encryptionKey );
-		onPersist( persisted );
+		persist( persisted );
 		window.history.replaceState(
 			{ id: persisted._id },
 			'Post ' + persisted._id,
