@@ -24,7 +24,6 @@ import { keyToString } from '../../lib/crypto';
 import './filters';
 import './formats';
 import './style.css';
-import { serialize } from '@wordpress/blocks';
 
 export function Editor( { encryptionKey, ownerKey } ) {
 	const stringKey = usePromise( keyToString, [ encryptionKey ] );

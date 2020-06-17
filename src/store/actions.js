@@ -1,5 +1,4 @@
 import { select } from '@wordpress/data-controls';
-import { serialize } from '@wordpress/blocks';
 
 export function setAvailablePeers( peers ) {
 	return {
