@@ -1,4 +1,4 @@
-const COMMENT_HEIGHT = 45;
+const COMMENT_HEIGHT = 70;
 
 function getBlockDOMNode( clientId ) {
 	return document.getElementById( 'block-' + clientId );

@@ -5,8 +5,8 @@ import { RouteNew } from '../route-new';
 import { RouteWrite } from '../route-write';
 import { RouteRead } from '../route-read';
 import { clearCache } from '../../lib/data';
+import { useDarkMode } from '../../local-storage';
 import { LoadingPage } from '../loading-page';
-import { useDarkMode } from '../dark-mode-toggle';
 import { UpdateNotice } from '../update-notice';
 import './style.css';
 

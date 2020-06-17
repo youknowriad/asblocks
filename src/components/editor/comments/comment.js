@@ -1,5 +1,7 @@
+import classnames from 'classnames';
 import { PlainText } from '@wordpress/block-editor';
 import { Button, withFocusOutside } from '@wordpress/components';
+import { Icon, people } from '@wordpress/icons';
 import { useDispatch } from '@wordpress/data';
 import {
 	useState,
@@ -9,6 +11,7 @@ import {
 	useEffect,
 } from '@wordpress/element';
 import { ENTER, SPACE } from '@wordpress/keycodes';
+import { useAuthorId } from '../../../local-storage';
 
 export const UnselectedComment = withFocusOutside(
 	forwardRef( ( { comment, position }, ref ) => {
@@ -37,17 +40,27 @@ export const UnselectedComment = withFocusOutside(
 					}
 				} }
 			>
-				{ comment.content }
+				{ comment.authorName && (
+					<div className="editor-comments__item-author">
+						<Icon icon={ people } />
+						{ comment.authorName }
+					</div>
+				) }
+				<div className="editor-comments__item-content">
+					{ comment.content }
+				</div>
 			</div>
 		);
 	} )
 );
 
 export function SelectedComment( { comment, position } ) {
+	const [ authorId ] = useAuthorId();
 	const { updateComment, removeComment } = useDispatch( 'asblocks' );
 	const [ editedContent, setContent ] = useState( comment.content );
 	const textarea = useRef();
-	const isDraft = comment.status === 'draft';
+	const isBeingEdited =
+		comment.status === 'draft' && authorId === comment.authorId;
 	const update = ( event ) => {
 		event.preventDefault();
 		updateComment( comment._id, {
@@ -60,17 +73,25 @@ export function SelectedComment( { comment, position } ) {
 		removeComment( comment._id );
 	};
 	useEffect( () => {
-		if ( isDraft ) {
+		if ( isBeingEdited ) {
 			textarea.current.focus();
 		}
-	}, [] );
+	}, [ isBeingEdited ] );
 
 	return (
 		<div
-			className="editor-comments__item is-selected"
+			className={ classnames( 'editor-comments__item is-selected', {
+				'is-editing': isBeingEdited,
+			} ) }
 			style={ { top: position } }
 		>
-			{ isDraft && (
+			{ ! isBeingEdited && comment.authorName && (
+				<div className="editor-comments__item-author">
+					<Icon icon={ people } />
+					{ comment.authorName }
+				</div>
+			) }
+			{ isBeingEdited && (
 				<form onSubmit={ update }>
 					<PlainText
 						ref={ textarea }
@@ -87,7 +108,11 @@ export function SelectedComment( { comment, position } ) {
 					</Button>
 				</form>
 			) }
-			{ ! isDraft && comment.content }
+			{ ! isBeingEdited && (
+				<div className="editor-comments__item-content">
+					{ comment.content }
+				</div>
+			) }
 		</div>
 	);
 }

@@ -8,6 +8,7 @@ import { RichTextToolbarButton } from '@wordpress/block-editor';
 import { comment } from '@wordpress/icons';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
+import { useAuthorId, useAuthorName } from '../../../../local-storage';
 import './style.css';
 
 const FORMAT_NAME = 'asblocks/comment';
@@ -48,6 +49,8 @@ const settings = {
 		className: 'class',
 	},
 	edit: function CommentEdit( { isActive } ) {
+		const [ authorId ] = useAuthorId();
+		const [ authorName ] = useAuthorName();
 		const { addComment, selectComment } = useDispatch( 'asblocks' );
 		const {
 			selectionStart,
@@ -73,6 +76,8 @@ const settings = {
 				_id: uuidv4(),
 				content: '',
 				status: 'draft',
+				authorId,
+				authorName,
 			} );
 		}
 		useEffect( () => {
