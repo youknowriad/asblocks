@@ -39,20 +39,22 @@
 	display: grid;
 	grid-gap: var(--grid-unit);
 	grid-template-columns: 1fr;
-	grid-template-areas: 'center';
+	grid-template-areas: "center";
 }
 
 @media (min-width: 1000px) {
+
 	.editor__canvas {
 		grid-template-columns: 200px 1fr 200px;
-		grid-template-areas: 'left center right';
+		grid-template-areas: "left center right";
 	}
 }
 
 @media (min-width: 1200px) {
+
 	.editor__canvas {
 		grid-template-columns: 320px 1fr 320px;
-		grid-template-areas: 'left center right';
+		grid-template-areas: "left center right";
 	}
 }
 
@@ -75,10 +77,11 @@
 }
 
 @media (min-width: 1000px) {
+
 	.editor__comments {
 		display: block;
 	}
-}	
+}
 
 .editor__sidebar {
 	position: fixed;

@@ -1,84 +1,79 @@
 .editor-comments {
-    position: relative;
-    
+	position: relative;
 }
 
 .editor-comments__item {
-    position: absolute;
-    left: 0;
-    right: var(--grid-unit);
-    overflow: hidden;
-    padding: calc( var(--grid-unit) / 4 ) calc( var(--grid-unit) / 2 );
-    box-sizing: border-box;
-    opacity: 0.6;
+	position: absolute;
+	left: 0;
+	right: var(--grid-unit);
+	overflow: hidden;
+	padding: calc(var(--grid-unit) / 4) calc(var(--grid-unit) / 2);
+	box-sizing: border-box;
+	opacity: 0.6;
 }
 
 .editor-comments__item.is-selected {
-    border-radius: 2px;
-    opacity: 1;
+	border-radius: 2px;
+	opacity: 1;
 }
 
 .editor-comments__item.is-selected:not(.is-editing)::after {
-    position: absolute;
-    content: '';
-    top: calc( var(--grid-unit) / 2 );
-    bottom: calc( var(--grid-unit) / 2 );
-    left: 0;
-    width: 1px;
-    background: var(--theme-color);
+	position: absolute;
+	content: "";
+	top: calc(var(--grid-unit) / 2);
+	bottom: calc(var(--grid-unit) / 2);
+	left: 0;
+	width: 1px;
+	background: var(--theme-color);
 }
 
 .editor-comments__item.is-selected .block-editor-rich-text__editable {
-    margin-bottom: calc( var(--grid-unit) / 2 );
+	margin-bottom: calc(var(--grid-unit) / 2);
 }
 
 .editor-comments__item:not(.is-selected) {
-    /* This should match the height used in the positions algo */
-    height: 70px;
-    transform: scale(0.9);
-    transform-origin: center center;
-    cursor: pointer;
+
+	/* This should match the height used in the positions algo */
+	height: 70px;
+	transform: scale(0.9);
+	transform-origin: center center;
+	cursor: pointer;
 }
 
 .editor-comments__item:not(.is-selected)::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    background-image: linear-gradient(
-        to top, 
-        0% rgba(255,255,255,1), 
-        50% rgba(255,255,255,1), 
-        100% rgba(255,255,255,0)
-    );
-    z-index: 1;
-    pointer-events: none;
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	background-image: linear-gradient(to top, 0% rgba(255, 255, 255, 1), 50% rgba(255, 255, 255, 1), 100% rgba(255, 255, 255, 0));
+	z-index: 1;
+	pointer-events: none;
 }
 
 .editor-comments__item-author {
-    display: flex;
-    align-items: center;
-    font-size: 0.9em;
-    font-weight: bold;
-    color: var(--theme-color);
+	display: flex;
+	align-items: center;
+	font-size: 0.9em;
+	font-weight: 700;
+	color: var(--theme-color);
 }
 
 .editor-comments__item-author svg {
-    margin-right: calc( var(--grid-unit) / 2 );
+	margin-right: calc(var(--grid-unit) / 2);
 }
 
 .editor-comments__item-author-name {
-    flex-grow: 1;
-    padding-right: calc( var(--grid-unit) / 2 );
+	flex-grow: 1;
+	padding-right: calc(var(--grid-unit) / 2);
 }
 
 
 .editor-comments__item-content {
-   margin-left: calc( (var(--grid-unit) / 2 ) + 24px );
+	margin-left: calc((var(--grid-unit) / 2 ) + 24px);
 }
 
 .editor-comments__item-author + .editor-comments__item-content {
-    margin-top: -5px;
+	margin-top: -5px;
 }
