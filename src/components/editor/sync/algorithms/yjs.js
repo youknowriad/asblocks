@@ -82,7 +82,8 @@ export function updateCommentsDoc( commentsDoc, comments = [] ) {
 		const existingComment = commentsDoc.get( comment._id );
 		if (
 			! existingComment ||
-			existingComment.content !== comment.content
+			existingComment.content !== comment.content ||
+			existingComment.status !== comment.status
 		) {
 			commentsDoc.set( comment._id, comment );
 		}

@@ -65,7 +65,11 @@ export const getSortedComments = createSelector(
 		};
 		const blockIndexes = flattenBlocks( edited.blocks ).orders;
 		return edited.comments
-			.filter( ( c ) => blockIndexes[ c.start.clientId ] !== undefined )
+			.filter(
+				( c ) =>
+					c.status !== 'resolved' &&
+					blockIndexes[ c.start.clientId ] !== undefined
+			)
 			.sort( ( c1, c2 ) => {
 				const diff =
 					blockIndexes[ c1.start.clientId ] -

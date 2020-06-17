@@ -58,17 +58,22 @@
 }
 
 .editor-comments__item-author {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     font-size: 0.9em;
     font-weight: bold;
     color: var(--theme-color);
 }
 
-
 .editor-comments__item-author svg {
     margin-right: calc( var(--grid-unit) / 2 );
 }
+
+.editor-comments__item-author-name {
+    flex-grow: 1;
+    padding-right: calc( var(--grid-unit) / 2 );
+}
+
 
 .editor-comments__item-content {
    margin-left: calc( (var(--grid-unit) / 2 ) + 24px );

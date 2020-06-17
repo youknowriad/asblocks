@@ -129,6 +129,7 @@ const settings = {
 			.getEditedProperty( 'comments' )
 			?.filter( ( c ) => {
 				return (
+					c.status !== 'resolved' &&
 					c.start?.clientId === blockClientId &&
 					c.end?.clientId === blockClientId &&
 					c.start.attributeKey === richTextIdentifier

@@ -72,6 +72,12 @@ export function SelectedComment( { comment, position } ) {
 	const cancel = () => {
 		removeComment( comment._id );
 	};
+	const resolve = () => {
+		updateComment( comment._id, {
+			...comment,
+			status: 'resolved',
+		} );
+	};
 	useEffect( () => {
 		if ( isBeingEdited ) {
 			textarea.current.focus();
@@ -88,7 +94,12 @@ export function SelectedComment( { comment, position } ) {
 			{ ! isBeingEdited && comment.authorName && (
 				<div className="editor-comments__item-author">
 					<Icon icon={ people } />
-					{ comment.authorName }
+					<span className="editor-comments__item-author-name">
+						{ comment.authorName }
+					</span>
+					<Button isSecondary isSmall onClick={ resolve }>
+						Resolve
+					</Button>
 				</div>
 			) }
 			{ isBeingEdited && (
