@@ -17,12 +17,19 @@ jobs:
       - name: Copy sample config
         run: cp src/config/index.sample.js src/config/index.js
 
-      - name: Replace secrets
+      - name: Replace secrets (server)
         uses: jwsi/secret-parser@v1
         with:
           filename: src/config/index.js
           secret-name: COLLAB_SERVER
           secret-value: ${{ secrets.COLLAB_SERVER }}
+
+      - name: Replace secrets (sentry)
+        uses: jwsi/secret-parser@v1
+        with:
+          filename: src/config/index.js
+          secret-name: SENTRY_DSN
+          secret-value: ${{ secrets.SENTRY_DSN }}
 
       - run: npm install
       - run: npm run build
