@@ -14,15 +14,33 @@ function BlockCommentsControls( { clientId } ) {
 		getSelectedComment,
 		selectionStart,
 		selectionEnd,
-	} = useSelect(
-		( select ) => ( {
+		selectedText,
+	} = useSelect( ( select ) => {
+		const _selectionEnd = select( 'core/block-editor' ).getSelectionEnd();
+		const _selectionStart = select(
+			'core/block-editor'
+		).getSelectionStart();
+
+		let _selectedText = null;
+		const { offset: startOffset, attributeKey } = _selectionStart;
+		const { offset: endOffset } = _selectionEnd;
+
+		// we only support storing text now.
+		if ( attributeKey === 'content' ) {
+			const block = select( 'core/block-editor' ).getBlock( clientId );
+			_selectedText = block.attributes[ attributeKey ].slice(
+				startOffset,
+				endOffset
+			);
+		}
+		return {
 			getEditedProperty: select( 'asblocks' ).getEditedProperty,
 			getSelectedComment: select( 'asblocks' ).getSelectedComment,
-			selectionEnd: select( 'core/block-editor' ).getSelectionEnd(),
-			selectionStart: select( 'core/block-editor' ).getSelectionStart(),
-		} ),
-		[]
-	);
+			selectionEnd: _selectionEnd,
+			selectionStart: _selectionStart,
+			selectedText: _selectedText,
+		};
+	}, [] );
 
 	const { addComment, selectComment } = useDispatch( 'asblocks' );
 	const [ authorId ] = useAuthorId();
@@ -31,6 +49,7 @@ function BlockCommentsControls( { clientId } ) {
 		addComment( {
 			start: selectionStart,
 			end: selectionEnd,
+			context: selectedText,
 			type: 'block',
 			_id: uuidv4(),
 			content: '',
