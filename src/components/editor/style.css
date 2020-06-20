@@ -71,14 +71,14 @@
 	width: 100%;
 }
 
-.editor__comments {
+.editor__comments-sidebar {
 	display: none;
 	grid-area: right;
 }
 
 @media (min-width: 1000px) {
 
-	.editor__comments {
+	.editor__comments-sidebar {
 		display: block;
 	}
 }

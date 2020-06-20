@@ -85,6 +85,41 @@ export const getSortedComments = createSelector(
 	( state ) => [ state.persisted, state.edits ]
 );
 
+export const getUnattachedComments = createSelector(
+	( state ) => {
+		const edited = getEdited( state );
+		if ( ! edited.comments ) {
+			return [];
+		}
+		const flattenBlocks = ( blocks = [], start = 0 ) => {
+			let index = start;
+			let orders = {};
+			blocks.forEach( ( block ) => {
+				orders[ block.clientId ] = index;
+				index++;
+				const { index: newIndex, orders: newOrders } = flattenBlocks(
+					block.innerBlocks,
+					index
+				);
+				index = newIndex;
+				orders = {
+					...orders,
+					...newOrders,
+				};
+			} );
+
+			return { index, orders };
+		};
+		const blockIndexes = flattenBlocks( edited.blocks ).orders;
+		return edited.comments.filter(
+			( c ) =>
+				c.status !== 'resolved' &&
+				blockIndexes[ c.start.clientId ] === undefined
+		);
+	},
+	( state ) => [ state.persisted, state.edits ]
+);
+
 export function getSelectedComment( state ) {
 	return state.selectedComment;
 }

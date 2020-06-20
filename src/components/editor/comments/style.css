@@ -77,3 +77,24 @@
 .editor-comments__item-author + .editor-comments__item-content {
 	margin-top: -5px;
 }
+
+.editor-comments__unattached {
+	position: fixed;
+	bottom: var(--grid-unit);
+	right: var(--grid-unit);
+	font-size: 0.8em;
+	background: #fff;
+}
+
+.editor-comments__unattached-content .editor-comments__item {
+	position: relative;
+	height: auto;
+	margin-top: var(--grid-unit);
+}
+
+.editor-comments__unattached-content-info {
+	margin: 0;
+	padding: 0;
+	font-style: italic;
+	font-size: 0.9em;
+}
