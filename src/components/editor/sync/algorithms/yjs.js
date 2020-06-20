@@ -77,6 +77,19 @@ export function updateBlocksDoc( yDocBlocks, blocks, clientId = '' ) {
 	}
 }
 
+export function updateCommentsDoc( commentsDoc, comments = [] ) {
+	comments.forEach( ( comment ) => {
+		const existingComment = commentsDoc.get( comment._id );
+		if (
+			! existingComment ||
+			existingComment.content !== comment.content ||
+			existingComment.status !== comment.status
+		) {
+			commentsDoc.set( comment._id, comment );
+		}
+	} );
+}
+
 /**
  * Updates the post doc with the local post changes.
  *
@@ -85,12 +98,6 @@ export function updateBlocksDoc( yDocBlocks, blocks, clientId = '' ) {
  */
 export function updatePostDoc( doc, newPost ) {
 	const postDoc = doc.get( 'post', yjs.Map );
-	if ( postDoc.get( 'id' ) !== newPost._id ) {
-		postDoc.set( 'id', newPost._id );
-	}
-	if ( postDoc.get( 'status' ) !== newPost.status ) {
-		postDoc.set( 'status', newPost.status );
-	}
 	if ( postDoc.get( 'title' ) !== newPost.title ) {
 		postDoc.set( 'title', newPost.title );
 	}
@@ -98,6 +105,18 @@ export function updatePostDoc( doc, newPost ) {
 		postDoc.set( 'blocks', new yjs.Map() );
 	}
 	updateBlocksDoc( postDoc.get( 'blocks' ), newPost.blocks || [] );
+	if ( ! postDoc.get( 'comments', yjs.Map ) ) {
+		postDoc.set( 'comments', new yjs.Map() );
+	}
+	updateCommentsDoc( postDoc.get( 'comments' ), newPost.comments );
+}
+
+export function commentsDocToArray( commentsDoc ) {
+	if ( ! commentsDoc ) {
+		return [];
+	}
+
+	return Object.values( commentsDoc.toJSON() );
 }
 
 /**
@@ -131,11 +150,11 @@ export function blocksDocToArray( yDocBlocks, clientId = '' ) {
 export function postDocToObject( doc ) {
 	const postDoc = doc.get( 'post', yjs.Map );
 	const blocks = blocksDocToArray( postDoc.get( 'blocks' ) );
+	const comments = commentsDocToArray( postDoc.get( 'comments' ) );
 
 	return {
-		_id: postDoc.get( 'id' ),
-		status: postDoc.get( 'status' ),
 		title: postDoc.get( 'title' ) || '',
 		blocks,
+		comments,
 	};
 }

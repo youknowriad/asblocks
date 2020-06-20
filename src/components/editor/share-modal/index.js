@@ -1,12 +1,19 @@
-import { Modal, Button } from '@wordpress/components';
+import { Modal, Button, TextControl } from '@wordpress/components';
 import { Icon, check, info } from '@wordpress/icons';
 import { useRef } from '@wordpress/element';
 import { useCopyOnClick } from '@wordpress/compose';
+import { useSelect } from '@wordpress/data';
 import './style.css';
+import { useAuthorName } from '../../../local-storage';
 
-export function ShareModal( { onClose, post, ownerKey, stringKey } ) {
-	const editURL = `${ location.origin }/write/${ post._id }/${ ownerKey }#key=${ stringKey }`;
-	const readURL = `${ location.origin }/read/${ post._id }#key=${ stringKey }`;
+export function ShareModal( { onClose, ownerKey, stringKey } ) {
+	const [ authorName, setAuthorName ] = useAuthorName();
+	const postId = useSelect(
+		( select ) => select( 'asblocks' ).getPersisted()._id,
+		[]
+	);
+	const editURL = `${ location.origin }/write/${ postId }/${ ownerKey }#key=${ stringKey }`;
+	const readURL = `${ location.origin }/read/${ postId }#key=${ stringKey }`;
 	const editButton = useRef();
 	const readButton = useRef();
 	const isCopiedEdit = useCopyOnClick( editButton, editURL );
@@ -42,6 +49,15 @@ export function ShareModal( { onClose, post, ownerKey, stringKey } ) {
 						</Button>
 					</div>
 				</div>
+			</div>
+
+			<div className="editor-share-modal__name">
+				<TextControl
+					label="Your Name"
+					value={ authorName }
+					onChange={ setAuthorName }
+					help="Identify yourself on the collaborative discussions."
+				/>
 			</div>
 
 			<div className="editor-share-modal__footer">

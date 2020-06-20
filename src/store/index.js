@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { registerStore } from '@wordpress/data';
+import { controls } from '@wordpress/data-controls';
 
 /**
  * Internal dependencies
@@ -19,6 +20,7 @@ const store = registerStore( MODULE_KEY, {
 	reducer,
 	selectors,
 	actions,
+	controls,
 } );
 
 export default store;

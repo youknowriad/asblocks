@@ -1,3 +1,5 @@
+import { useDispatch } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 import usePromise from 'react-promise-suspense';
 import { useParams } from 'react-router-dom';
 import { Editor } from '../editor';
@@ -10,11 +12,9 @@ export function RouteWrite() {
 	const stringKey = window.location.hash.slice( '#key='.length );
 	const encryptionKey = usePromise( stringToKey, [ stringKey ] );
 	const post = useSuspendedApi( fetchPost, [ id, encryptionKey ] );
-	return (
-		<Editor
-			post={ post }
-			encryptionKey={ encryptionKey }
-			ownerKey={ ownerKey }
-		/>
-	);
+	const { persist } = useDispatch( 'asblocks' );
+	useEffect( () => {
+		persist( post );
+	}, [ post ] );
+	return <Editor encryptionKey={ encryptionKey } ownerKey={ ownerKey } />;
 }

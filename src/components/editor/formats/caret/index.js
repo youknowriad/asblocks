@@ -1,8 +1,6 @@
-/**
- * WordPress dependencies
- */
 import classnames from 'classnames';
 import { applyFormat, registerFormatType } from '@wordpress/rich-text';
+import './style.css';
 
 const FORMAT_NAME = 'asblocks/caret';
 
@@ -82,7 +80,7 @@ export const settings = {
 	},
 	__experimentalCreatePrepareEditableTree( { carets } ) {
 		return ( formats, text ) => {
-			if ( carets.length === 0 ) {
+			if ( ! carets?.length ) {
 				return formats;
 			}
 

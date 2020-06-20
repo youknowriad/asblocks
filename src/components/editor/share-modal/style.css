@@ -1,3 +1,26 @@
+.editor-share-modal__name {
+	border-top: 1px solid #e4e4e4;
+	padding-top: calc(var(--grid-unit) * 2);
+	margin-top: calc(var(--grid-unit) * 2);
+}
+
+.editor-share-modal__name .components-base-control__field {
+	display: flex;
+	align-items: center;
+}
+
+.editor-share-modal__name .components-base-control__label {
+	flex-shrink: 0;
+	width: 90px;
+	margin-bottom: 0;
+}
+
+.editor-share-modal__name .components-base-control__help.components-base-control__help {
+	margin-left: 90px;
+	margin-bottom: 0;
+	color: #777;
+}
+
 .editor-share-modal__links {
 	display: grid;
 	grid-template-rows: 1fr;
@@ -30,7 +53,7 @@
 }
 
 .editor-share-modal__footer {
-	margin-top: calc(var(--grid-unit) * 2);
+	margin-top: var(--grid-unit);
 	border-top: 1px solid #e4e4e4;
 	padding: var(--grid-unit) 0;
 }
