@@ -2,13 +2,7 @@
  * WordPress dependencies
  */
 import classnames from 'classnames';
-import { v4 as uuidv4 } from 'uuid';
 import { registerFormatType, applyFormat } from '@wordpress/rich-text';
-import { RichTextToolbarButton } from '@wordpress/block-editor';
-import { comment } from '@wordpress/icons';
-import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
-import { useAuthorId, useAuthorName } from '../../../../local-storage';
 import './style.css';
 
 const FORMAT_NAME = 'asblocks/comment';
@@ -47,77 +41,6 @@ const settings = {
 	className: 'asblocks-comment',
 	attributes: {
 		className: 'class',
-	},
-	edit: function CommentEdit( { isActive } ) {
-		const [ authorId ] = useAuthorId();
-		const [ authorName ] = useAuthorName();
-		const { addComment, selectComment } = useDispatch( 'asblocks' );
-		const {
-			selectionStart,
-			selectionEnd,
-			getEditedProperty,
-			getSelectedComment,
-		} = useSelect(
-			( select ) => ( {
-				selectionEnd: select( 'core/block-editor' ).getSelectionEnd(),
-				selectionStart: select(
-					'core/block-editor'
-				).getSelectionStart(),
-				getEditedProperty: select( 'asblocks' ).getEditedProperty,
-				getSelectedComment: select( 'asblocks' ).getSelectedComment,
-			} ),
-			[]
-		);
-		function onClick() {
-			addComment( {
-				start: selectionStart,
-				end: selectionEnd,
-				type: 'format',
-				_id: uuidv4(),
-				content: '',
-				status: 'draft',
-				authorId,
-				authorName,
-			} );
-		}
-		useEffect( () => {
-			if (
-				selectionStart.blockClientId !== selectionEnd.blockClientId ||
-				selectionStart.richTextIdentifier !==
-					selectionEnd.richTextIdentifier ||
-				selectionStart.offset !== selectionEnd.offset
-			) {
-				return;
-			}
-			const comments = getEditedProperty( 'comments' );
-			const selectedComment = getSelectedComment();
-			const newSelectedComment = comments?.find( ( c ) => {
-				return (
-					c.start?.clientId === selectionStart.clientId &&
-					c.start.attributeKey === selectionStart.attributeKey &&
-					c.start.offset <= selectionStart.offset &&
-					c.end.offset >= selectionStart.offset
-				);
-			} );
-			if (
-				newSelectedComment &&
-				newSelectedComment._id !== selectedComment
-			) {
-				selectComment( newSelectedComment._id );
-			}
-		}, [ selectionStart, selectionEnd ] );
-
-		return (
-			<>
-				<RichTextToolbarButton
-					name="bold"
-					icon={ comment }
-					title="Add a comment"
-					onClick={ onClick }
-					isActive={ isActive }
-				/>
-			</>
-		);
 	},
 
 	__experimentalGetPropsForEditableTreePreparation(

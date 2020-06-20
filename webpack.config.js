@@ -1,4 +1,4 @@
-const path = require( 'path' );
+const { resolve } = require( 'path' );
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 const ReactRefreshWebpackPlugin = require( '@pmmmwh/react-refresh-webpack-plugin' );
@@ -9,7 +9,7 @@ module.exports = {
 	entry: './src/index.js',
 	output: {
 		filename: 'main.js',
-		path: path.resolve( __dirname, 'dist' ),
+		path: resolve( __dirname, 'dist' ),
 		publicPath: '/',
 	},
 	devServer: {
@@ -27,6 +27,30 @@ module.exports = {
 	].filter( Boolean ),
 	module: {
 		rules: [
+			{
+				test: /\.js$/,
+				oneOf: [
+					{
+						resourceQuery: /\?source=node_modules/,
+						use: {
+							loader: 'babel-loader',
+						},
+					},
+					{
+						loader: 'path-replace-loader',
+						options: {
+							path: resolve(
+								__dirname,
+								'node_modules/@wordpress'
+							),
+							replacePath: resolve(
+								__dirname,
+								'src/override_modules/@wordpress'
+							),
+						},
+					},
+				],
+			},
 			{
 				test: /\.css$/,
 				use: [ 'style-loader', 'css-loader' ],
