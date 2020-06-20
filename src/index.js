@@ -8,7 +8,7 @@ import './store';
 import { config } from './config/index';
 
 if ( config.sentry ) {
-	Sentry.init( { dsn: config.sentry } );
+	Sentry.init( { dsn: config.sentry, attachStacktrace: true } );
 }
 
 render(
