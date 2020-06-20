@@ -23,7 +23,7 @@ export function Comments() {
 	] );
 	return (
 		<>
-			<div className="editor-comments" style={ { minHeight: height, } }>
+			<div className="editor-comments" style={ { minHeight: height } }>
 				{ comments.map( ( comment ) => {
 					const CommentComponent =
 						selectedComment === comment._id
