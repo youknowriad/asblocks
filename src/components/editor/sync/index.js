@@ -42,6 +42,7 @@ export function useSyncEdits( encryptionKey, ownerKey ) {
 		}
 
 		const socket = io( config.collabServer );
+		let state = 'disconnected';
 		let unsubscribe;
 
 		socket.on( 'connect', () => {
@@ -116,20 +117,18 @@ export function useSyncEdits( encryptionKey, ownerKey ) {
 			} );
 
 			socket.on( 'first-in-room', () => {
-				initDoc();
+				if ( state !== 'disconnected' ) {
+					return;
+				}
+				state = 'connected';
+				if ( ! doc.current ) {
+					initDoc();
+				}
 				doc.current.startSharing( currentPost.current );
-				socket.off( 'first-in-room' );
 			} );
 
 			socket.on( 'room-user-change', ( newPeers ) => {
 				setAvailablePeers( newPeers );
-				// If I'm alone and not synced, I can start sharing
-				if (
-					newPeers.length === 1 &&
-					doc.current.getState() !== 'on'
-				) {
-					doc.current.startSharing();
-				}
 			} );
 
 			socket.on( 'new-user', async () => {
@@ -137,7 +136,13 @@ export function useSyncEdits( encryptionKey, ownerKey ) {
 			} );
 
 			socket.on( 'welcome-in-room', async () => {
-				initDoc();
+				if ( state !== 'disconnected' ) {
+					return;
+				}
+				state = 'connected';
+				if ( ! doc.current ) {
+					initDoc();
+				}
 				doc.current.connect();
 			} );
 
@@ -163,14 +168,9 @@ export function useSyncEdits( encryptionKey, ownerKey ) {
 			} );
 
 			socket.on( 'disconnect', () => {
+				state = 'disconnected';
 				if ( doc.current ) {
 					doc.current.disconnect();
-				}
-			} );
-
-			socket.on( 'reconnect', () => {
-				if ( doc.current ) {
-					doc.current.connect();
 				}
 			} );
 		} );

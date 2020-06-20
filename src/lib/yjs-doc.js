@@ -34,6 +34,17 @@ export function createDocument( {
 		stateListeners.forEach( ( listener ) => listener( newState ) );
 	};
 
+	const sync = ( destination ) => {
+		const stateVector = yjs.encodeStateVector( doc );
+		sendMessage( {
+			protocol: 'yjs1',
+			messageType: 'sync1',
+			stateVector: encodeArray( stateVector ),
+			origin: identity,
+			destination,
+		} );
+	};
+
 	return {
 		applyDataChanges( data ) {
 			if ( state !== 'on' ) {
@@ -45,18 +56,12 @@ export function createDocument( {
 		},
 
 		connect() {
-			if ( state !== 'off' ) {
+			if ( state === 'on' ) {
 				throw 'wrong state';
 			}
 
 			setState( 'connecting' );
-			const stateVector = yjs.encodeStateVector( doc );
-			sendMessage( {
-				protocol: 'yjs1',
-				messageType: 'sync1',
-				stateVector: encodeArray( stateVector ),
-				origin: identity,
-			} );
+			sync();
 		},
 
 		disconnect() {
@@ -79,6 +84,12 @@ export function createDocument( {
 
 			switch ( messageType ) {
 				case 'sync1':
+					if (
+						content.destination &&
+						content.destination !== identity
+					) {
+						return;
+					}
 					sendMessage( {
 						protocol: 'yjs1',
 						messageType: 'sync2',
@@ -90,6 +101,7 @@ export function createDocument( {
 						),
 						destination: origin,
 					} );
+					sync( origin );
 					break;
 				case 'sync2':
 					if ( content.destination !== identity ) {
