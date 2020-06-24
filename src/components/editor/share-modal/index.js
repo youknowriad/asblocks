@@ -12,8 +12,8 @@ export function ShareModal( { onClose, ownerKey, stringKey } ) {
 		( select ) => select( 'asblocks' ).getPersisted()._id,
 		[]
 	);
-	const editURL = `${ location.origin }/write/${ postId }/${ ownerKey }#key=${ stringKey }`;
-	const readURL = `${ location.origin }/read/${ postId }#key=${ stringKey }`;
+	const editURL = `${ window.location.origin }/write/${ postId }/${ ownerKey }#key=${ stringKey }`;
+	const readURL = `${ window.location.origin }/read/${ postId }#key=${ stringKey }`;
 	const editButton = useRef();
 	const readButton = useRef();
 	const isCopiedEdit = useCopyOnClick( editButton, editURL );
