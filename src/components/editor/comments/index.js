@@ -1,11 +1,15 @@
 import { useSelect } from '@wordpress/data';
-import { useMemo } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { Dropdown, Button } from '@wordpress/components';
 import { getPositions } from './positions';
 import { SelectedComment, UnselectedComment } from './comment';
 import './style.css';
 
 export function Comments() {
+	const [ { height, positions }, setPositions ] = useState( {
+		height: 0,
+		positions: {},
+	} );
 	const { comments, selectedComment, unattachedComments } = useSelect(
 		( select ) => {
 			return {
@@ -18,9 +22,18 @@ export function Comments() {
 		},
 		[]
 	);
-	const { height, positions } = useMemo( () => getPositions( comments ), [
-		comments,
-	] );
+	useEffect( () => {
+		// Wait for the block rendering before recomputing the positions
+		// comments object generates a new instance when the blocks change
+		setPositions( getPositions( comments ) );
+		const interval = setInterval( () => {
+			setPositions( getPositions( comments ) );
+		}, 500 );
+		return () => {
+			clearInterval( interval );
+		};
+	}, [ comments ] );
+
 	return (
 		<>
 			<div className="editor-comments" style={ { minHeight: height } }>
