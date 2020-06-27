@@ -1,8 +1,10 @@
 import { Button, Dropdown } from '@wordpress/components';
 import { DarkModeToggle } from '../dark-mode-toggle';
+import { useLocalPostList } from '../../local-storage';
 import './style.css';
 
 export function Logo() {
+	const [ postList ] = useLocalPostList();
 	return (
 		<Dropdown
 			renderToggle={ ( { onToggle, isOpen } ) => (
@@ -29,7 +31,7 @@ export function Logo() {
 			) }
 			renderContent={ () => (
 				<div className="logo-dropdown">
-					<div className="logo-dropdown-menu">
+					<div className="logo-dropdown-menu logo__about">
 						<strong>AsBlocks</strong> is an{ ' ' }
 						<a href="https://en.wikipedia.org/wiki/End-to-end_encryption">
 							end-to-end encrypted
@@ -45,11 +47,31 @@ export function Logo() {
 						.
 					</div>
 
-					<div className="logo-dropdown-menu">
-						<Button isPrimary href="/">
-							New Document
-						</Button>
-					</div>
+					{ !! postList?.length && (
+						<div className="logo-dropdown-menu">
+							<div className="logo__main-menu-header">
+								<h3>Document List</h3>
+								<Button isPrimary href="/">
+									New
+								</Button>
+							</div>
+
+							<ul className="logo__main-menu">
+								{ postList.map( ( post ) => {
+									const url = post.ownerKey
+										? `${ window.location.origin }/write/${ post._id }/${ post.ownerKey }#key=${ post.key }`
+										: `${ window.location.origin }/read/${ post._id }#key=${ post.key }`;
+									return (
+										<li key={ post._id }>
+											<Button href={ url }>
+												{ post.title }
+											</Button>
+										</li>
+									);
+								} ) }
+							</ul>
+						</div>
+					) }
 
 					<div className="logo-dropdown-menu">
 						<h3>Options</h3>
