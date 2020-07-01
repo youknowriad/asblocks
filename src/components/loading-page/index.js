@@ -1,17 +1,18 @@
 import { Logo } from '../logo';
-import { Spinner } from '../spinner';
+import { LoadingCanvas } from '../loading-canvas';
+import { Layout } from '../layout';
 import './style.css';
 
 export function LoadingPage() {
 	return (
-		<div className="loading-page">
-			<div className="loading-page__header">
-				<Logo />
-			</div>
+		<Layout>
+			<div className="loading-page">
+				<div className="loading-page__header">
+					<Logo />
+				</div>
 
-			<div className="loading-page__indicator">
-				<Spinner />
+				<LoadingCanvas />
 			</div>
-		</div>
+		</Layout>
 	);
 }

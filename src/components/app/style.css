@@ -6,6 +6,9 @@
 .app.is-dark-theme {
 	background: #000;
 	color: #fff;
+	--background-color: #000;
+	--border-color: #333;
+	--link-color: #8498f1;
 }
 
 /* Prevent dark mode issues */
