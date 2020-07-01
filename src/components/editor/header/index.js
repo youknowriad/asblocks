@@ -7,16 +7,14 @@ import { useMutation } from '../../../lib/data';
 import { savePost, sharePost } from '../../../api/posts';
 import { keyToString } from '../../../lib/crypto';
 import './style.css';
+import { useLocalPostSave } from '../../../local-storage';
 
 export function EditorHeader( {
-	//	persistedPost,
-	//	editedPost,
 	isInspectorOpened,
 	onOpenInspector,
 	setIsShareModalOpened,
 	encryptionKey,
 	ownerKey,
-	//	onPersist,
 } ) {
 	const { peersCount, isShared, isDirty, getEdits, getPersisted } = useSelect(
 		( select ) => {
@@ -31,6 +29,7 @@ export function EditorHeader( {
 		},
 		[]
 	);
+	const setLocalPost = useLocalPostSave();
 	const { persist } = useDispatch( 'asblocks' );
 	const { mutate: mutateShare, loading: isSharing } = useMutation(
 		sharePost
@@ -45,6 +44,13 @@ export function EditorHeader( {
 			ownerKey
 		);
 		persist( persisted, edits );
+		const newStringKey = await keyToString( encryptionKey );
+		setLocalPost( {
+			_id: persisted._id,
+			ownerKey,
+			title: persisted.title,
+			key: newStringKey,
+		} );
 	};
 
 	const triggerShare = async () => {
@@ -57,6 +63,12 @@ export function EditorHeader( {
 			'/write/' + persisted._id + '/' + ownerKey + '#key=' + newStringKey
 		);
 		setIsShareModalOpened( true );
+		setLocalPost( {
+			_id: persisted._id,
+			ownerKey,
+			title: persisted.title,
+			key: newStringKey,
+		} );
 	};
 
 	return (
