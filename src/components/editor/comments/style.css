@@ -59,7 +59,6 @@
 	align-items: center;
 	font-size: 0.9em;
 	font-weight: 700;
-	color: var(--theme-color);
 }
 
 .editor-comments__item-author svg {

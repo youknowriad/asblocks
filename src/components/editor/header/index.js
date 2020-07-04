@@ -15,6 +15,7 @@ export function EditorHeader( {
 	setIsShareModalOpened,
 	encryptionKey,
 	ownerKey,
+	isEditable,
 } ) {
 	const { peersCount, isShared, isDirty, getEdits, getPersisted } = useSelect(
 		( select ) => {
@@ -78,51 +79,55 @@ export function EditorHeader( {
 					<Logo />
 				</div>
 
-				<div>
-					<Inserter
-						position="bottom right"
-						showInserterHelpPanel
-						toggleProps={ { isPrimary: true } }
-					/>
-				</div>
-			</div>
-			<div className="editor__header-right">
-				{ peersCount > 1 && (
-					<div className="editor__header-peers">
-						<strong>{ peersCount }</strong> connected peers
-					</div>
-				) }
-				<div>
-					<Button
-						onClick={ isShared ? triggerSave : triggerShare }
-						disabled={ ! isDirty || isSaving || isSharing }
-						isBusy={ isSaving || isSharing }
-						isPrimary
-					>
-						{ isShared ? 'Save' : 'Share' }
-					</Button>
-				</div>
-
-				{ isShared && (
+				{ isEditable && (
 					<div>
-						<Button
-							icon={ share }
-							label="Show sharing information"
-							onClick={ () => setIsShareModalOpened( true ) }
-						/>
-					</div>
-				) }
-
-				{ ! isInspectorOpened && (
-					<div>
-						<Button
-							icon={ cog }
-							onClick={ onOpenInspector }
-							label="Open Inspector"
+						<Inserter
+							position="bottom right"
+							showInserterHelpPanel
+							toggleProps={ { isPrimary: true } }
 						/>
 					</div>
 				) }
 			</div>
+			{ isEditable && (
+				<div className="editor__header-right">
+					{ peersCount > 1 && (
+						<div className="editor__header-peers">
+							<strong>{ peersCount }</strong> connected peers
+						</div>
+					) }
+					<div>
+						<Button
+							onClick={ isShared ? triggerSave : triggerShare }
+							disabled={ ! isDirty || isSaving || isSharing }
+							isBusy={ isSaving || isSharing }
+							isPrimary
+						>
+							{ isShared ? 'Save' : 'Share' }
+						</Button>
+					</div>
+
+					{ isShared && (
+						<div>
+							<Button
+								icon={ share }
+								label="Show sharing information"
+								onClick={ () => setIsShareModalOpened( true ) }
+							/>
+						</div>
+					) }
+
+					{ ! isInspectorOpened && (
+						<div>
+							<Button
+								icon={ cog }
+								onClick={ onOpenInspector }
+								label="Open Inspector"
+							/>
+						</div>
+					) }
+				</div>
+			) }
 		</div>
 	);
 }

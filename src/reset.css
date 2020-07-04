@@ -7,11 +7,18 @@
 	--default-line-height: 1.9em;
 	--editor-font-size: 18px;
 	--inspector-width: 300px;
+	--sidebar-width: 300px;
 	--grid-unit: 16px;
 	--border-radius: 2px;
 	--button-height: 36px;
 	--logo-width: 100px;
-	--theme-color: #2c1120;
+	--theme-color: #3858e9;
+	--wp-admin-theme-color: var(--theme-color);
+	--wp-admin-theme-color-darker-10: #2145e6;
+	--wp-admin-theme-color-darker-20: #183ad6;
+	--border-color: #eee;
+	--background-color: #fff;
+	--link-color: var(--theme-color);
 }
 
 html,
@@ -32,7 +39,7 @@ body {
 }
 
 a {
-	color: rgb(0, 124, 186);
+	color: var(--link-color);
 }
 
 a,
