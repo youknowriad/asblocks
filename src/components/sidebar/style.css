@@ -17,7 +17,12 @@
 }
 
 .sidebar__main-menu-header h3 {
+	display: inline-block;
 	margin: 0;
+}
+
+.sidebar__search {
+	margin-top: var(--grid-unit);
 }
 
 .sidebar__main-menu {

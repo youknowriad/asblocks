@@ -1,12 +1,27 @@
+import { useState, useMemo } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { close } from '@wordpress/icons';
 import { DarkModeToggle } from '../dark-mode-toggle';
 import { useLocalPostList, useIsSidebarOpened } from '../../local-storage';
+import { SearchControl } from '../search-control';
+import { Pill } from '../pill';
 import './style.css';
 
 export function Sidebar() {
 	const [ postList ] = useLocalPostList();
 	const [ , setIsSidebarOpened ] = useIsSidebarOpened();
+	const [ filterValue, setFilterValue ] = useState( '' );
+	const filteredPosts = useMemo(
+		() =>
+			postList.filter(
+				( post ) =>
+					post.title &&
+					post.title
+						.toLowerCase()
+						.includes( filterValue.toLowerCase() )
+			),
+		[ filterValue, postList ]
+	);
 
 	return (
 		<>
@@ -34,23 +49,38 @@ export function Sidebar() {
 			{ !! postList?.length && (
 				<div className="sidebar__section">
 					<div className="sidebar__main-menu-header">
-						<h3>Document List</h3>
+						<div>
+							<h3>Document List</h3>
+							<Pill>{ postList.length }</Pill>
+						</div>
 						<Button isPrimary href="/">
 							New
 						</Button>
 					</div>
 
+					<div className="sidebar__search">
+						<SearchControl
+							label="Search Documents"
+							value={ filterValue }
+							onChange={ setFilterValue }
+						/>
+					</div>
+
 					<ul className="sidebar__main-menu">
-						{ postList.map( ( post ) => {
+						{ filteredPosts.map( ( post ) => {
 							const url = post.ownerKey
 								? `${ window.location.origin }/write/${ post._id }/${ post.ownerKey }#key=${ post.key }`
 								: `${ window.location.origin }/read/${ post._id }#key=${ post.key }`;
 							return (
 								<li key={ post._id }>
-									<Button href={ url }>{ post.title }</Button>
+									<Button href={ url }>
+										{ post.title || '(No Title)' }
+									</Button>
 								</li>
 							);
 						} ) }
+
+						{ ! filteredPosts.length && <p>No results found.</p> }
 					</ul>
 				</div>
 			) }
