@@ -1,0 +1,11 @@
+.pill {
+	display: inline-flex;
+	height: var(--button-height);
+	width: var(--button-height);
+	align-items: center;
+	justify-content: center;
+	background: var(--theme-color-secondary);
+	font-weight: bold;
+	border-radius: calc(var(--button-height) / 2);
+	margin-left: calc(var(--button-height) / 4);
+}

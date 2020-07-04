@@ -20,7 +20,7 @@ export const useLocalPostSave = () => {
 		( newPost ) => {
 			const id = newPost._id;
 			const index = postList.findIndex( ( p ) => p._id === id );
-			if ( index !== undefined ) {
+			if ( index !== -1 ) {
 				setPostList( [
 					...postList.slice( 0, index ),
 					{
