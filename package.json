@@ -18,8 +18,8 @@
 		"start": "parcel src/index.html",
 		"build": "parcel build src/index.html && generate-version -s package -i dist/index.html -v dist/version.json",
 		"test": "wp-scripts test-unit-js",
-		"lint:style": "wp-scripts lint-style",
-		"lint:js": "wp-scripts lint-js",
+		"lint:style": "wp-scripts lint-style src",
+		"lint:js": "wp-scripts lint-js src",
 		"lint": "run-p lint:*"
 	},
 	"dependencies": {
