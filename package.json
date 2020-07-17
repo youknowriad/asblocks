@@ -38,7 +38,7 @@
 		"@wordpress/notices": "^2.8.1",
 		"@wordpress/rich-text": "^3.20.1",
 		"easy-web-crypto": "^1.1.1",
-		"lodash": "^4.17.15",
+		"lodash": "^4.17.19",
 		"react-promise-suspense": "^0.3.3",
 		"react-router-dom": "^5.2.0",
 		"react-update-notification": "0.1.0-alpha.4",
