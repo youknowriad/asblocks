@@ -34,7 +34,7 @@ export function createDocument( {
 		stateListeners.forEach( ( listener ) => listener( newState ) );
 	};
 
-	const sync = ( destination ) => {
+	const sync = ( destination, isReply ) => {
 		const stateVector = yjs.encodeStateVector( doc );
 		sendMessage( {
 			protocol: 'yjs1',
@@ -42,6 +42,7 @@ export function createDocument( {
 			stateVector: encodeArray( stateVector ),
 			origin: identity,
 			destination,
+			isReply,
 		} );
 	};
 
@@ -101,7 +102,9 @@ export function createDocument( {
 						),
 						destination: origin,
 					} );
-					sync( origin );
+					if ( ! content.isReply ) {
+						sync( origin, true );
+					}
 					break;
 				case 'sync2':
 					if ( content.destination !== identity ) {

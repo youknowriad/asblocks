@@ -1,5 +1,6 @@
+import isShallowEqual from '@wordpress/is-shallow-equal';
 import { useSelect } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { Dropdown, Button } from '@wordpress/components';
 import { getPositions } from './positions';
 import { SelectedComment, UnselectedComment } from './comment';
@@ -10,6 +11,7 @@ export function Comments() {
 		height: 0,
 		positions: {},
 	} );
+	const currentPositions = useRef( { height: 0, positions: {} } );
 	const { comments, selectedComment, unattachedComments } = useSelect(
 		( select ) => {
 			return {
@@ -23,11 +25,23 @@ export function Comments() {
 		[]
 	);
 	useEffect( () => {
+		const updatePositions = ( newPositions ) => {
+			if (
+				newPositions.height !== currentPositions.current.height ||
+				! isShallowEqual(
+					newPositions.positions,
+					currentPositions.current.positions
+				)
+			) {
+				setPositions( newPositions );
+			}
+			currentPositions.current = newPositions;
+		};
 		// Wait for the block rendering before recomputing the positions
 		// comments object generates a new instance when the blocks change
-		setPositions( getPositions( comments ) );
+		updatePositions( getPositions( comments ) );
 		const interval = setInterval( () => {
-			setPositions( getPositions( comments ) );
+			updatePositions( getPositions( comments ) );
 		}, 500 );
 		return () => {
 			clearInterval( interval );

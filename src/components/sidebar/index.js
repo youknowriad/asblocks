@@ -1,6 +1,7 @@
 import { useState, useMemo } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { close } from '@wordpress/icons';
+import { pure } from '@wordpress/compose';
 import { DarkModeToggle } from '../dark-mode-toggle';
 import { useLocalPostList, useIsSidebarOpened } from '../../local-storage';
 import { SearchControl } from '../search-control';
@@ -8,7 +9,7 @@ import { Pill } from '../pill';
 import { ThemeSwitcher } from '../theme-switcher';
 import './style.css';
 
-export function Sidebar() {
+export const Sidebar = pure( () => {
 	const [ postList ] = useLocalPostList();
 	const [ , setIsSidebarOpened ] = useIsSidebarOpened();
 	const [ filterValue, setFilterValue ] = useState( '' );
@@ -96,4 +97,4 @@ export function Sidebar() {
 			</div>
 		</>
 	);
-}
+} );
