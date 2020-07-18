@@ -61,14 +61,11 @@ export function Editor( { encryptionKey, ownerKey } ) {
 						<div
 							className={ classnames( 'editor', {
 								'is-ready': isEditable,
+								'is-inspector-opened': isInspectorOpened,
 							} ) }
 						>
 							<div className="editor__main">
-								<div
-									className={ classnames( 'editor__header', {
-										'is-inspector-opened': isInspectorOpened,
-									} ) }
-								>
+								<div className="editor__header">
 									<EditorHeader
 										isEditable={ isEditable }
 										encryptionKey={ encryptionKey }

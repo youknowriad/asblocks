@@ -1,13 +1,15 @@
 .editor {
 	height: 100%;
-	display: flex;
 }
-
 .editor__main {
 	position: relative;
 	flex-grow: 1;
 	height: 100%;
 	overflow: auto;
+}
+
+.editor.is-inspector-opened  .editor__main {
+	margin-right: var(--inspector-width);
 }
 
 .editor__header {
@@ -24,13 +26,13 @@
 	left: var(--sidebar-width);
 }
 
+.editor.is-inspector-opened  .editor__header {
+	right: var(--inspector-width);
+}
+
 .editor__header button,
 .editor__header a {
 	pointer-events: all;
-}
-
-.editor__header.is-inspector-opened {
-	right: var(--inspector-width);
 }
 
 .editor__canvas {
@@ -70,6 +72,7 @@
 
 .editor__content {
 	grid-area: center;
+	overflow: auto;
 }
 
 .editor__content img {
@@ -103,7 +106,7 @@
 	height: auto;
 	overflow: auto;
 	-webkit-overflow-scrolling: touch;
-	z-index: 1;
+	z-index: 3;
 
 	/* Prevent dark mode because Gutenberg UI doesn't support it well */
 	background: #fff;
@@ -113,10 +116,11 @@
 @media (min-width: 800px) {
 
 	.editor__sidebar {
-		position: unset;
 		width: var(--inspector-width);
 		border-left: 1px solid var(--border-color);
 		flex-shrink: 0;
+		right: 0;
+		left: auto;
 	}
 }
 

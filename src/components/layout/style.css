@@ -14,6 +14,7 @@
 	display: none;
 	grid-area: sidebar;
 	border-right: 1px solid var(--border-color);
+	overflow: auto;
 }
 
 .layout.is-sidebar-opened .layout__sidebar {
@@ -38,6 +39,8 @@
 .layout__main {
 	grid-area: main;
 	position: relative;
+	overflow: auto;
+	height: 100%;
 }
 
 .app.is-dark-theme .layout__sidebar .components-button {
