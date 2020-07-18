@@ -29,7 +29,7 @@
 }
 
 
-.app.is-theme-coffee {
+body.is-theme-coffee {
 	--theme-color: #5c1f0e;
 	--theme-color-secondary: #fd83a5;
 	--wp-admin-theme-color: var(--theme-color);
@@ -37,7 +37,7 @@
 	--wp-admin-theme-color-darker-20: var(--theme-color);
 }
 
-.app.is-theme-garden {
+body.is-theme-garden {
 	--theme-color: #1a503d;
 	--theme-color-secondary: #f29c0b;
 	--wp-admin-theme-color: var(--theme-color);
@@ -45,7 +45,7 @@
 	--wp-admin-theme-color-darker-20: var(--theme-color);
 }
 
-.app.is-theme-midnight {
+body.is-theme-midnight {
 	--theme-color: #b61264;
 	--theme-color-secondary: #cd87e3;
 	--wp-admin-theme-color: var(--theme-color);
@@ -53,7 +53,7 @@
 	--wp-admin-theme-color-darker-20: var(--theme-color);
 }
 
-.app.is-theme-ocean {
+body.is-theme-ocean {
 	--theme-color: #4daabe;
 	--theme-color-secondary: #ded4cc;
 	--wp-admin-theme-color: var(--theme-color);

@@ -8,6 +8,7 @@ import { clearCache } from '../../lib/data';
 import { useDarkMode, useTheme } from '../../local-storage';
 import { LoadingPage } from '../loading-page';
 import { UpdateNotice } from '../update-notice';
+import { useBodyClass } from '../../lib/hooks';
 import './style.css';
 
 function ClearCacheOnNavigate() {
@@ -22,10 +23,11 @@ function ClearCacheOnNavigate() {
 export function App() {
 	const [ isDarkMode ] = useDarkMode();
 	const [ theme ] = useTheme();
+	useBodyClass( 'is-theme-' + theme );
 
 	return (
 		<div
-			className={ classnames( 'app', 'is-theme-' + theme, {
+			className={ classnames( 'app', {
 				'is-dark-theme': isDarkMode,
 			} ) }
 		>
