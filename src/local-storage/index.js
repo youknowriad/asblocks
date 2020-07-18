@@ -6,6 +6,7 @@ export const useIsSidebarOpened = createLocalStorageStateHook(
 	'sidebar-opened',
 	false
 );
+export const useTheme = createLocalStorageStateHook( 'theme', 'modern' );
 export const useDarkMode = createLocalStorageStateHook( 'dark-mode', false );
 export const useAuthorId = createLocalStorageStateHook( 'author-id', uuidv4() );
 export const useAuthorName = createLocalStorageStateHook(

@@ -1,0 +1,43 @@
+.theme-switcher__content {
+	display: grid;
+	grid-template-columns: repeat( auto-fill, calc(var(--grid-unit) * 2) );
+	grid-gap: var(--grid-unit);
+}
+
+.theme-switcher__button {
+	height: var(--button-height);
+	width: var(--button-height);
+	position: relative;
+}
+
+.theme-switcher__primary {
+	z-index: 1;
+	position: absolute;
+	top: 5px;
+	left: 0;
+	right: 5px;
+	bottom: 0;
+}
+
+.theme-switcher__secondary {
+	z-index: 2;
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 10px;
+	width: 10px;
+}
+
+.theme-switcher__selected {
+	z-index: 3;
+	position: absolute;
+	top: 5px;
+	left: 0;
+	right: 5px;
+	bottom: 0;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+

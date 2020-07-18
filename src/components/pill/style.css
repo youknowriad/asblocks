@@ -8,4 +8,5 @@
 	font-weight: bold;
 	border-radius: calc(var(--button-height) / 2);
 	margin-left: calc(var(--button-height) / 4);
+	color: #000;
 }

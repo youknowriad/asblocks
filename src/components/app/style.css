@@ -4,9 +4,9 @@
 }
 
 .app.is-dark-theme {
-	background: #000;
+	background: #111;
 	color: #fff;
-	--background-color: #000;
+	--background-color: #222;
 	--border-color: #333;
 	--link-color: #8498f1;
 }
@@ -26,4 +26,37 @@
 
 .app__notices .components-snackbar {
 	max-width: 500px;
+}
+
+
+.app.is-theme-coffee {
+	--theme-color: #5c1f0e;
+	--theme-color-secondary: #fd83a5;
+	--wp-admin-theme-color: var(--theme-color);
+	--wp-admin-theme-color-darker-10: var(--theme-color);
+	--wp-admin-theme-color-darker-20: var(--theme-color);
+}
+
+.app.is-theme-garden {
+	--theme-color: #1a503d;
+	--theme-color-secondary: #f29c0b;
+	--wp-admin-theme-color: var(--theme-color);
+	--wp-admin-theme-color-darker-10: var(--theme-color);
+	--wp-admin-theme-color-darker-20: var(--theme-color);
+}
+
+.app.is-theme-midnight {
+	--theme-color: #b61264;
+	--theme-color-secondary: #cd87e3;
+	--wp-admin-theme-color: var(--theme-color);
+	--wp-admin-theme-color-darker-10: var(--theme-color);
+	--wp-admin-theme-color-darker-20: var(--theme-color);
+}
+
+.app.is-theme-ocean {
+	--theme-color: #4daabe;
+	--theme-color-secondary: #ded4cc;
+	--wp-admin-theme-color: var(--theme-color);
+	--wp-admin-theme-color-darker-10: var(--theme-color);
+	--wp-admin-theme-color-darker-20: var(--theme-color);
 }

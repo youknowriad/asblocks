@@ -5,7 +5,7 @@ import { RouteNew } from '../route-new';
 import { RouteWrite } from '../route-write';
 import { RouteRead } from '../route-read';
 import { clearCache } from '../../lib/data';
-import { useDarkMode } from '../../local-storage';
+import { useDarkMode, useTheme } from '../../local-storage';
 import { LoadingPage } from '../loading-page';
 import { UpdateNotice } from '../update-notice';
 import './style.css';
@@ -21,9 +21,14 @@ function ClearCacheOnNavigate() {
 
 export function App() {
 	const [ isDarkMode ] = useDarkMode();
+	const [ theme ] = useTheme();
 
 	return (
-		<div className={ classnames( 'app', { 'is-dark-theme': isDarkMode } ) }>
+		<div
+			className={ classnames( 'app', 'is-theme-' + theme, {
+				'is-dark-theme': isDarkMode,
+			} ) }
+		>
 			<Router>
 				<ClearCacheOnNavigate />
 

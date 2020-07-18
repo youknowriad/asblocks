@@ -5,6 +5,7 @@ import { DarkModeToggle } from '../dark-mode-toggle';
 import { useLocalPostList, useIsSidebarOpened } from '../../local-storage';
 import { SearchControl } from '../search-control';
 import { Pill } from '../pill';
+import { ThemeSwitcher } from '../theme-switcher';
 import './style.css';
 
 export function Sidebar() {
@@ -88,6 +89,10 @@ export function Sidebar() {
 			<div className="sidebar__section">
 				<h3>Options</h3>
 				<DarkModeToggle />
+			</div>
+
+			<div className="sidebar__section">
+				<ThemeSwitcher />
 			</div>
 		</>
 	);
