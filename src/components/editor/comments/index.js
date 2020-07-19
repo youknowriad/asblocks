@@ -3,7 +3,7 @@ import { useSelect } from '@wordpress/data';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { Dropdown, Button } from '@wordpress/components';
 import { getPositions } from './positions';
-import { SelectedComment, UnselectedComment } from './comment';
+import { Comment } from './comment';
 import './style.css';
 
 export function Comments() {
@@ -52,15 +52,12 @@ export function Comments() {
 		<>
 			<div className="editor-comments" style={ { minHeight: height } }>
 				{ comments.map( ( comment ) => {
-					const CommentComponent =
-						selectedComment === comment._id
-							? SelectedComment
-							: UnselectedComment;
 					return (
-						<CommentComponent
+						<Comment
 							key={ comment._id }
 							comment={ comment }
 							position={ positions[ comment._id ] }
+							isSelected={ selectedComment === comment._id }
 						/>
 					);
 				} ) }
@@ -85,14 +82,13 @@ export function Comments() {
 								connection to the edited post while editing
 							</p>
 							{ unattachedComments.map( ( comment ) => {
-								const CommentComponent =
-									selectedComment === comment._id
-										? SelectedComment
-										: UnselectedComment;
 								return (
-									<CommentComponent
+									<Comment
 										key={ comment._id }
 										comment={ comment }
+										isSelected={
+											selectedComment === comment._id
+										}
 									/>
 								);
 							} ) }
