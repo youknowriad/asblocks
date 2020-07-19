@@ -37,6 +37,7 @@ function BlockCommentsControls( { clientId } ) {
 			status: 'draft',
 			authorId,
 			authorName,
+			createdAt: Date.now(),
 		} );
 	}
 
