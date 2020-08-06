@@ -15,7 +15,7 @@ jobs:
                   node-version: 12
 
             - name: Install Node.js dependencies.
-              run: npm install
+              run: npm ci
 
             - name: Run linters.
               run: npm run lint

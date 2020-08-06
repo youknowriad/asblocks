@@ -31,7 +31,7 @@ jobs:
           secret-name: SENTRY_DSN
           secret-value: ${{ secrets.SENTRY_DSN }}
 
-      - run: npm install
+      - run: npm ci
       - run: npm run build
 
       - uses: w9jds/firebase-action@master
