@@ -26,6 +26,11 @@ import './filters';
 import './formats';
 import './style.css';
 
+const blockEditorSettings = {
+	__experimentalBlockPatterns: [],
+	__experimentalBlockPatternCategories: [],
+};
+
 export function Editor( { encryptionKey, ownerKey } ) {
 	const stringKey = usePromise( keyToString, [ encryptionKey ] );
 	const [ isEditable, editedPost, edit ] = useSyncEdits(
@@ -46,6 +51,7 @@ export function Editor( { encryptionKey, ownerKey } ) {
 			<SlotFillProvider>
 				<DropZoneProvider>
 					<BlockEditorProvider
+						settings={ blockEditorSettings }
 						useSubRegistry={ false }
 						value={ editedPost.blocks || [] }
 						onInput={ getPropertyChangeHandler( 'blocks' ) }
