@@ -18,7 +18,7 @@ jobs:
               run: cp src/config/index.sample.js src/config/index.js
 
             - name: Install Node.js dependencies.
-              run: npm install
+              run: npm ci
 
             - name: Run unit tests.
               run: npm run test
