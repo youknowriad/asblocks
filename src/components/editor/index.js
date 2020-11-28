@@ -92,17 +92,15 @@ export function Editor( { encryptionKey, ownerKey } ) {
 										<Popover.Slot name="block-toolbar" />
 										<BlockEditorKeyboardShortcuts />
 										<WritingFlow>
+											<div className="editor__post-title-wrapper">
+												<PostTitleEditor
+													value={ editedPost.title }
+													onChange={ getPropertyChangeHandler(
+														'title'
+													) }
+												/>
+											</div>
 											<ObserveTyping>
-												<div className="editor__post-title-wrapper">
-													<PostTitleEditor
-														value={
-															editedPost.title
-														}
-														onChange={ getPropertyChangeHandler(
-															'title'
-														) }
-													/>
-												</div>
 												<BlockList />
 											</ObserveTyping>
 										</WritingFlow>

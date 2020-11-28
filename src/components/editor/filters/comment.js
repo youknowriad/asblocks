@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { addFilter } from '@wordpress/hooks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { BlockControls } from '@wordpress/block-editor';
-import { ToolbarButton, Toolbar } from '@wordpress/components';
+import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
 import { comment } from '@wordpress/icons';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
@@ -103,14 +103,14 @@ function BlockCommentsControls( { clientId } ) {
 
 	return (
 		<BlockControls>
-			<Toolbar>
+			<ToolbarGroup>
 				<ToolbarButton
 					name="bold"
 					icon={ comment }
 					title="Add a comment"
 					onClick={ onClick }
 				/>
-			</Toolbar>
+			</ToolbarGroup>
 		</BlockControls>
 	);
 }
