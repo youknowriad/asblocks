@@ -1,3 +1,4 @@
+import memoize from 'memize';
 import classnames from 'classnames';
 import { applyFormat, registerFormatType } from '@wordpress/rich-text';
 import './style.css';
@@ -45,6 +46,22 @@ export function applyCarets( record, carets = [] ) {
 	return record;
 }
 
+const getCarets = memoize( ( peers, richTextIdentifier, blockClientId ) => {
+	return Object.entries( peers )
+		.filter( ( [ , peer ] ) => {
+			return (
+				peer?.start?.clientId === blockClientId &&
+				peer?.end?.clientId === blockClientId &&
+				peer.start.attributeKey === richTextIdentifier
+			);
+		} )
+		.map( ( [ id, peer ] ) => ( {
+			id,
+			start: peer.start.offset,
+			end: peer.end.offset,
+		} ) );
+} );
+
 export const settings = {
 	title: 'AsBlocks caret',
 	tagName: 'mark',
@@ -60,22 +77,12 @@ export const settings = {
 		select,
 		{ richTextIdentifier, blockClientId }
 	) {
-		const peers = select( 'asblocks' ).getPeers();
-		const carets = Object.entries( peers )
-			.filter( ( [ , peer ] ) => {
-				return (
-					peer?.start?.clientId === blockClientId &&
-					peer?.end?.clientId === blockClientId &&
-					peer.start.attributeKey === richTextIdentifier
-				);
-			} )
-			.map( ( [ id, peer ] ) => ( {
-				id,
-				start: peer.start.offset,
-				end: peer.end.offset,
-			} ) );
 		return {
-			carets,
+			carets: getCarets(
+				select( 'asblocks' ).getPeers(),
+				richTextIdentifier,
+				blockClientId
+			),
 		};
 	},
 	__experimentalCreatePrepareEditableTree( { carets } ) {

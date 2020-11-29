@@ -83,7 +83,7 @@ export function EditorHeader( {
 					<div>
 						<Inserter
 							position="bottom right"
-							showInserterHelpPanel
+							showInserterHelpPanel={ false }
 							toggleProps={ { isPrimary: true } }
 						/>
 					</div>

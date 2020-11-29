@@ -1,6 +1,4 @@
-/**
- * WordPress dependencies
- */
+import memoize from 'memize';
 import classnames from 'classnames';
 import { registerFormatType, applyFormat } from '@wordpress/rich-text';
 import './style.css';
@@ -35,21 +33,9 @@ export function applyComments( record, comments = [] ) {
 	return record;
 }
 
-const settings = {
-	title: 'Comment',
-	tagName: 'mark',
-	className: 'asblocks-comment',
-	attributes: {
-		className: 'class',
-	},
-
-	__experimentalGetPropsForEditableTreePreparation(
-		select,
-		{ richTextIdentifier, blockClientId }
-	) {
-		const selectedComment = select( 'asblocks' ).getSelectedComment();
-		const comments = select( 'asblocks' )
-			.getEditedProperty( 'comments' )
+const getComments = memoize(
+	( currentComments, selectedComment, blockClientId, richTextIdentifier ) => {
+		return currentComments
 			?.filter( ( c ) => {
 				return (
 					c.status !== 'resolved' &&
@@ -64,8 +50,28 @@ const settings = {
 				end: c.end.offset,
 				isSelected: c._id === selectedComment,
 			} ) );
+	}
+);
+
+const settings = {
+	title: 'Comment',
+	tagName: 'mark',
+	className: 'asblocks-comment',
+	attributes: {
+		className: 'class',
+	},
+
+	__experimentalGetPropsForEditableTreePreparation(
+		select,
+		{ richTextIdentifier, blockClientId }
+	) {
 		return {
-			comments,
+			comments: getComments(
+				select( 'asblocks' ).getEditedProperty( 'comments' ),
+				select( 'asblocks' ).getSelectedComment(),
+				blockClientId,
+				richTextIdentifier
+			),
 		};
 	},
 
