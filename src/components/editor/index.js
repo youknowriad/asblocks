@@ -13,6 +13,7 @@ import {
 	DropZoneProvider,
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 import { EditorHeader } from './header';
 import { PostTitleEditor } from './post-title-editor';
 import { Inspector } from './inspector';
@@ -22,6 +23,7 @@ import { ShareModal } from './share-modal';
 import { Layout } from '../layout';
 import { keyToString } from '../../lib/crypto';
 import { LoadingCanvas } from '../loading-canvas';
+import useAutosave from './save';
 import './filters';
 import './formats';
 import './style.css';
@@ -33,10 +35,14 @@ const blockEditorSettings = {
 
 export function Editor( { encryptionKey, ownerKey } ) {
 	const stringKey = usePromise( keyToString, [ encryptionKey ] );
-	const [ isEditable, editedPost, edit ] = useSyncEdits(
+	const isShared = useSelect( ( select ) => {
+		return select( 'asblocks' ).isShared();
+	}, [] );
+	const [ isEditable, editedPost, edit, isMaster ] = useSyncEdits(
 		encryptionKey,
 		ownerKey
 	);
+	useAutosave( isShared && isMaster, encryptionKey, ownerKey );
 	const [ isShareModalOpened, setIsShareModalOpened ] = useState( false );
 	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
 
