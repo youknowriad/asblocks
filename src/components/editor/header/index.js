@@ -4,7 +4,7 @@ import { cog, share } from '@wordpress/icons';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { Logo } from '../../logo';
 import { useMutation } from '../../../lib/data';
-import { savePost, sharePost } from '../../../api/posts';
+import { sharePost } from '../../../api/posts';
 import { keyToString } from '../../../lib/crypto';
 import './style.css';
 import { useLocalPostSave } from '../../../local-storage';
@@ -17,43 +17,17 @@ export function EditorHeader( {
 	ownerKey,
 	isEditable,
 } ) {
-	const { peersCount, isShared, isDirty, getEdits, getPersisted } = useSelect(
-		( select ) => {
-			return {
-				peersCount: Object.keys( select( 'asblocks' ).getPeers() )
-					.length,
-				isShared: select( 'asblocks' ).isShared(),
-				isDirty: select( 'asblocks' ).isDirty(),
-				getEdits: select( 'asblocks' ).getEdits,
-				getPersisted: select( 'asblocks' ).getPersisted,
-			};
-		},
-		[]
-	);
+	const { peersCount, isShared } = useSelect( ( select ) => {
+		return {
+			peersCount: Object.keys( select( 'asblocks' ).getPeers() ).length,
+			isShared: select( 'asblocks' ).isShared(),
+		};
+	}, [] );
 	const setLocalPost = useLocalPostSave();
 	const { persist } = useDispatch( 'asblocks' );
 	const { mutate: mutateShare, loading: isSharing } = useMutation(
 		sharePost
 	);
-	const { mutate: mutateSave, loading: isSaving } = useMutation( savePost );
-
-	const triggerSave = async () => {
-		const edits = getEdits();
-		const { data: persisted } = await mutateSave(
-			{ ...getPersisted(), ...edits },
-			encryptionKey,
-			ownerKey
-		);
-		persist( persisted, edits );
-		const newStringKey = await keyToString( encryptionKey );
-		setLocalPost( {
-			_id: persisted._id,
-			ownerKey,
-			title: persisted.title,
-			key: newStringKey,
-		} );
-	};
-
 	const triggerShare = async () => {
 		const { data: persisted } = await mutateShare( ownerKey );
 		const newStringKey = await keyToString( encryptionKey );
@@ -96,16 +70,18 @@ export function EditorHeader( {
 							<strong>{ peersCount }</strong> connected peers
 						</div>
 					) }
-					<div>
-						<Button
-							onClick={ isShared ? triggerSave : triggerShare }
-							disabled={ ! isDirty || isSaving || isSharing }
-							isBusy={ isSaving || isSharing }
-							isPrimary
-						>
-							{ isShared ? 'Save' : 'Share' }
-						</Button>
-					</div>
+					{ ! isShared && (
+						<div>
+							<Button
+								onClick={ triggerShare }
+								disabled={ isSharing }
+								isBusy={ isSharing }
+								isPrimary
+							>
+								{ 'Share' }
+							</Button>
+						</div>
+					) }
 
 					{ isShared && (
 						<div>

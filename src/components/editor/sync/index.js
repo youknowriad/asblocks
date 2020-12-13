@@ -8,6 +8,7 @@ import { createDocument } from '../../../lib/yjs-doc';
 
 export function useSyncEdits( encryptionKey, ownerKey ) {
 	const [ isEditable, setIsEditable ] = useState( false );
+	const [ isMaster, setIsMaster ] = useState( false );
 	const doc = useRef();
 
 	const {
@@ -117,6 +118,7 @@ export function useSyncEdits( encryptionKey, ownerKey ) {
 			} );
 
 			socket.on( 'first-in-room', () => {
+				setIsMaster( true );
 				if ( state !== 'disconnected' ) {
 					return;
 				}
@@ -200,5 +202,5 @@ export function useSyncEdits( encryptionKey, ownerKey ) {
 		edit( changes );
 	}
 
-	return [ isEditable, editedPost, editProperties ];
+	return [ isEditable, editedPost, editProperties, isMaster ];
 }

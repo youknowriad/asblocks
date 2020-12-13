@@ -1,5 +1,5 @@
 import { Modal, Button, TextControl } from '@wordpress/components';
-import { Icon, check, info } from '@wordpress/icons';
+import { Icon, check } from '@wordpress/icons';
 import { useRef } from '@wordpress/element';
 import { useCopyOnClick } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
@@ -26,7 +26,8 @@ export function ShareModal( { onClose, ownerKey, stringKey } ) {
 					<h3>Write</h3>
 					<p>
 						A live collaboration session is now in progress. Share
-						the URL of this page with your collaborators.
+						the URL of this page with your collaborators. Your
+						document is autosaved every 5 seconds.
 					</p>
 					<div className="editor-share-modal__copy">
 						<input type="text" readOnly value={ editURL } />
@@ -75,20 +76,6 @@ export function ShareModal( { onClose, ownerKey, stringKey } ) {
 						using the link above are able to access its content.
 						AsBlocks&apos; server can not decrypt the content of
 						your post either.
-					</p>
-				</div>
-
-				<div className="editor-share-modal__info">
-					<Icon
-						icon={ info }
-						className="editor-share-modal__info-icon"
-					/>{ ' ' }
-					<p>
-						By default, the content of your post is not persisted to
-						the server. This means that if all the collaborators
-						leave the page, the unsaved content will be lost. You
-						can hover persist an encrypted version to the server at
-						any time by clicking the &quot;Save&quot; button.
 					</p>
 				</div>
 			</div>
