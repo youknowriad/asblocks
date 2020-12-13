@@ -1,11 +1,17 @@
-import WebCrypto from 'easy-web-crypto';
+import {
+	genAESKey,
+	exportKey,
+	importKey,
+	encrypt as parentEncrypt,
+	decrypt as parentDecrypt,
+} from 'easy-web-crypto';
 
 export async function generateKey() {
-	return await WebCrypto.genAESKey();
+	return await genAESKey();
 }
 
 export async function keyToString( key ) {
-	return ( await WebCrypto.exportKey( key, 'jwk' ) ).k;
+	return ( await exportKey( key, 'jwk' ) ).k;
 }
 
 export async function stringToKey( string ) {
@@ -17,13 +23,13 @@ export async function stringToKey( string ) {
 		kty: 'oct',
 	};
 
-	return await WebCrypto.importKey( jwk, 'jwk' );
+	return await importKey( jwk, 'jwk' );
 }
 
 export async function encrypt( data, key ) {
-	return await WebCrypto.encrypt( key, data );
+	return await parentEncrypt( key, data );
 }
 
 export async function decrypt( encrypted, key ) {
-	return await WebCrypto.decrypt( key, encrypted );
+	return await parentDecrypt( key, encrypted );
 }
