@@ -76,6 +76,7 @@ export function Editor( { encryptionKey, ownerKey } ) {
 								'is-inspector-opened': isInspectorOpened,
 							} ) }
 						>
+							<Popover.Slot name="block-toolbar" />
 							<div className="editor__main">
 								<div className="editor__header">
 									<EditorHeader
@@ -95,7 +96,6 @@ export function Editor( { encryptionKey, ownerKey } ) {
 								<div className="editor__canvas">
 									<div className="editor__info-sidebar"></div>
 									<div className="editor__content editor-styles-wrapper">
-										<Popover.Slot name="block-toolbar" />
 										<BlockEditorKeyboardShortcuts />
 										<WritingFlow>
 											<div className="editor__post-title-wrapper">
