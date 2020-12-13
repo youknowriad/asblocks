@@ -16,7 +16,7 @@
 	},
 	"scripts": {
 		"start": "parcel src/index.html",
-		"build": "parcel build src/index.html && generate-version -s package -i dist/index.html -v dist/version.json",
+		"build": "parcel build src/index.html && generate-version -s package -b dist",
 		"test": "wp-scripts test-unit-js",
 		"lint:style": "wp-scripts lint-style src",
 		"lint:js": "wp-scripts lint-js src",
@@ -37,7 +37,7 @@
 		"@wordpress/icons": "^2.8.0",
 		"@wordpress/notices": "^2.11.0",
 		"@wordpress/rich-text": "^3.23.0",
-		"easy-web-crypto": "^1.2.2",
+		"easy-web-crypto": "1.1.1",
 		"lodash": "^4.17.20",
 		"react-promise-suspense": "^0.3.3",
 		"react-router-dom": "^5.2.0",

@@ -1,0 +1,34 @@
+name: Build
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+
+      - name: Copy sample config
+        run: cp src/config/index.sample.js src/config/index.js
+
+      - name: Replace secrets (server)
+        uses: jwsi/secret-parser@v1
+        with:
+          filename: src/config/index.js
+          secret-name: COLLAB_SERVER
+          secret-value: ${{ secrets.COLLAB_SERVER }}
+
+      - name: Replace secrets (sentry)
+        uses: jwsi/secret-parser@v1
+        with:
+          filename: src/config/index.js
+          secret-name: SENTRY_DSN
+          secret-value: ${{ secrets.SENTRY_DSN }}
+
+      - run: npm ci
+      - run: npm run build
