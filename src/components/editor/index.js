@@ -6,13 +6,14 @@ import {
 	BlockList,
 	WritingFlow,
 	ObserveTyping,
+	__unstableUseTypewriter as useTypewriter,
 } from '@wordpress/block-editor';
 import {
 	Popover,
 	SlotFillProvider,
 	DropZoneProvider,
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useState, useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { EditorHeader } from './header';
 import { PostTitleEditor } from './post-title-editor';
@@ -42,6 +43,8 @@ export function Editor( { encryptionKey, ownerKey } ) {
 		encryptionKey,
 		ownerKey
 	);
+	const ref = useRef();
+	useTypewriter( ref );
 	useAutosave( isShared && isMaster, encryptionKey, ownerKey );
 	const [ isShareModalOpened, setIsShareModalOpened ] = useState( false );
 	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
@@ -77,7 +80,14 @@ export function Editor( { encryptionKey, ownerKey } ) {
 							} ) }
 						>
 							<Popover.Slot name="block-toolbar" />
-							<div className="editor__main">
+							<div
+								className="editor__main"
+								ref={ ref }
+								style={ {
+									//necessary for typewriter effect
+									paddingBottom: '40vh',
+								} }
+							>
 								<div className="editor__header">
 									<EditorHeader
 										isEditable={ isEditable }
