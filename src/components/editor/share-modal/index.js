@@ -1,4 +1,4 @@
-import { Modal, Button, TextControl } from '@wordpress/components';
+import { Button, TextControl } from '@wordpress/components';
 import { Icon, check } from '@wordpress/icons';
 import { useRef } from '@wordpress/element';
 import { useCopyOnClick } from '@wordpress/compose';
@@ -6,7 +6,7 @@ import { useSelect } from '@wordpress/data';
 import './style.css';
 import { useAuthorName } from '../../../local-storage';
 
-export function ShareModal( { onClose, ownerKey, stringKey } ) {
+export function ShareModal( { ownerKey, stringKey } ) {
 	const [ authorName, setAuthorName ] = useAuthorName();
 	const postId = useSelect(
 		( select ) => select( 'asblocks' ).getPersisted()._id,
@@ -20,7 +20,7 @@ export function ShareModal( { onClose, ownerKey, stringKey } ) {
 	const isCopiedRead = useCopyOnClick( readButton, readURL );
 
 	return (
-		<Modal title="Sharing information" onRequestClose={ onClose }>
+		<>
 			<div className="editor-share-modal__links">
 				<div>
 					<h3>Write</h3>
@@ -79,6 +79,6 @@ export function ShareModal( { onClose, ownerKey, stringKey } ) {
 					</p>
 				</div>
 			</div>
-		</Modal>
+		</>
 	);
 }

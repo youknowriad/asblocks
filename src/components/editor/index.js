@@ -20,7 +20,6 @@ import { PostTitleEditor } from './post-title-editor';
 import { Inspector } from './inspector';
 import { Comments } from './comments';
 import { useSyncEdits } from './sync/index';
-import { ShareModal } from './share-modal';
 import { keyToString } from '../../lib/crypto';
 import { LoadingCanvas } from '../loading-canvas';
 import useAutosave from './save';
@@ -45,7 +44,6 @@ export function Editor( { encryptionKey, ownerKey } ) {
 	const ref = useRef();
 	useTypewriter( ref );
 	useAutosave( isShared && isMaster, encryptionKey, ownerKey );
-	const [ isShareModalOpened, setIsShareModalOpened ] = useState( false );
 	const [ isInspectorOpened, setIsInspectorOpened ] = useState( false );
 
 	const getPropertyChangeHandler = ( property ) => ( value ) => {
@@ -64,13 +62,6 @@ export function Editor( { encryptionKey, ownerKey } ) {
 					onInput={ getPropertyChangeHandler( 'blocks' ) }
 					onChange={ getPropertyChangeHandler( 'blocks' ) }
 				>
-					{ isShareModalOpened && (
-						<ShareModal
-							onClose={ () => setIsShareModalOpened( false ) }
-							stringKey={ stringKey }
-							ownerKey={ ownerKey }
-						/>
-					) }
 					<div
 						className={ classnames( 'editor', {
 							'is-ready': isEditable,
@@ -95,9 +86,7 @@ export function Editor( { encryptionKey, ownerKey } ) {
 									onOpenInspector={ () =>
 										setIsInspectorOpened( true )
 									}
-									setIsShareModalOpened={
-										setIsShareModalOpened
-									}
+									stringKey={ stringKey }
 								/>
 							</div>
 							{ ! isEditable && <LoadingCanvas /> }

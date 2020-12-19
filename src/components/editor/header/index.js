@@ -8,13 +8,15 @@ import { sharePost } from '../../../api/posts';
 import { keyToString } from '../../../lib/crypto';
 import './style.css';
 import { useLocalPostSave } from '../../../local-storage';
+import { ModalToggle } from '../../modal-toggle';
+import { ShareModal } from '../share-modal';
 
 export function EditorHeader( {
 	isInspectorOpened,
 	onOpenInspector,
-	setIsShareModalOpened,
 	encryptionKey,
 	ownerKey,
+	stringKey,
 	isEditable,
 } ) {
 	const { peersCount, isShared } = useSelect( ( select ) => {
@@ -28,7 +30,7 @@ export function EditorHeader( {
 	const { mutate: mutateShare, loading: isSharing } = useMutation(
 		sharePost
 	);
-	const triggerShare = async () => {
+	const triggerShare = async ( openModal ) => {
 		const { data: persisted } = await mutateShare( ownerKey );
 		const newStringKey = await keyToString( encryptionKey );
 		persist( persisted );
@@ -37,7 +39,7 @@ export function EditorHeader( {
 			'Post ' + persisted._id,
 			'/write/' + persisted._id + '/' + ownerKey + '#key=' + newStringKey
 		);
-		setIsShareModalOpened( true );
+		openModal();
 		setLocalPost( {
 			_id: persisted._id,
 			ownerKey,
@@ -70,28 +72,41 @@ export function EditorHeader( {
 							<strong>{ peersCount }</strong> connected peers
 						</div>
 					) }
-					{ ! isShared && (
-						<div>
-							<Button
-								onClick={ triggerShare }
-								disabled={ isSharing }
-								isBusy={ isSharing }
-								isPrimary
-							>
-								{ 'Share' }
-							</Button>
-						</div>
-					) }
-
-					{ isShared && (
-						<div>
-							<Button
-								icon={ share }
-								label="Show sharing information"
-								onClick={ () => setIsShareModalOpened( true ) }
-							/>
-						</div>
-					) }
+					<div>
+						<ModalToggle
+							title="Sharing information"
+							renderToggle={ ( { onToggle, isOpen } ) =>
+								! isShared ? (
+									<Button
+										onClick={ () =>
+											triggerShare( onToggle )
+										}
+										disabled={ isSharing }
+										isBusy={ isSharing }
+										isPrimary
+										aria-haspopup="true"
+										aria-expanded={ isOpen }
+									>
+										{ 'Share' }
+									</Button>
+								) : (
+									<Button
+										icon={ share }
+										label="Show sharing information"
+										onClick={ onToggle }
+										aria-haspopup="true"
+										aria-expanded={ isOpen }
+									/>
+								)
+							}
+							renderContent={ () => (
+								<ShareModal
+									stringKey={ stringKey }
+									ownerKey={ ownerKey }
+								/>
+							) }
+						/>
+					</div>
 
 					{ ! isInspectorOpened && (
 						<div>

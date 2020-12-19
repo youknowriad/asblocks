@@ -1,5 +1,5 @@
 import { useState, useMemo } from '@wordpress/element';
-import { Button, Dropdown } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { close } from '@wordpress/icons';
 import { pure } from '@wordpress/compose';
 import { DarkModeToggle } from '../dark-mode-toggle';
@@ -8,6 +8,7 @@ import { SearchControl } from '../search-control';
 import { Pill } from '../pill';
 import { ThemeSwitcher } from '../theme-switcher';
 import './style.css';
+import { ModalToggle } from '../modal-toggle';
 
 export const Sidebar = pure( () => {
 	const [ postList ] = useLocalPostList();
@@ -75,8 +76,8 @@ export const Sidebar = pure( () => {
 			) }
 
 			<div className="sidebar__footer">
-				<Dropdown
-					expandOnMobile
+				<ModalToggle
+					title="About AsBlocks"
 					renderToggle={ ( { onToggle, isOpen } ) => (
 						<Button
 							onClick={ onToggle }
@@ -107,8 +108,8 @@ export const Sidebar = pure( () => {
 					) }
 				/>
 
-				<Dropdown
-					expandOnMobile
+				<ModalToggle
+					title="Preferences"
 					renderToggle={ ( { onToggle, isOpen } ) => (
 						<Button
 							onClick={ onToggle }
