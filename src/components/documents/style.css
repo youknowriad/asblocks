@@ -1,0 +1,26 @@
+
+.documents__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.documents__header h3 {
+	display: inline-block;
+	margin: 0;
+}
+
+.documents__search {
+	margin-top: var(--grid-unit);
+}
+
+.documents__menu {
+	list-style: none;
+	padding: 0;
+	margin-bottom: 0;
+}
+
+.documents__menu a.components-button {
+	font-weight: 500;
+	width: 100%;
+}

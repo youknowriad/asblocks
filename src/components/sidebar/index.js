@@ -1,30 +1,15 @@
-import { useState, useMemo } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { close } from '@wordpress/icons';
 import { pure } from '@wordpress/compose';
 import { DarkModeToggle } from '../dark-mode-toggle';
-import { useLocalPostList, useIsSidebarOpened } from '../../local-storage';
-import { SearchControl } from '../search-control';
-import { Pill } from '../pill';
+import { useIsSidebarOpened } from '../../local-storage';
 import { ThemeSwitcher } from '../theme-switcher';
-import './style.css';
 import { ModalToggle } from '../modal-toggle';
+import { Documents } from '../documents';
+import './style.css';
 
 export const Sidebar = pure( () => {
-	const [ postList ] = useLocalPostList();
 	const [ , setIsSidebarOpened ] = useIsSidebarOpened();
-	const [ filterValue, setFilterValue ] = useState( '' );
-	const filteredPosts = useMemo(
-		() =>
-			postList.filter(
-				( post ) =>
-					post.title &&
-					post.title
-						.toLowerCase()
-						.includes( filterValue.toLowerCase() )
-			),
-		[ filterValue, postList ]
-	);
 
 	return (
 		<div className="sidebar">
@@ -36,44 +21,9 @@ export const Sidebar = pure( () => {
 				/>
 			</div>
 
-			{ !! postList?.length && (
-				<div className="sidebar__menu">
-					<div className="sidebar__main-menu-header">
-						<div>
-							<h3>Documents</h3>
-							<Pill>{ postList.length }</Pill>
-						</div>
-						<Button isPrimary href="/">
-							New
-						</Button>
-					</div>
-
-					<div className="sidebar__search">
-						<SearchControl
-							label="Search Documents"
-							value={ filterValue }
-							onChange={ setFilterValue }
-						/>
-					</div>
-
-					<ul className="sidebar__main-menu">
-						{ filteredPosts.map( ( post ) => {
-							const url = post.ownerKey
-								? `${ window.location.origin }/write/${ post._id }/${ post.ownerKey }#key=${ post.key }`
-								: `${ window.location.origin }/read/${ post._id }#key=${ post.key }`;
-							return (
-								<li key={ post._id }>
-									<Button href={ url }>
-										{ post.title || '(No Title)' }
-									</Button>
-								</li>
-							);
-						} ) }
-
-						{ ! filteredPosts.length && <p>No results found.</p> }
-					</ul>
-				</div>
-			) }
+			<div className="sidebar__menu">
+				<Documents />
+			</div>
 
 			<div className="sidebar__footer">
 				<ModalToggle

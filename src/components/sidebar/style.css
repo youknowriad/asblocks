@@ -4,7 +4,7 @@
 	flex-direction: column;
 }
 
-.sidebar__menu {
+.sidebar__menu:not(:empty) {
 	flex-grow: 1;
 	overflow: auto;
 	padding: var( --grid-unit );
@@ -20,32 +20,6 @@
 
 .sidebar__section + .sidebar__section {
 	border-top: 1px solid var(--border-color);
-}
-
-.sidebar__main-menu-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.sidebar__main-menu-header h3 {
-	display: inline-block;
-	margin: 0;
-}
-
-.sidebar__search {
-	margin-top: var(--grid-unit);
-}
-
-.sidebar__main-menu {
-	list-style: none;
-	padding: 0;
-	margin-bottom: 0;
-}
-
-.sidebar__main-menu a.components-button {
-	font-weight: 500;
-	padding: 0;
 }
 
 .sidebar__close {
