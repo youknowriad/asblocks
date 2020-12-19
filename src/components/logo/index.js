@@ -11,7 +11,7 @@ export function Logo() {
 			onClick={ () => setIsSidebarOpened( ! isSidebarOpened ) }
 			aria-haspopup="true"
 			aria-expanded={ isSidebarOpened }
-			label="About AsBlocks"
+			label={ isSidebarOpened ? 'Close Sidebar' : 'Show Documents' }
 			showTooltip
 			icon={
 				<svg

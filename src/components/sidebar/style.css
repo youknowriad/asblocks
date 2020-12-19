@@ -1,13 +1,25 @@
+.sidebar {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar__menu {
+	flex-grow: 1;
+	overflow: auto;
+	padding: var( --grid-unit );
+}
+
+.sidebar__footer {
+	padding: var( --grid-unit );
+}
+
 .sidebar__section {
 	padding: calc( var( --grid-unit ) * 1.5 );
 }
 
 .sidebar__section + .sidebar__section {
 	border-top: 1px solid var(--border-color);
-}
-
-.sidebar__section.is-about {
-	font-size: 0.9em;
 }
 
 .sidebar__main-menu-header {
@@ -42,8 +54,15 @@
 
 @media (max-width: 800px) {
 	.sidebar__close {
-		padding: var(--grid-unit);
+		padding: var( --grid-unit );
 		display: flex;
 		justify-content: flex-end;
+	}
+}
+
+@media (min-width: 800px) {
+	.sidebar__preferences,
+	.sidebar__about {
+		width: 300px;
 	}
 }

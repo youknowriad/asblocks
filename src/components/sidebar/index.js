@@ -1,5 +1,5 @@
 import { useState, useMemo } from '@wordpress/element';
-import { Button } from '@wordpress/components';
+import { Button, Dropdown } from '@wordpress/components';
 import { close } from '@wordpress/icons';
 import { pure } from '@wordpress/compose';
 import { DarkModeToggle } from '../dark-mode-toggle';
@@ -26,7 +26,7 @@ export const Sidebar = pure( () => {
 	);
 
 	return (
-		<>
+		<div className="sidebar">
 			<div className="sidebar__close">
 				<Button
 					icon={ close }
@@ -34,25 +34,12 @@ export const Sidebar = pure( () => {
 					label="Close Inspector"
 				/>
 			</div>
-			<div className="sidebar__section is-about">
-				<strong>AsBlocks</strong> is an{ ' ' }
-				<a href="https://en.wikipedia.org/wiki/End-to-end_encryption">
-					end-to-end encrypted
-				</a>{ ' ' }
-				(private) collaborative writing environment powered by{ ' ' }
-				<a href="https://github.com/WordPress/gutenberg">Gutenberg</a>{ ' ' }
-				and{ ' ' }
-				<a href="https://github.com/youknowriad/asblocks">
-					you can contribute
-				</a>
-				.
-			</div>
 
 			{ !! postList?.length && (
-				<div className="sidebar__section">
+				<div className="sidebar__menu">
 					<div className="sidebar__main-menu-header">
 						<div>
-							<h3>Document List</h3>
+							<h3>Documents</h3>
 							<Pill>{ postList.length }</Pill>
 						</div>
 						<Button isPrimary href="/">
@@ -87,14 +74,65 @@ export const Sidebar = pure( () => {
 				</div>
 			) }
 
-			<div className="sidebar__section">
-				<h3>Options</h3>
-				<DarkModeToggle />
-			</div>
+			<div className="sidebar__footer">
+				<Dropdown
+					expandOnMobile
+					renderToggle={ ( { onToggle, isOpen } ) => (
+						<Button
+							onClick={ onToggle }
+							aria-haspopup="true"
+							aria-expanded={ isOpen }
+							isTertiary
+						>
+							About AsBlocks
+						</Button>
+					) }
+					renderContent={ () => (
+						<div className="sidebar__about">
+							<strong>AsBlocks</strong> is an{ ' ' }
+							<a href="https://en.wikipedia.org/wiki/End-to-end_encryption">
+								end-to-end encrypted
+							</a>{ ' ' }
+							(private) collaborative writing environment powered
+							by{ ' ' }
+							<a href="https://github.com/WordPress/gutenberg">
+								Gutenberg
+							</a>{ ' ' }
+							and{ ' ' }
+							<a href="https://github.com/youknowriad/asblocks">
+								you can contribute
+							</a>
+							.
+						</div>
+					) }
+				/>
 
-			<div className="sidebar__section">
-				<ThemeSwitcher />
+				<Dropdown
+					expandOnMobile
+					renderToggle={ ( { onToggle, isOpen } ) => (
+						<Button
+							onClick={ onToggle }
+							aria-haspopup="true"
+							aria-expanded={ isOpen }
+							isTertiary
+						>
+							Preferences
+						</Button>
+					) }
+					renderContent={ () => (
+						<div className="sidebar__preferences">
+							<div className="sidebar__section">
+								<h3>Options</h3>
+								<DarkModeToggle />
+							</div>
+
+							<div className="sidebar__section">
+								<ThemeSwitcher />
+							</div>
+						</div>
+					) }
+				/>
 			</div>
-		</>
+		</div>
 	);
 } );
