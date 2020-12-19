@@ -10,6 +10,10 @@
 	padding: var(--grid-unit);
 }
 
+.layout.is-sidebar-opened .post-render__header {
+	left: var(--sidebar-width);
+}
+
 .post-render__main {
 	margin: auto;
 	max-width: 700px;

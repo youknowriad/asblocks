@@ -21,7 +21,6 @@ import { Inspector } from './inspector';
 import { Comments } from './comments';
 import { useSyncEdits } from './sync/index';
 import { ShareModal } from './share-modal';
-import { Layout } from '../layout';
 import { keyToString } from '../../lib/crypto';
 import { LoadingCanvas } from '../loading-canvas';
 import useAutosave from './save';
@@ -56,93 +55,91 @@ export function Editor( { encryptionKey, ownerKey } ) {
 	};
 
 	return (
-		<Layout>
-			<SlotFillProvider>
-				<DropZoneProvider>
-					<BlockEditorProvider
-						settings={ blockEditorSettings }
-						useSubRegistry={ false }
-						value={ editedPost.blocks || [] }
-						onInput={ getPropertyChangeHandler( 'blocks' ) }
-						onChange={ getPropertyChangeHandler( 'blocks' ) }
+		<SlotFillProvider>
+			<DropZoneProvider>
+				<BlockEditorProvider
+					settings={ blockEditorSettings }
+					useSubRegistry={ false }
+					value={ editedPost.blocks || [] }
+					onInput={ getPropertyChangeHandler( 'blocks' ) }
+					onChange={ getPropertyChangeHandler( 'blocks' ) }
+				>
+					{ isShareModalOpened && (
+						<ShareModal
+							onClose={ () => setIsShareModalOpened( false ) }
+							stringKey={ stringKey }
+							ownerKey={ ownerKey }
+						/>
+					) }
+					<div
+						className={ classnames( 'editor', {
+							'is-ready': isEditable,
+							'is-inspector-opened': isInspectorOpened,
+						} ) }
 					>
-						{ isShareModalOpened && (
-							<ShareModal
-								onClose={ () => setIsShareModalOpened( false ) }
-								stringKey={ stringKey }
-								ownerKey={ ownerKey }
-							/>
-						) }
+						<Popover.Slot name="block-toolbar" />
 						<div
-							className={ classnames( 'editor', {
-								'is-ready': isEditable,
-								'is-inspector-opened': isInspectorOpened,
-							} ) }
+							className="editor__main"
+							ref={ ref }
+							style={ {
+								//necessary for typewriter effect
+								paddingBottom: '40vh',
+							} }
 						>
-							<Popover.Slot name="block-toolbar" />
-							<div
-								className="editor__main"
-								ref={ ref }
-								style={ {
-									//necessary for typewriter effect
-									paddingBottom: '40vh',
-								} }
-							>
-								<div className="editor__header">
-									<EditorHeader
-										isEditable={ isEditable }
-										encryptionKey={ encryptionKey }
-										ownerKey={ ownerKey }
-										isInspectorOpened={ isInspectorOpened }
-										onOpenInspector={ () =>
-											setIsInspectorOpened( true )
-										}
-										setIsShareModalOpened={
-											setIsShareModalOpened
-										}
-									/>
+							<div className="editor__header">
+								<EditorHeader
+									isEditable={ isEditable }
+									encryptionKey={ encryptionKey }
+									ownerKey={ ownerKey }
+									isInspectorOpened={ isInspectorOpened }
+									onOpenInspector={ () =>
+										setIsInspectorOpened( true )
+									}
+									setIsShareModalOpened={
+										setIsShareModalOpened
+									}
+								/>
+							</div>
+							{ ! isEditable && <LoadingCanvas /> }
+							<div className="editor__canvas">
+								<div className="editor__info-sidebar"></div>
+								<div className="editor__content editor-styles-wrapper">
+									<BlockEditorKeyboardShortcuts />
+									<WritingFlow>
+										<div className="editor__post-title-wrapper">
+											<PostTitleEditor
+												value={ editedPost.title }
+												onChange={ getPropertyChangeHandler(
+													'title'
+												) }
+											/>
+										</div>
+										<ObserveTyping>
+											<BlockList />
+										</ObserveTyping>
+									</WritingFlow>
+									<Popover.Slot />
 								</div>
-								{ ! isEditable && <LoadingCanvas /> }
-								<div className="editor__canvas">
-									<div className="editor__info-sidebar"></div>
-									<div className="editor__content editor-styles-wrapper">
-										<BlockEditorKeyboardShortcuts />
-										<WritingFlow>
-											<div className="editor__post-title-wrapper">
-												<PostTitleEditor
-													value={ editedPost.title }
-													onChange={ getPropertyChangeHandler(
-														'title'
-													) }
-												/>
-											</div>
-											<ObserveTyping>
-												<BlockList />
-											</ObserveTyping>
-										</WritingFlow>
-										<Popover.Slot />
-									</div>
-									<div className="editor__comments-sidebar">
-										<Comments
-											comments={ editedPost.comments }
-										/>
-									</div>
+								<div className="editor__comments-sidebar">
+									<Comments
+										comments={ editedPost.comments }
+									/>
 								</div>
 							</div>
-							{ isInspectorOpened && (
-								<div className="editor__sidebar">
-									<Inspector
-										onClose={ () =>
-											setIsInspectorOpened( false )
-										}
-									/>
-								</div>
-							) }
-							<Popover.Slot />
 						</div>
-					</BlockEditorProvider>
-				</DropZoneProvider>
-			</SlotFillProvider>
-		</Layout>
+						{ isInspectorOpened && (
+							<div className="editor__sidebar">
+								<Inspector
+									onClose={ () =>
+										setIsInspectorOpened( false )
+									}
+								/>
+							</div>
+						) }
+						<Popover.Slot />
+					</div>
+				</BlockEditorProvider>
+			</DropZoneProvider>
+		</SlotFillProvider>
 	);
 }

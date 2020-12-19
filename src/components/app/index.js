@@ -9,6 +9,7 @@ import { useDarkMode, useTheme } from '../../local-storage';
 import { LoadingPage } from '../loading-page';
 import { UpdateNotice } from '../update-notice';
 import { useBodyClass } from '../../lib/hooks';
+import { Layout } from '../layout';
 import './style.css';
 
 function ClearCacheOnNavigate() {
@@ -33,23 +34,24 @@ export function App() {
 		>
 			<Router>
 				<ClearCacheOnNavigate />
+				<Layout>
+					<Suspense fallback={ <LoadingPage /> }>
+						<Route path="/loading">
+							<LoadingPage />
+						</Route>
+						<Route path="/write/:id/:ownerKey">
+							<RouteWrite />
+						</Route>
 
-				<Suspense fallback={ <LoadingPage /> }>
-					<Route path="/loading">
-						<LoadingPage />
-					</Route>
-					<Route path="/write/:id/:ownerKey">
-						<RouteWrite />
-					</Route>
+						<Route path="/read/:id">
+							<RouteRead />
+						</Route>
 
-					<Route path="/read/:id">
-						<RouteRead />
-					</Route>
-
-					<Route exact path="/">
-						<RouteNew />
-					</Route>
-				</Suspense>
+						<Route exact path="/">
+							<RouteNew />
+						</Route>
+					</Suspense>
+				</Layout>
 			</Router>
 
 			<div className="app__notices">
