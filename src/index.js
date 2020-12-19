@@ -1,3 +1,4 @@
+import { init, trackPages } from 'insights-js';
 import * as Sentry from '@sentry/browser';
 import React from 'react';
 import { render } from 'react-dom';
@@ -9,6 +10,11 @@ import { config } from './config/index';
 
 if ( config.sentry ) {
 	Sentry.init( { dsn: config.sentry, attachStacktrace: true } );
+}
+
+if ( config.insights ) {
+	init( config.insights );
+	trackPages();
 }
 
 render(

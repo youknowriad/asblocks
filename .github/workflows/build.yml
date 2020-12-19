@@ -30,5 +30,12 @@ jobs:
           secret-name: SENTRY_DSN
           secret-value: ${{ secrets.SENTRY_DSN }}
 
+      - name: Replace secrets (insights)
+        uses: jwsi/secret-parser@v1
+        with:
+          filename: src/config/index.js
+          secret-name: INSIGHTS_ID
+          secret-value: ${{ secrets.INSIGHTS_ID }}
+
       - run: npm ci
       - run: npm run build
