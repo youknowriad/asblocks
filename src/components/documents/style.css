@@ -1,8 +1,9 @@
 
 .documents__header {
-	display: flex;
+	display: grid;
 	align-items: center;
-	justify-content: space-between;
+	grid-template-columns: 1fr auto auto;
+	grid-gap: calc( var(--grid-unit) / 2 );
 }
 
 .documents__header h3 {

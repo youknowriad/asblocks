@@ -3,6 +3,9 @@ import { useState } from '@wordpress/element';
 
 export function ModalToggle( { title, renderToggle, renderContent } ) {
 	const [ isOpen, setIsOpen ] = useState();
+	const onClose = () => {
+		setIsOpen( false );
+	};
 	return (
 		<>
 			{ renderToggle( {
@@ -10,13 +13,8 @@ export function ModalToggle( { title, renderToggle, renderContent } ) {
 				onToggle: () => setIsOpen( ! isOpen ),
 			} ) }
 			{ isOpen && (
-				<Modal
-					title={ title }
-					onRequestClose={ () => {
-						setIsOpen( false );
-					} }
-				>
-					{ renderContent() }
+				<Modal title={ title } onRequestClose={ onClose }>
+					{ renderContent( { onClose } ) }
 				</Modal>
 			) }
 		</>

@@ -10,7 +10,9 @@ import { useLocalPostSave } from '../../local-storage';
 
 export function RouteWrite() {
 	const { id, ownerKey } = useParams();
-	const stringKey = window.location.hash.slice( '#key='.length );
+	const stringKey = window.location.href.substring(
+		window.location.href.indexOf( '#key=' ) + 5
+	);
 	const encryptionKey = usePromise( stringToKey, [ stringKey ] );
 	const post = useSuspendedApi( fetchPost, [ id, encryptionKey ] );
 	const { persist } = useDispatch( 'asblocks' );

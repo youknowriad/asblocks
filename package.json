@@ -16,11 +16,13 @@
 	},
 	"scripts": {
 		"start": "parcel src/index.html",
-		"build": "parcel build src/index.html && generate-version -s package -b dist",
+		"build": "parcel build src/index.html --public-url \"./\" && generate-version -s package -b dist",
 		"test": "wp-scripts test-unit-js",
 		"lint:style": "wp-scripts lint-style src",
-		"lint:js": "wp-scripts lint-js src",
-		"lint": "run-p lint:*"
+		"lint:js": "wp-scripts lint-js src desktop",
+		"lint": "run-p lint:*",
+		"start:desktop:renderer": "parcel watch src/index.html --public-url \"./\" --dist-dir desktop/dist",
+		"build:desktop:renderer": "parcel build src/index.html --public-url \"./\" --dist-dir desktop/dist"
 	},
 	"dependencies": {
 		"@sentry/browser": "^5.29.0",
@@ -39,6 +41,7 @@
 		"@wordpress/rich-text": "^3.24.0",
 		"easy-web-crypto": "1.1.1",
 		"insights-js": "^1.2.10",
+		"is-electron": "^2.2.0",
 		"lodash": "^4.17.20",
 		"react-promise-suspense": "^0.3.3",
 		"react-router-dom": "^5.2.0",

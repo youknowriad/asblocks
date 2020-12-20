@@ -40,8 +40,22 @@ jobs:
           secret-name: INSIGHTS_ID
           secret-value: ${{ secrets.INSIGHTS_ID }}
 
-      - run: npm ci
-      - run: npm run build
+      - name: Installing dependencies
+        run: npm ci
+      
+      - name: Building web app
+        run: npm run build
+      
+      - name: Building electron renderer
+        run: npm run build:desktop:renderer
+      
+      - name: Building electron app
+        run: |
+          cd desktop
+          npm install
+          npm run make
+          cp out/make/zip/darwin/x64/*.zip ../dist/asblocks.zip
+          cd -
 
       - uses: w9jds/firebase-action@master
         with:

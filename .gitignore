@@ -1,8 +1,10 @@
+.DS_Store
 node_modules
 .cache
 .firebase
-!dist/index.html
 dist
+desktop/dist
+desktop/out
 src/config/index.js
 .parcel-cache
 parcel-bundle-reports

@@ -1,9 +1,13 @@
 import { useState, useMemo } from '@wordpress/element';
-import { Button } from '@wordpress/components';
 import { useLocalPostList } from '../../local-storage';
 import { SearchControl } from '../search-control';
 import { Pill } from '../pill';
+import { ButtonLink } from '../button-link';
+import { ModalToggle } from '../modal-toggle';
+import { Button } from '@wordpress/components';
+import { DocumentOpen } from '../document-open';
 import './style.css';
+import isElectron from 'is-electron';
 
 export function Documents() {
 	const [ postList ] = useLocalPostList();
@@ -20,20 +24,34 @@ export function Documents() {
 		[ filterValue, postList ]
 	);
 
-	if ( ! postList?.length ) {
-		return null;
-	}
-
 	return (
 		<div>
 			<div className="documents__header">
 				<div>
 					<h3>Documents</h3>
-					<Pill>{ postList.length }</Pill>
+					{ postList?.length && <Pill>{ postList.length }</Pill> }
 				</div>
-				<Button isPrimary href="/">
+				<ButtonLink isPrimary to="/">
 					New
-				</Button>
+				</ButtonLink>
+				{ isElectron() && (
+					<ModalToggle
+						title="Open a shared document"
+						renderToggle={ ( { onToggle, isOpen } ) => (
+							<Button
+								onClick={ onToggle }
+								aria-haspopup="true"
+								aria-expanded={ isOpen }
+								isPrimary
+							>
+								Open
+							</Button>
+						) }
+						renderContent={ ( { onClose } ) => (
+							<DocumentOpen onOpen={ onClose } />
+						) }
+					/>
+				) }
 			</div>
 
 			<div className="documents__search">
@@ -47,16 +65,18 @@ export function Documents() {
 			<ul className="documents__menu">
 				{ filteredPosts.map( ( post ) => {
 					const url = post.ownerKey
-						? `${ window.location.origin }/write/${ post._id }/${ post.ownerKey }#key=${ post.key }`
-						: `${ window.location.origin }/read/${ post._id }#key=${ post.key }`;
+						? `/write/${ post._id }/${ post.ownerKey }#key=${ post.key }`
+						: `/read/${ post._id }#key=${ post.key }`;
 					return (
 						<li key={ post._id }>
-							<Button
-								href={ url }
-								isPressed={ window.location.href === url }
+							<ButtonLink
+								to={ url }
+								isPressed={ window.location.href.includes(
+									url
+								) }
 							>
 								{ post.title || '(No Title)' }
-							</Button>
+							</ButtonLink>
 						</li>
 					);
 				} ) }

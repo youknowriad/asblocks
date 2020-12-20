@@ -3,7 +3,7 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -37,5 +37,17 @@ jobs:
           secret-name: INSIGHTS_ID
           secret-value: ${{ secrets.INSIGHTS_ID }}
 
-      - run: npm ci
-      - run: npm run build
+      - name: Installing dependencies
+        run: npm ci
+      
+      - name: Building web app
+        run: npm run build
+      
+      - name: Building electron renderer
+        run: npm run build:desktop:renderer
+      
+      - name: Building electron app
+        run: |
+          cd desktop
+          npm install
+          npm run make
