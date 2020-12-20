@@ -3,7 +3,11 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
+    env:
+      COLLAB_SERVER: ${{secrets.COLLAB_SERVER}}
+      SENTRY_DSN: ${{secrets.SENTRY_DSN}}
+      INSIGHTS_ID: ${{secrets.INSIGHTS_ID}}
 
     steps:
       - uses: actions/checkout@v2
@@ -16,26 +20,18 @@ jobs:
       - name: Copy sample config
         run: cp src/config/index.sample.js src/config/index.js
 
-      - name: Replace secrets (server)
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: COLLAB_SERVER
-          secret-value: ${{ secrets.COLLAB_SERVER }}
+      - name: Replace secrets
+        run: npm install replace -g && replace "COLLAB_SERVER" $COLLAB_SERVER src/config/index.js && replace "SENTRY_DSN" $SENTRY_DSN src/config/index.js && replace "INSIGHTS_ID" $INSIGHTS_ID src/config/index.js
 
-      - name: Replace secrets (sentry)
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: SENTRY_DSN
-          secret-value: ${{ secrets.SENTRY_DSN }}
 
-      - name: Replace secrets (insights)
-        uses: jwsi/secret-parser@v1
-        with:
-          filename: src/config/index.js
-          secret-name: INSIGHTS_ID
-          secret-value: ${{ secrets.INSIGHTS_ID }}
-
-      - run: npm ci
-      - run: npm run build
+      - name: Installing dependencies
+        run: npm ci
+      
+      - name: Building web app
+        run: npm run build
+      
+      - name: Building electron renderer
+        run: rm -rf .parcel-cache && npm run build:desktop:renderer
+      
+      - name: Building electron app
+        run: cd desktop && npm install && npm run make

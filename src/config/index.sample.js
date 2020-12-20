@@ -1,5 +1,5 @@
 export const config = {
-	collabServer: '${{ secrets.COLLAB_SERVER }}',
-	sentry: '${{ secrets.SENTRY_DSN }}',
-	insights: '${{ secrets.INSIGHTS_ID }}',
+	collabServer: 'COLLAB_SERVER',
+	sentry: 'SENTRY_DSN',
+	insights: 'INSIGHTS_ID',
 };

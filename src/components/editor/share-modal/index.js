@@ -5,6 +5,7 @@ import { useCopyOnClick } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 import './style.css';
 import { useAuthorName } from '../../../local-storage';
+import isElectron from 'is-electron';
 
 export function ShareModal( { ownerKey, stringKey } ) {
 	const [ authorName, setAuthorName ] = useAuthorName();
@@ -12,8 +13,11 @@ export function ShareModal( { ownerKey, stringKey } ) {
 		( select ) => select( 'asblocks' ).getPersisted()._id,
 		[]
 	);
-	const editURL = `${ window.location.origin }/write/${ postId }/${ ownerKey }#key=${ stringKey }`;
-	const readURL = `${ window.location.origin }/read/${ postId }#key=${ stringKey }`;
+	const origin = isElectron()
+		? 'https://asblocks.com'
+		: window.location.origin;
+	const editURL = `${ origin }/write/${ postId }/${ ownerKey }#key=${ stringKey }`;
+	const readURL = `${ origin }/read/${ postId }#key=${ stringKey }`;
 	const editButton = useRef();
 	const readButton = useRef();
 	const isCopiedEdit = useCopyOnClick( editButton, editURL );

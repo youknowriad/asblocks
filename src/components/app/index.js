@@ -1,5 +1,11 @@
 import classnames from 'classnames';
-import { BrowserRouter as Router, Route, useLocation } from 'react-router-dom';
+import {
+	BrowserRouter,
+	HashRouter,
+	Route,
+	useLocation,
+} from 'react-router-dom';
+import isElectron from 'is-electron';
 import { Suspense, useLayoutEffect } from '@wordpress/element';
 import { RouteNew } from '../route-new';
 import { RouteWrite } from '../route-write';
@@ -11,6 +17,8 @@ import { UpdateNotice } from '../update-notice';
 import { useBodyClass } from '../../lib/hooks';
 import { Layout } from '../layout';
 import './style.css';
+
+const Router = isElectron() ? HashRouter : BrowserRouter;
 
 function ClearCacheOnNavigate() {
 	const location = useLocation();
