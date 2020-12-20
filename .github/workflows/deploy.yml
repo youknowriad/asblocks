@@ -45,6 +45,7 @@ jobs:
           path: dist
 
   firebase-deploy:
+    needs: firebase-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
