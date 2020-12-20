@@ -1,51 +1,14 @@
 name: Deploy
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Build"]
     branches: [master]
+    types:
+      - completed
 
 jobs:
-  firebase-build:
-    runs-on: macos-latest
-    env:
-      COLLAB_SERVER: ${{secrets.COLLAB_SERVER}}
-      SENTRY_DSN: ${{secrets.SENTRY_DSN}}
-      INSIGHTS_ID: ${{secrets.INSIGHTS_ID}}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12'
-
-      - name: Copy sample config
-        run: cp src/config/index.sample.js src/config/index.js
-
-      - name: Replace secrets
-        run: npm install replace -g && replace "COLLAB_SERVER" $COLLAB_SERVER src/config/index.js && replace "SENTRY_DSN" $SENTRY_DSN src/config/index.js && replace "INSIGHTS_ID" $INSIGHTS_ID src/config/index.js
-
-      - name: Installing dependencies
-        run: npm ci
-      
-      - name: Building web app
-        run: npm run build
-      
-      - name: Building electron renderer
-        run: rm -rf .parcel-cache && npm run build:desktop:renderer
-      
-      - name: Building electron app
-        run: cd desktop && npm install && npm run make && cp out/make/zip/darwin/x64/*.zip ../dist/asblocks.zip && cd -
-
-      - name: Upload dist
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: dist
-
   firebase-deploy:
-    needs: firebase-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -53,6 +16,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist
+          path: dist
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
