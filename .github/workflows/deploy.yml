@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  firebase-deploy:
+  firebase-build:
     runs-on: macos-latest
     env:
       COLLAB_SERVER: ${{secrets.COLLAB_SERVER}}
@@ -38,6 +38,20 @@ jobs:
       - name: Building electron app
         run: cd desktop && npm install && npm run make && cp out/make/zip/darwin/x64/*.zip ../dist/asblocks.zip && cd -
 
+      - name: Upload dist
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+  firebase-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
