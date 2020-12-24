@@ -16,7 +16,7 @@
 	},
 	"scripts": {
 		"start": "parcel src/index.html",
-		"build": "parcel build src/index.html --public-url \"./\" && generate-version -s package -b dist",
+		"build": "parcel build src/index.html && generate-version -s package -b dist",
 		"test": "wp-scripts test-unit-js",
 		"lint:style": "wp-scripts lint-style src",
 		"lint:js": "wp-scripts lint-js src desktop",
