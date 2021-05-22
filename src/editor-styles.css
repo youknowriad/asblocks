@@ -1,7 +1,7 @@
 .editor-styles-wrapper {
 	font-family: var(--editor-font);
 	font-size: var(--editor-font-size);
-	line-height: 2em; /* stylelint-disable-line declaration-property-unit-whitelist */
+	line-height: 2em; /* stylelint-disable-line declaration-property-unit-allowed-list */
 }
 
 .editor-styles-wrapper p {
