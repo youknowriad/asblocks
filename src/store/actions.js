@@ -84,6 +84,14 @@ export function persist( post, edits = {} ) {
 	};
 }
 
+export function reset( post, edits = {} ) {
+	return {
+		type: 'RESET',
+		post,
+		edits,
+	};
+}
+
 export function setSharedDoc( doc ) {
 	return {
 		type: 'SET_SHARED_DOC',

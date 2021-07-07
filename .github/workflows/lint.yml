@@ -12,10 +12,13 @@ jobs:
             - name: Set up Node.js.
               uses: actions/setup-node@v1
               with:
-                  node-version: 12
+                  node-version: 14
 
             - name: Install Node.js dependencies.
               run: npm ci
+
+            - name: Copy sample config
+              run: cp src/config/index.sample.js src/config/index.js
 
             - name: Run linters.
               run: npm run lint

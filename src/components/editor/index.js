@@ -6,13 +6,10 @@ import {
 	BlockList,
 	WritingFlow,
 	ObserveTyping,
+	// eslint-disable-next-line
 	__unstableUseTypewriter as useTypewriter,
 } from '@wordpress/block-editor';
-import {
-	Popover,
-	SlotFillProvider,
-	DropZoneProvider,
-} from '@wordpress/components';
+import { Popover, SlotFillProvider } from '@wordpress/components';
 import { useState, useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { EditorHeader } from './header';
@@ -54,81 +51,75 @@ export function Editor( { encryptionKey, ownerKey } ) {
 
 	return (
 		<SlotFillProvider>
-			<DropZoneProvider>
-				<BlockEditorProvider
-					settings={ blockEditorSettings }
-					useSubRegistry={ false }
-					value={ editedPost.blocks || [] }
-					onInput={ getPropertyChangeHandler( 'blocks' ) }
-					onChange={ getPropertyChangeHandler( 'blocks' ) }
+			<BlockEditorProvider
+				settings={ blockEditorSettings }
+				useSubRegistry={ false }
+				value={ editedPost.blocks }
+				onInput={ getPropertyChangeHandler( 'blocks' ) }
+				onChange={ getPropertyChangeHandler( 'blocks' ) }
+			>
+				<div
+					className={ classnames( 'editor', {
+						'is-ready': isEditable,
+						'is-inspector-opened': isInspectorOpened,
+					} ) }
 				>
+					<Popover.Slot name="block-toolbar" />
 					<div
-						className={ classnames( 'editor', {
-							'is-ready': isEditable,
-							'is-inspector-opened': isInspectorOpened,
-						} ) }
+						className="editor__main"
+						ref={ ref }
+						style={ {
+							//necessary for typewriter effect
+							paddingBottom: '40vh',
+						} }
 					>
-						<Popover.Slot name="block-toolbar" />
-						<div
-							className="editor__main"
-							ref={ ref }
-							style={ {
-								//necessary for typewriter effect
-								paddingBottom: '40vh',
-							} }
-						>
-							<div className="editor__header">
-								<EditorHeader
-									isEditable={ isEditable }
-									encryptionKey={ encryptionKey }
-									ownerKey={ ownerKey }
-									isInspectorOpened={ isInspectorOpened }
-									onOpenInspector={ () =>
-										setIsInspectorOpened( true )
-									}
-									stringKey={ stringKey }
-								/>
+						<div className="editor__header">
+							<EditorHeader
+								isEditable={ isEditable }
+								encryptionKey={ encryptionKey }
+								ownerKey={ ownerKey }
+								isInspectorOpened={ isInspectorOpened }
+								onOpenInspector={ () =>
+									setIsInspectorOpened( true )
+								}
+								stringKey={ stringKey }
+							/>
+						</div>
+						{ ! isEditable && <LoadingCanvas /> }
+						<div className="editor__canvas">
+							<div className="editor__info-sidebar"></div>
+							<div className="editor__content editor-styles-wrapper">
+								<BlockEditorKeyboardShortcuts />
+								<WritingFlow>
+									<div className="editor__post-title-wrapper">
+										<PostTitleEditor
+											value={ editedPost.title }
+											onChange={ getPropertyChangeHandler(
+												'title'
+											) }
+										/>
+									</div>
+									<ObserveTyping>
+										<BlockList />
+									</ObserveTyping>
+								</WritingFlow>
+								<Popover.Slot />
 							</div>
-							{ ! isEditable && <LoadingCanvas /> }
-							<div className="editor__canvas">
-								<div className="editor__info-sidebar"></div>
-								<div className="editor__content editor-styles-wrapper">
-									<BlockEditorKeyboardShortcuts />
-									<WritingFlow>
-										<div className="editor__post-title-wrapper">
-											<PostTitleEditor
-												value={ editedPost.title }
-												onChange={ getPropertyChangeHandler(
-													'title'
-												) }
-											/>
-										</div>
-										<ObserveTyping>
-											<BlockList />
-										</ObserveTyping>
-									</WritingFlow>
-									<Popover.Slot />
-								</div>
-								<div className="editor__comments-sidebar">
-									<Comments
-										comments={ editedPost.comments }
-									/>
-								</div>
+							<div className="editor__comments-sidebar">
+								<Comments comments={ editedPost.comments } />
 							</div>
 						</div>
-						{ isInspectorOpened && (
-							<div className="editor__sidebar">
-								<Inspector
-									onClose={ () =>
-										setIsInspectorOpened( false )
-									}
-								/>
-							</div>
-						) }
-						<Popover.Slot />
 					</div>
-				</BlockEditorProvider>
-			</DropZoneProvider>
+					{ isInspectorOpened && (
+						<div className="editor__sidebar">
+							<Inspector
+								onClose={ () => setIsInspectorOpened( false ) }
+							/>
+						</div>
+					) }
+					<Popover.Slot />
+				</div>
+			</BlockEditorProvider>
 		</SlotFillProvider>
 	);
 }

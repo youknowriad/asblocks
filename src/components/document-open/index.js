@@ -1,4 +1,4 @@
-import { matchPath, useHistory } from 'react-router';
+import { matchPath, useHistory } from 'react-router-dom';
 import { Button, TextControl, Notice } from '@wordpress/components';
 import { useRef, useState } from '@wordpress/element';
 

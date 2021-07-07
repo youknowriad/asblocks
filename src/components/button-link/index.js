@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@wordpress/components';
 import { useHistory } from 'react-router-dom';
 
