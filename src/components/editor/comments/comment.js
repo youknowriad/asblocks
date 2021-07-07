@@ -3,10 +3,11 @@ import { Button } from '@wordpress/components';
 import { Icon, people } from '@wordpress/icons';
 import { useDispatch } from '@wordpress/data';
 import { ENTER, SPACE } from '@wordpress/keycodes';
-import { __experimentalUseFocusOutside } from '@wordpress/compose';
 import { useAuthorId } from '../../../local-storage';
 import { CommentForm } from '../comment-form';
 import { CommentReplies } from '../comment-replies';
+// eslint-disable-next-line
+import { __experimentalUseFocusOutside } from '@wordpress/compose';
 
 export function Comment( { comment, position, isSelected } ) {
 	const [ authorId ] = useAuthorId();

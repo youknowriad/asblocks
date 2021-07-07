@@ -6,6 +6,7 @@ import {
 	BlockList,
 	WritingFlow,
 	ObserveTyping,
+	// eslint-disable-next-line
 	__unstableUseTypewriter as useTypewriter,
 } from '@wordpress/block-editor';
 import {

@@ -1,7 +1,6 @@
 import { init, trackPages } from 'insights-js';
 import * as Sentry from '@sentry/browser';
-import React from 'react';
-import { render } from 'react-dom';
+import { render, StrictMode } from '@wordpress/element';
 import { App } from './components/app';
 import './load-assets';
 import './reset.css';
@@ -18,8 +17,8 @@ if ( config.insights ) {
 }
 
 render(
-	<React.StrictMode>
+	<StrictMode>
 		<App />
-	</React.StrictMode>,
+	</StrictMode>,
 	document.body.querySelector( '#root' )
 );
