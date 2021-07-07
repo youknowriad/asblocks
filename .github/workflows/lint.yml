@@ -17,5 +17,8 @@ jobs:
             - name: Install Node.js dependencies.
               run: npm ci
 
+            - name: Copy sample config
+              run: cp src/config/index.sample.js src/config/index.js
+
             - name: Run linters.
               run: npm run lint
