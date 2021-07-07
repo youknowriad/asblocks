@@ -29,12 +29,6 @@ jobs:
       
       - name: Building web app
         run: npm run build
-      
-      - name: Building electron renderer
-        run: rm -rf .parcel-cache && npm run build:desktop:renderer
-      
-      - name: Building electron app
-        run: cd desktop && npm install && npm run make && cp out/make/zip/darwin/x64/*.zip ../dist/asblocks.zip && cd -
 
       - name: Upload dist
         uses: actions/upload-artifact@v2
