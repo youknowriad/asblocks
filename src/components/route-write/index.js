@@ -15,10 +15,10 @@ export function RouteWrite() {
 	);
 	const encryptionKey = usePromise( stringToKey, [ stringKey ] );
 	const post = useSuspendedApi( fetchPost, [ id, encryptionKey ] );
-	const { persist } = useDispatch( 'asblocks' );
+	const { reset } = useDispatch( 'asblocks' );
 	const setLocalPost = useLocalPostSave();
 	useEffect( () => {
-		persist( post );
+		reset( post );
 	}, [ post ] );
 	useEffect( () => {
 		setLocalPost( {

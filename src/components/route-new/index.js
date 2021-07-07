@@ -8,19 +8,10 @@ import { generateKey } from '../../lib/crypto';
 export function RouteNew() {
 	const encryptionKey = usePromise( generateKey, [] );
 	const ownerKey = uuidv4();
-	const post = {
-		status: 'auto-draft',
-	};
-	const { persist } = useDispatch( 'asblocks' );
+	const { reset } = useDispatch( 'asblocks' );
 	useEffect( () => {
-		persist( { status: 'auto-draft' } );
+		reset( { status: 'auto-draft', blocks: [] } );
 	}, [] );
 
-	return (
-		<Editor
-			post={ post }
-			encryptionKey={ encryptionKey }
-			ownerKey={ ownerKey }
-		/>
-	);
+	return <Editor encryptionKey={ encryptionKey } ownerKey={ ownerKey } />;
 }

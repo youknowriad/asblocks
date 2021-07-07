@@ -58,7 +58,7 @@ export function Editor( { encryptionKey, ownerKey } ) {
 				<BlockEditorProvider
 					settings={ blockEditorSettings }
 					useSubRegistry={ false }
-					value={ editedPost.blocks || [] }
+					value={ editedPost.blocks }
 					onInput={ getPropertyChangeHandler( 'blocks' ) }
 					onChange={ getPropertyChangeHandler( 'blocks' ) }
 				>

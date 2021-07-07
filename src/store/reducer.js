@@ -3,6 +3,7 @@ import { combineReducers } from '@wordpress/data';
 export function persisted( state = {}, action ) {
 	switch ( action.type ) {
 		case 'PERSIST':
+		case 'RESET':
 			return action.post;
 	}
 
@@ -23,6 +24,8 @@ export function edits( state = {}, action ) {
 				}
 				return acc;
 			}, {} );
+		case 'RESET':
+			return action.edits || {};
 	}
 
 	return state;
@@ -40,6 +43,8 @@ export function peers( state = {}, action ) {
 				acc[ peer ] = state[ peer ] || {};
 				return acc;
 			}, {} );
+		case 'RESET':
+			return {};
 	}
 
 	return state;
@@ -49,6 +54,8 @@ export function sharedDoc( state = null, action ) {
 	switch ( action.type ) {
 		case 'SET_SHARED_DOC':
 			return action.doc;
+		case 'RESET':
+			return null;
 	}
 
 	return state;
@@ -58,6 +65,8 @@ export function selectedComment( state = null, action ) {
 	switch ( action.type ) {
 		case 'SELECT_COMMENT':
 			return action.commentId;
+		case 'RESET':
+			return null;
 	}
 
 	return state;
